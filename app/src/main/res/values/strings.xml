@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Mechaban</string>
+    <string name="lewati">Lewati</string>
+    <string name="next_icon">next icon</string>
+    <string name="back_icon">back icon</string>
+    <string name="mulai_sekarang">Mulai Sekarang</string>
 </resources>
