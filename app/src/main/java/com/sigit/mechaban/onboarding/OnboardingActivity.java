@@ -14,8 +14,8 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.sigit.mechaban.MainActivity;
 import com.sigit.mechaban.R;
+import com.sigit.mechaban.auth.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         skipButton = findViewById(R.id.skip);
         skipButton.setOnClickListener(v -> {
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
         });
 
@@ -84,9 +84,22 @@ public class OnboardingActivity extends AppCompatActivity {
                 position--;
                 viewPager.setCurrentItem(position);
             }
+        });
 
-            if (position < screenItemList.size() - 1) {
-                reloadScreen();
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    backButton.setVisibility(View.INVISIBLE);
+                } else {
+                    backButton.setVisibility(View.VISIBLE);
+                }
+
+                if (position == screenItemList.size() - 1) {
+                    loadLastScreen();
+                } else {
+                    reloadScreen();
+                }
             }
         });
 
@@ -97,15 +110,14 @@ public class OnboardingActivity extends AppCompatActivity {
                 position++;
                 viewPager.setCurrentItem(position);
             }
-
-            if (position == screenItemList.size() - 1) {
-                loadLastScreen();
-            }
         });
 
 //        TODO: menambahkan animasi muncul tombol mulai sekarang
         getStartedButton = findViewById(R.id.get_startedbtn);
-        getStartedButton.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), MainActivity.class)));
+        getStartedButton.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            finish();
+        });
     }
 
     private void loadLastScreen() {

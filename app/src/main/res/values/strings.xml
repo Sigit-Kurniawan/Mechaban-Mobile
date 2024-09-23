@@ -4,4 +4,17 @@
     <string name="next_icon">next icon</string>
     <string name="back_icon">back icon</string>
     <string name="mulai_sekarang">Mulai Sekarang</string>
+    <string name="login">Login</string>
+    <string name="login_untuk_melanjutkan">Login untuk melanjutkan</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="lupa_password">Lupa Password?</string>
+    <string name="buat_akun_baru">Buat akun baru?</string>
+    <string name="register_sekarang">Register sekarang</string>
+    <string name="register">Register</string>
+    <string name="register_untuk_membuat_akun">Register untuk membuat akun</string>
+    <string name="no_hp">No. HP</string>
+    <string name="konfirmasi_password">Konfirmasi Password</string>
+    <string name="sudah_punya_akun">Sudah punya akun?</string>
+    <string name="login_sekarang">Login sekarang</string>
 </resources>

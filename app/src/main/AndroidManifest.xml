@@ -13,6 +13,12 @@
         android:theme="@style/Theme.Mechaban"
         tools:targetApi="31">
         <activity
+            android:name=".auth.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".auth.LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".onboarding.OnboardingActivity"
             android:exported="true">
             <intent-filter>
@@ -22,8 +28,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:exported="false"/>
+            android:name=".dashboard.user.DashboardActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
