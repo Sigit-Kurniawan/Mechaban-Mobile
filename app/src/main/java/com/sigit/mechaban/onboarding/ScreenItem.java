@@ -1,8 +1,8 @@
 package com.sigit.mechaban.onboarding;
 
 public class ScreenItem {
-    private String title, description;
-    private int img;
+    private final String title, description;
+    private final int img;
 
     public ScreenItem(String title, String description, int img) {
         this.title = title;
@@ -14,23 +14,12 @@ public class ScreenItem {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public int getImg() {
         return img;
     }
 
-    public void setImg(int img) {
-        this.img = img;
-    }
 }

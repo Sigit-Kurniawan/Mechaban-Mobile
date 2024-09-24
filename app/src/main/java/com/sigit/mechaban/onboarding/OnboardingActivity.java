@@ -21,11 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OnboardingActivity extends AppCompatActivity {
-    TextView skipButton;
-    ImageButton backButton, nextButton;
-    TabLayout tabLayout;
-    Button getStartedButton;
-    int position;
+    private TextView skipButton;
+    private ViewPager2 viewPager;
+    private ImageButton backButton, nextButton;
+    private TabLayout tabLayout;
+    private Button getStartedButton;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class OnboardingActivity extends AppCompatActivity {
         screenItemList.add(new ScreenItem("Mampu Melayani di Manapun Anda Berada", "Siap mengantarkan montir andalan ke lokasi.", R.drawable.onboarding3));
         screenItemList.add(new ScreenItem("Konsultasi Gratis dengan Montir Ahli", "Hubungi dan rasakan manfaatnya tanpa biaya tambahan.", R.drawable.onboarding4));
 
-        ViewPager2 viewPager = findViewById(R.id.viewPager);
+        viewPager = findViewById(R.id.viewPager);
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this, screenItemList);
         viewPager.setAdapter(viewPagerAdapter);
 
@@ -115,7 +116,7 @@ public class OnboardingActivity extends AppCompatActivity {
 //        TODO: menambahkan animasi muncul tombol mulai sekarang
         getStartedButton = findViewById(R.id.get_startedbtn);
         getStartedButton.setOnClickListener(v -> {
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
         });
     }

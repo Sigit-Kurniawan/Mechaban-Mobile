@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.PagerAdapter;
 
 import com.sigit.mechaban.R;
 
@@ -17,8 +16,8 @@ import java.util.List;
 
 public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.ViewPagerViewHolder> {
 
-    Context context;
-    List<ScreenItem> screenItemList;
+    private final Context context;
+    private final List<ScreenItem> screenItemList;
 
     public ViewPagerAdapter(Context context, List<ScreenItem> screenItemList) {
         this.context = context;
