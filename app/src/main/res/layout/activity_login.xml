@@ -7,70 +7,78 @@
     android:layout_height="match_parent"
     tools:context=".auth.LoginActivity">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/text_title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:fontFamily="@font/montserrat_semibold"
-        android:text="@string/login"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/description"/>
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="@string/login"
+            android:textSize="32sp"/>
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/montserrat_regular"
+            android:text="@string/login_untuk_melanjutkan"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/field"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/montserrat_regular"
-        android:text="@string/login_untuk_melanjutkan"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/text_title" >
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/email"
-        android:layout_width="352dp"
-        android:layout_height="76dp"
-        android:layout_marginTop="40dp"
-        android:hint="@string/email"
-        android:paddingBottom="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/description"
-        app:layout_editor_absoluteX="16dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/email_field"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/email"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress" />
+            android:layout_height="76dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginHorizontal="16dp"
+            android:hint="@string/no_hp"
+            android:paddingBottom="8dp">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/nohp_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout"
-        android:layout_width="352dp"
-        android:layout_height="76dp"
-        android:hint="@string/password"
-        android:paddingBottom="8dp"
-        app:endIconMode="password_toggle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email"
-        app:layout_editor_absoluteX="16dp">
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/pass_field"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword" />
+            android:layout_height="76dp"
+            android:hint="@string/password"
+            android:paddingBottom="8dp"
+            android:layout_marginHorizontal="16dp"
+            app:endIconMode="password_toggle">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/pass_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textView"
@@ -81,7 +89,7 @@
         android:fontFamily="@font/montserrat_semibold"
         android:textColor="@color/primary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/field" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -97,6 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:backgroundTint="@color/primary"
+            android:fontFamily="@font/montserrat_semibold"
             android:text="@string/login"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -111,6 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_regular"
+                android:layout_marginEnd="4dp"
                 android:text="@string/buat_akun_baru" />
 
             <TextView

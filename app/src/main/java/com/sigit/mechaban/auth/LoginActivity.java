@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.sigit.mechaban.dashboard.user.DashboardActivity;
+import com.sigit.mechaban.dashboard.customer.DashboardActivity;
 import com.sigit.mechaban.R;
 
 public class LoginActivity extends AppCompatActivity {

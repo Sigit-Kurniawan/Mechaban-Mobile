@@ -1,4 +1,4 @@
-package com.sigit.mechaban.dashboard.user;
+package com.sigit.mechaban.dashboard.customer;
 
 import android.os.Bundle;
 
