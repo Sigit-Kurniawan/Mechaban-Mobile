@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home"
+        android:title="@string/beranda"
+        android:icon="@drawable/baseline_home_24" />
+    <item
+        android:id="@+id/garage"
+        android:title="@string/garasi"
+        android:icon="@drawable/baseline_garage_24" />
+    <item
+        android:id="@+id/history"
+        android:title="@string/aktivitas"
+        android:icon="@drawable/icons8_activity_history_24" />
+    <item
+        android:id="@+id/account"
+        android:title="@string/akun"
+        android:icon="@drawable/baseline_account_circle_24" />
+</menu>

@@ -70,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="76dp"
             android:layout_marginTop="40dp"
-            android:hint="Nama"
+            android:hint="@string/nama"
             android:paddingBottom="8dp">
 
             <com.google.android.material.textfield.TextInputEditText

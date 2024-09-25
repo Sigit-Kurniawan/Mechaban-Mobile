@@ -17,4 +17,11 @@
     <string name="konfirmasi_password">Konfirmasi Password</string>
     <string name="sudah_punya_akun">Sudah punya akun?</string>
     <string name="login_sekarang">Login sekarang</string>
+    <string name="nama">Nama</string>
+    <string name="beranda">Beranda</string>
+    <string name="garasi">Garasi</string>
+    <string name="aktivitas">Aktivitas</string>
+    <string name="akun">Akun</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
