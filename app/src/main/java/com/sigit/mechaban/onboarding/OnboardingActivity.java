@@ -12,10 +12,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.auth.LoginActivity;
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,7 @@ public class OnboardingActivity extends AppCompatActivity {
     private TextView skipButton;
     private ViewPager2 viewPager;
     private ImageButton backButton, nextButton;
-    private TabLayout tabLayout;
+    private DotsIndicator dotsIndicator;
     private Button getStartedButton;
     private int position;
 
@@ -53,30 +52,8 @@ public class OnboardingActivity extends AppCompatActivity {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this, screenItemList);
         viewPager.setAdapter(viewPagerAdapter);
 
-        tabLayout = findViewById(R.id.tab_indicator);
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {}).attach();
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getPosition() < screenItemList.size() - 1) {
-                    reloadScreen();
-                }
-
-                if (tab.getPosition() == screenItemList.size() - 1) {
-                    loadLastScreen();
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
+        dotsIndicator = findViewById(R.id.dots_indicator);
+        dotsIndicator.attachTo(viewPager);
 
         backButton = findViewById(R.id.back);
         backButton.setOnClickListener(v -> {
@@ -123,14 +100,14 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private void loadLastScreen() {
         nextButton.setVisibility(View.INVISIBLE);
-        tabLayout.setVisibility(View.INVISIBLE);
+        dotsIndicator.setVisibility(View.INVISIBLE);
         skipButton.setVisibility(View.INVISIBLE);
         getStartedButton.setVisibility(View.VISIBLE);
     }
 
     private void reloadScreen() {
         nextButton.setVisibility(View.VISIBLE);
-        tabLayout.setVisibility(View.VISIBLE);
+        dotsIndicator.setVisibility(View.VISIBLE);
         skipButton.setVisibility(View.VISIBLE);
         getStartedButton.setVisibility(View.INVISIBLE);
     }

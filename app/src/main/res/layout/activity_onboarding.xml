@@ -43,19 +43,17 @@
         app:layout_constraintTop_toBottomOf="@+id/viewPager"
         app:srcCompat="@drawable/baseline_arrow_back_24" />
 
-<!--TODO: menghilangkan garis di bawah tab indicator-->
-    <com.google.android.material.tabs.TabLayout
-        app:tabBackground="@drawable/indicator_onboarding_selector"
-        android:id="@+id/tab_indicator"
+    <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+        android:id="@+id/dots_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:tabIndicatorHeight="0dp"
+        app:dotsSize="12dp"
+        app:selectedDotColor="@color/primary"
+        app:dotsColor="@color/surface"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/back"
         app:layout_constraintEnd_toStartOf="@+id/next"
-        app:layout_constraintTop_toBottomOf="@+id/viewPager">
-
-    </com.google.android.material.tabs.TabLayout>
+        app:layout_constraintStart_toEndOf="@+id/back"
+        app:layout_constraintTop_toBottomOf="@+id/viewPager" />
 
     <ImageButton
         android:id="@+id/next"

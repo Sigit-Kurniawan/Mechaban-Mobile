@@ -9,7 +9,7 @@
         android:title="@string/garasi"
         android:icon="@drawable/baseline_garage_24" />
     <item
-        android:id="@+id/history"
+        android:id="@+id/activity"
         android:title="@string/aktivitas"
         android:icon="@drawable/icons8_activity_history_24" />
     <item
