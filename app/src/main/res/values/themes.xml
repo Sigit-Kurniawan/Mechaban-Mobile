@@ -2,8 +2,18 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Mechaban" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-         <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimary">@color/primary</item>
     </style>
 
     <style name="Theme.Mechaban" parent="Base.Theme.Mechaban" />
+
+    <!-- Custom ActionBar style -->
+    <style name="CustomActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textAppearance">@style/CustomActionBarText</item>
+    </style>
+
+    <style name="CustomActionBarText" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:fontFamily">@font/montserrat_semibold</item>
+        <item name="android:textSize">20sp</item>
+    </style>
 </resources>

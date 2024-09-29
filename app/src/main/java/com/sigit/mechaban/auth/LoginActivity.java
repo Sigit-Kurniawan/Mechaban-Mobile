@@ -24,9 +24,6 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         TextView toRegister = findViewById(R.id.register_hyperlink);
-        toRegister.setOnClickListener(v -> {
-            startActivity(new Intent(this, RegisterActivity.class));
-            finish();
-        });
+        toRegister.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
     }
 }

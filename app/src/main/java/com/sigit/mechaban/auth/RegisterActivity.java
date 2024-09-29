@@ -1,6 +1,5 @@
 package com.sigit.mechaban.auth;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -17,15 +16,9 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         ImageButton backBtn = findViewById(R.id.back_button);
-        backBtn.setOnClickListener(v -> {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-        });
+        backBtn.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         TextView toLogin = findViewById(R.id.login_hyperlink);
-        toLogin.setOnClickListener(v -> {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-        });
+        toLogin.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
     }
 }

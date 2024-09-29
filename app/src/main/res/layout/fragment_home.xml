@@ -94,6 +94,7 @@
                     android:padding="8dp"
                     android:ems="10"
                     android:hint="Apa yang kamu servis?"
+                    android:fontFamily="@font/montserrat_medium"
                     android:inputType="text" />
             </LinearLayout>
 

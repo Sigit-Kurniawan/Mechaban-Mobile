@@ -77,6 +77,7 @@
                 android:id="@+id/name_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_medium"
                 android:inputType="textCapWords" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -92,6 +93,7 @@
                 android:id="@+id/email_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_medium"
                 android:inputType="textEmailAddress" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -107,6 +109,7 @@
                 android:id="@+id/nohp_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_medium"
                 android:inputType="number" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -123,6 +126,7 @@
                 android:id="@+id/pass_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_medium"
                 android:inputType="textPassword" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -139,6 +143,7 @@
                 android:id="@+id/confirm_pass_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_medium"
                 android:inputType="textPassword" />
 
         </com.google.android.material.textfield.TextInputLayout>
