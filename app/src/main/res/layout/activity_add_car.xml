@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".dashboard.customer.garage.AddCarActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/field"/>
+
+    <LinearLayout
+        android:id="@+id/field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Masukkan data mobil Anda"
+            android:fontFamily="@font/montserrat_semibold"
+            android:textSize="20sp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Kode Wilayah (Contoh: B) -->
+<!--            <EditText-->
+<!--                android:id="@+id/etKodeWilayah"-->
+<!--                android:layout_width="50dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="B"-->
+<!--                android:inputType="text"-->
+<!--                android:maxLength="1"-->
+<!--                android:gravity="center"-->
+<!--                android:importantForAccessibility="no"-->
+<!--                android:textSize="18sp"/>-->
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/wilayah"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etKodeWilayah"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="2"
+                    android:hint="AB"
+                    android:inputType="textCapCharacters" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Spasi antara EditText -->
+            <View
+                android:layout_width="8dp"
+                android:layout_height="wrap_content" />
+
+            <!-- Angka (Contoh: 1234) -->
+<!--            <EditText-->
+<!--                android:id="@+id/etAngka"-->
+<!--                android:layout_width="100dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="1234"-->
+<!--                android:inputType="number"-->
+<!--                android:maxLength="4"-->
+<!--                android:gravity="center"-->
+<!--                android:importantForAccessibility="no"-->
+<!--                android:textSize="18sp"/>-->
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/angka"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etAngka"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="4"
+                    android:hint="1234"
+                    android:inputType="number" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Spasi antara EditText -->
+            <View
+                android:layout_width="8dp"
+                android:layout_height="wrap_content" />
+
+            <!-- Huruf (Contoh: AB) -->
+<!--            <EditText-->
+<!--                android:id="@+id/etHuruf"-->
+<!--                android:layout_width="60dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="AB"-->
+<!--                android:inputType="text"-->
+<!--                android:maxLength="2"-->
+<!--                android:gravity="center"-->
+<!--                android:importantForAccessibility="no"-->
+<!--                android:textSize="18sp"/>-->
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/huruf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etHuruf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="3"
+                    android:hint="CDE"
+                    android:inputType="textCapCharacters" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

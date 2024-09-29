@@ -24,4 +24,8 @@
     <string name="akun">Akun</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="percayakan_perawatan_mobilmu_pada_kami">Percayakan perawatan mobilmu pada kami</string>
+    <string name="tambah_mobil">Tambah Mobil</string>
+    <string name="tidak_ada_mobil">Tidak Ada Mobil</string>
+    <string name="empty_illustration">Empty illustration</string>
 </resources>
