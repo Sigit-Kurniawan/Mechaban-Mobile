@@ -4,4 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primary">#0697F2</color>
     <color name="surface">#89888D</color>
+    <color name="container">#F0F1F2</color>
+    <color name="container_dark">#181818</color>
 </resources>
