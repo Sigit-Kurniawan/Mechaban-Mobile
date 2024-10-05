@@ -14,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.auth.LoginActivity;
+import com.sigit.mechaban.dashboard.customer.DashboardActivity;
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
 import java.util.ArrayList;
@@ -35,6 +36,11 @@ public class OnboardingActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_onboarding);
+
+        if (isLoggedIn()) {
+            startActivity(new Intent(this, DashboardActivity.class));
+            finish();
+        }
 
         skipButton = findViewById(R.id.skip);
         skipButton.setOnClickListener(v -> {
@@ -110,5 +116,10 @@ public class OnboardingActivity extends AppCompatActivity {
         dotsIndicator.setVisibility(View.VISIBLE);
         skipButton.setVisibility(View.VISIBLE);
         getStartedButton.setVisibility(View.INVISIBLE);
+    }
+
+    private boolean isLoggedIn() {
+        return getSharedPreferences("LoginPrefs", MODE_PRIVATE)
+                .getBoolean("isLoggedIn", false);
     }
 }
