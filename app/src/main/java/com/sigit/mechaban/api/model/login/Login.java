@@ -2,35 +2,29 @@ package com.sigit.mechaban.api.model.login;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Login{
+public class Login {
 
 	@SerializedName("data")
-	private LoginData loginData;
+	private final LoginData loginData;
 
 	@SerializedName("message")
-	private String message;
+	private final String message;
 
 	@SerializedName("status")
-	private boolean status;
+	private final boolean status;
 
-	public void setData(LoginData loginData){
-		this.loginData = loginData;
-	}
+    public Login (LoginData loginData, String message, boolean status) {
+        this.loginData = loginData;
+        this.message = message;
+        this.status = status;
+    }
 
-	public LoginData getData(){
+    public LoginData getLoginData(){
 		return loginData;
-	}
-
-	public void setMessage(String message){
-		this.message = message;
 	}
 
 	public String getMessage(){
 		return message;
-	}
-
-	public void setStatus(boolean status){
-		this.status = status;
 	}
 
 	public boolean isStatus(){

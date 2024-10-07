@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Custom ActionBar style -->
+    <style name="CustomActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textAppearance">@style/CustomActionBarText</item>
+    </style>
+
+    <style name="CustomActionBarText" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:fontFamily">@font/montserrat_semibold</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="background">
+        <item name="android:background">@color/container</item>
+    </style>
+</resources>

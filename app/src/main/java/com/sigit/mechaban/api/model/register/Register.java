@@ -5,21 +5,18 @@ import com.google.gson.annotations.SerializedName;
 public class Register{
 
 	@SerializedName("message")
-	private String message;
+	private final String message;
 
 	@SerializedName("status")
-	private boolean status;
+	private final boolean status;
 
-	public void setMessage(String message){
-		this.message = message;
-	}
+    public Register(String message, boolean status) {
+        this.message = message;
+        this.status = status;
+    }
 
-	public String getMessage(){
+    public String getMessage(){
 		return message;
-	}
-
-	public void setStatus(boolean status){
-		this.status = status;
 	}
 
 	public boolean isStatus(){

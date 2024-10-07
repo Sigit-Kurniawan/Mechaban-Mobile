@@ -1,5 +1,6 @@
 package com.sigit.mechaban.api;
 
+import com.sigit.mechaban.api.model.account.Account;
 import com.sigit.mechaban.api.model.login.Login;
 import com.sigit.mechaban.api.model.register.Register;
 
@@ -24,5 +25,11 @@ public interface ApiInterface {
             @Field("email") String email,
             @Field("password") String password,
             @Field("confirm_password") String confirmPassword
+    );
+
+    @FormUrlEncoded
+    @POST("account.php")
+    Call<Account> accountResponse(
+            @Field("no_hp") String noHp
     );
 }
