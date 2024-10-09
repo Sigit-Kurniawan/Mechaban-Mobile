@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="Masukkan loginData mobil Anda"
+            android:text="Masukkan Data mobil Anda"
             android:fontFamily="@font/montserrat_semibold"
             android:textSize="20sp"/>
 
@@ -39,6 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="Nomor Polisi Mobil"
+            android:textAppearance="?attr/textAppearanceBody2"
             android:fontFamily="@font/montserrat_medium" />
 
         <LinearLayout
@@ -62,7 +63,8 @@
                     android:hint="AB"
                     android:inputType="textCapCharacters"
                     android:maxLength="2"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:fontFamily="@font/montserrat_medium"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -81,7 +83,8 @@
                     android:hint="1234"
                     android:inputType="number"
                     android:maxLength="4"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:fontFamily="@font/montserrat_medium"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -99,7 +102,8 @@
                     android:hint="CDE"
                     android:inputType="textCapCharacters"
                     android:maxLength="3"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:fontFamily="@font/montserrat_medium"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -134,7 +138,8 @@
                 android:id="@+id/type_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:inputType="text"
+                android:fontFamily="@font/montserrat_medium"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -150,7 +155,8 @@
                 android:id="@+id/variant_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:inputType="text"
+                android:fontFamily="@font/montserrat_medium"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -166,7 +172,8 @@
                 android:id="@+id/year_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time" />
+                android:inputType="time"
+                android:fontFamily="@font/montserrat_medium"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -174,10 +181,10 @@
             android:id="@+id/save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/primary"
             android:layout_gravity="center"
             android:text="Simpan"
-            android:fontFamily="@font/montserrat_semibold"/>
+            android:fontFamily="@font/montserrat_semibold"
+            android:textAppearance="?attr/textAppearanceLabelLarge"/>
 
     </LinearLayout>
 

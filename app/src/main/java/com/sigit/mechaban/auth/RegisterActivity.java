@@ -57,22 +57,23 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
         passwordEditText = findViewById(R.id.pass_field);
         confirmPasswordEditText = findViewById(R.id.confirm_pass_field);
 
-        Button registerBtn = findViewById(R.id.register_button);
-        registerBtn.setOnClickListener(v -> {
+        findViewById(R.id.register_button).setOnClickListener(v -> {
             name = Objects.requireNonNull(nameEditText.getText()).toString();
             email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
             noHP = Objects.requireNonNull(noHPEditText.getText()).toString();
             password = Objects.requireNonNull(passwordEditText.getText()).toString();
             confirmPassword = Objects.requireNonNull(confirmPasswordEditText.getText()).toString();
 
-            registerEvent();
+            if (!name.isEmpty() && !email.isEmpty() && !noHP.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty()) {
+                registerEvent();
+            } else {
+                Toast.makeText(this, "Kolom wajib diisi", Toast.LENGTH_SHORT).show();
+            }
         });
 
-        ImageButton backBtn = findViewById(R.id.back_button);
-        backBtn.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        findViewById(R.id.back_button).setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        TextView toLogin = findViewById(R.id.login_hyperlink);
-        toLogin.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        findViewById(R.id.login_hyperlink).setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
     }
 
     private void registerEvent() {
@@ -80,7 +81,7 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
 
         if (new Connection(this).isNetworkAvailable()) {
             ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
-            Call<Register> registerCall = apiInterface.registerResponse(noHP, name, email, password, confirmPassword);
+            Call<Register> registerCall = apiInterface.registerResponse(email, name, noHP, password, confirmPassword);
             registerCall.enqueue(new Callback<Register>() {
                 @Override
                 public void onResponse(@NonNull Call<Register> call, @NonNull Response<Register> response) {

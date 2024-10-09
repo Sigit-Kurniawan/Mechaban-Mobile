@@ -3,8 +3,6 @@ package com.sigit.mechaban.auth;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,28 +27,26 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements ModalBottomSheet.ModalBottomSheetListener {
-    private TextInputEditText noHPEditIext, passwordEditText;
+    private TextInputEditText emailEditIext, passwordEditText;
     private final LoadingDialog loadingDialog = new LoadingDialog(this);
-    private String noHP, password;
+    private String email, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        noHPEditIext = findViewById(R.id.nohp_field);
+        emailEditIext = findViewById(R.id.email_field);
         passwordEditText = findViewById(R.id.pass_field);
 
-        Button loginBtn = findViewById(R.id.login_button);
-        loginBtn.setOnClickListener(v -> {
-            noHP = Objects.requireNonNull(noHPEditIext.getText()).toString();
+        findViewById(R.id.login_button).setOnClickListener(v -> {
+            email = Objects.requireNonNull(emailEditIext.getText()).toString();
             password = Objects.requireNonNull(passwordEditText.getText()).toString();
-
+            
             loginEvent();
         });
 
-        TextView toRegister = findViewById(R.id.register_hyperlink);
-        toRegister.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
+        findViewById(R.id.register_hyperlink).setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
     }
 
     private void loginEvent() {
@@ -59,7 +55,7 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
         if (new Connection(this).isNetworkAvailable()) {
             SessionManager sessionManager = new SessionManager(this);
             ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
-            Call<Login> loginCall = apiInterface.loginResponse(noHP, password);
+            Call<Login> loginCall = apiInterface.loginResponse(email, password);
             loginCall.enqueue(new Callback<Login>() {
                 @Override
                 public void onResponse(@NonNull Call<Login> call, @NonNull Response<Login> response) {

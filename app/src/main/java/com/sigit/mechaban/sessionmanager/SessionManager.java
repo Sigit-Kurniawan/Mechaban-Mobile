@@ -18,13 +18,13 @@ public class SessionManager {
 
     public void createLoginSession(LoginData loginData) {
         editor.putBoolean("isLoggedIn", true);
-        editor.putString("noHP", loginData.getNoHp());
+        editor.putString("email", loginData.getEmail());
         editor.commit();
     }
 
     public HashMap<String, String> getUserDetail() {
         HashMap<String, String> user = new HashMap<>();
-        user.put("noHP", preferences.getString("noHP", null));
+        user.put("email", preferences.getString("email", null));
         return user;
     }
 

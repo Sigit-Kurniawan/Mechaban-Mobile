@@ -5,69 +5,71 @@
     android:layout_height="match_parent"
     tools:context=".dashboard.customer.fragment.GarageFragment">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="64dp"
-        style="@style/background">
+        tools:ignore="UselessParent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/car_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="160dp"
+            android:layout_marginBottom="36dp"
+            android:layout_marginHorizontal="16dp"
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:contentDescription="@string/empty_illustration"
+                android:src="@drawable/empty" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/montserrat_semibold"
+                android:text="@string/tidak_ada_mobil"
+                android:textAlignment="center"
+                android:textAppearance="?attr/textAppearanceHeadline5" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_medium"
+                android:text="@string/percayakan_perawatan_mobilmu_pada_kami"
+                android:textAlignment="center"
+                android:textAppearance="?attr/textAppearanceBodyLarge" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/tambah_mobil_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearLayout2"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="@string/tambah_mobil"
+            android:textAppearance="?attr/textAppearanceLabelLarge" />
+
+    </RelativeLayout>
 
 <!--    <LinearLayout-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="match_parent"-->
-<!--        android:orientation="vertical"-->
-<!--        android:gravity="center"-->
-<!--        tools:ignore="UselessParent">-->
+<!--        android:layout_marginTop="64dp">-->
 
-<!--        <LinearLayout-->
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/car_recycler_view"-->
 <!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical"-->
-<!--            android:gravity="center"-->
-<!--            android:layout_marginHorizontal="16dp" >-->
-
-<!--            <ImageView-->
-<!--                android:id="@+id/imageView6"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:contentDescription="@string/empty_illustration"-->
-<!--                android:src="@drawable/empty"-->
-<!--                android:layout_marginBottom="32dp" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/textView8"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="@string/tidak_ada_mobil"-->
-<!--                android:fontFamily="@font/montserrat_semibold"-->
-<!--                android:textSize="24sp"-->
-<!--                android:textAlignment="center"-->
-<!--                android:layout_marginBottom="16dp"/>-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/textView9"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="@string/percayakan_perawatan_mobilmu_pada_kami"-->
-<!--                android:fontFamily="@font/montserrat_medium"-->
-<!--                android:textSize="16sp"-->
-<!--                android:textAlignment="center" />-->
-<!--        </LinearLayout>-->
-
-<!--        <Button-->
-<!--            android:id="@+id/tambah_mobil_btn"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="120dp"-->
-<!--            android:text="@string/tambah_mobil"-->
-<!--            android:fontFamily="@font/montserrat_semibold"-->
-<!--            android:textSize="16sp"/>-->
+<!--            android:layout_height="match_parent" />-->
 
 <!--    </LinearLayout>-->
 

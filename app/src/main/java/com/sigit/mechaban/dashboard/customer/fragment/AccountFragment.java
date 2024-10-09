@@ -24,7 +24,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AccountFragment extends Fragment {
-    private TextView tvName, tvNoHp;
+    private TextView tvName, tvEmail;
 
     public AccountFragment() {
         // Required empty public constructor
@@ -41,18 +41,18 @@ public class AccountFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_account, container, false);
 
         tvName = view.findViewById(R.id.tv_name);
-        tvNoHp = view.findViewById(R.id.tv_noHp);
+        tvEmail = view.findViewById(R.id.tv_email);
 
         SessionManager sessionManager = new SessionManager(requireActivity());
         ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
-        Call<Account> accountCall = apiInterface.accountResponse(sessionManager.getUserDetail().get("noHP"));
+        Call<Account> accountCall = apiInterface.accountResponse(sessionManager.getUserDetail().get("email"));
         accountCall.enqueue(new Callback<Account>() {
             @Override
             public void onResponse(@NonNull Call<Account> call, @NonNull Response<Account> response) {
                 if (response.body() != null && response.isSuccessful()) {
                     Account account = response.body();
                     tvName.setText(account.getAccountData().getName());
-                    tvNoHp.setText(account.getAccountData().getNoHp());
+                    tvEmail.setText(account.getAccountData().getEmail());
                 }
             }
 

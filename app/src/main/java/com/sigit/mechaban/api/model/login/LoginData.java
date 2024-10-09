@@ -4,14 +4,14 @@ import com.google.gson.annotations.SerializedName;
 
 public class LoginData {
 
-	@SerializedName("no_hp")
-	private final String noHp;
+	@SerializedName("email")
+	private final String email;
 
-    public LoginData(String noHp) {
-        this.noHp = noHp;
+    public LoginData(String email) {
+        this.email = email;
     }
 
-    public String getNoHp(){
-		return noHp;
+    public String getEmail(){
+		return email;
 	}
 }

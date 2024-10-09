@@ -6,8 +6,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
@@ -22,11 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OnboardingActivity extends AppCompatActivity {
-    private TextView skipButton;
     private ViewPager2 viewPager;
-    private ImageButton backButton, nextButton;
     private DotsIndicator dotsIndicator;
-    private Button getStartedButton;
+    private Button getStartedButton, backButton, nextButton, skipButton;
     private int position;
 
     @Override

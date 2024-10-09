@@ -5,9 +5,13 @@ import com.google.gson.annotations.SerializedName;
 public class Account{
 
 	@SerializedName("data")
-	private AccountData accountData;
+	private final AccountData accountData;
 
-	public AccountData getAccountData(){
+    public Account(AccountData accountData) {
+        this.accountData = accountData;
+    }
+
+    public AccountData getAccountData(){
 		return accountData;
 	}
 }
