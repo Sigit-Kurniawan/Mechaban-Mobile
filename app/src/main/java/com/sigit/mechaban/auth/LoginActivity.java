@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
         findViewById(R.id.login_button).setOnClickListener(v -> {
             email = Objects.requireNonNull(emailEditIext.getText()).toString();
             password = Objects.requireNonNull(passwordEditText.getText()).toString();
-            
+
             loginEvent();
         });
 
