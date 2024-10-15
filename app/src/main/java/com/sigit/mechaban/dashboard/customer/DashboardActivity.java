@@ -15,13 +15,27 @@ import com.sigit.mechaban.dashboard.customer.fragment.HomeFragment;
 import java.util.Objects;
 
 public class DashboardActivity extends AppCompatActivity {
+    private Fragment homeFragment, garageFragment, activityFragment, accountFragment, activeFragment;
     private int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-        replaceFragment(new HomeFragment());
+
+        homeFragment = new HomeFragment();
+        garageFragment = new GarageFragment();
+        activityFragment = new ActivityFragment();
+        accountFragment = new AccountFragment();
+
+        activeFragment = homeFragment;
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.frame_layout, accountFragment, "Account").hide(accountFragment)
+                .add(R.id.frame_layout, activityFragment, "Activity").hide(activityFragment)
+                .add(R.id.frame_layout, garageFragment, "Garage").hide(garageFragment)
+                .add(R.id.frame_layout, homeFragment, "Home")
+                .commit();
 
         setSupportActionBar(findViewById(R.id.action_bar));
 
@@ -29,21 +43,21 @@ public class DashboardActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             id = item.getItemId();
             if (id == R.id.home) {
-                replaceFragment(new HomeFragment());
+                switchFragment(homeFragment);
                 Objects.requireNonNull(getSupportActionBar()).hide();
                 return true;
             } else if (id == R.id.garage) {
-                replaceFragment(new GarageFragment());
+                switchFragment(garageFragment);
                 Objects.requireNonNull(getSupportActionBar()).setTitle("Garasi");
                 getSupportActionBar().show();
                 return true;
             } else if (id == R.id.activity) {
-                replaceFragment(new ActivityFragment());
+                switchFragment(activityFragment);
                 Objects.requireNonNull(getSupportActionBar()).setTitle("Aktivitas");
                 getSupportActionBar().show();
                 return true;
             } else if (id == R.id.account) {
-                replaceFragment(new AccountFragment());
+                switchFragment(accountFragment);
                 Objects.requireNonNull(getSupportActionBar()).hide();
                 return true;
             }
@@ -51,9 +65,14 @@ public class DashboardActivity extends AppCompatActivity {
         });
     }
 
-    private void replaceFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_layout, fragment)
-                .commit();
+    private void switchFragment(Fragment fragment) {
+        if (fragment != activeFragment) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .hide(activeFragment)
+                    .show(fragment)
+                    .commit();
+            activeFragment = fragment;
+        }
     }
 }
