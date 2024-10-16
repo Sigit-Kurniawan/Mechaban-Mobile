@@ -3,14 +3,12 @@ package com.sigit.mechaban.auth;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -35,6 +33,12 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         nameEditText = findViewById(R.id.name_field);
         emailEditText = findViewById(R.id.email_field);
@@ -70,8 +74,6 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
                 Toast.makeText(this, "Kolom wajib diisi", Toast.LENGTH_SHORT).show();
             }
         });
-
-        findViewById(R.id.back_button).setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         findViewById(R.id.login_hyperlink).setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
     }
@@ -110,5 +112,14 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
 
     private boolean isValidEmail(String email) {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            getOnBackPressedDispatcher().onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

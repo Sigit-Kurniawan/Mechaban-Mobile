@@ -17,6 +17,7 @@ import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
 import com.sigit.mechaban.api.model.account.Account;
 import com.sigit.mechaban.auth.LoginActivity;
+import com.sigit.mechaban.dashboard.customer.account.EditAccountActivity;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 
 import retrofit2.Call;
@@ -61,6 +62,8 @@ public class AccountFragment extends Fragment {
                 Log.e("AccountFragment", t.toString(), t);
             }
         });
+
+        view.findViewById(R.id.edit_button).setOnClickListener(v -> startActivity(new Intent(getActivity(), EditAccountActivity.class)));
 
         view.findViewById(R.id.logout_button).setOnClickListener(v -> {
             sessionManager.logoutSession();
