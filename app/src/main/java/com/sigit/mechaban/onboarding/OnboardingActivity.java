@@ -31,8 +31,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         getWindow().setStatusBarColor(Color.TRANSPARENT);
 
-        SessionManager sessionManager = new SessionManager(this);
-        if (sessionManager.isLoggedIn()) {
+        if (new SessionManager(this).isLoggedIn()) {
             startActivity(new Intent(this, DashboardActivity.class));
             finish();
         }
@@ -50,8 +49,7 @@ public class OnboardingActivity extends AppCompatActivity {
         screenItemList.add(new ScreenItem("Konsultasi Gratis dengan Montir Ahli", "Hubungi dan rasakan manfaatnya tanpa biaya tambahan.", R.drawable.onboarding4));
 
         viewPager = findViewById(R.id.viewPager);
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this, screenItemList);
-        viewPager.setAdapter(viewPagerAdapter);
+        viewPager.setAdapter(new ViewPagerAdapter(this, screenItemList));
 
         dotsIndicator = findViewById(R.id.dots_indicator);
         dotsIndicator.attachTo(viewPager);
@@ -91,7 +89,6 @@ public class OnboardingActivity extends AppCompatActivity {
             }
         });
 
-//        TODO: menambahkan animasi muncul tombol mulai sekarang
         getStartedButton = findViewById(R.id.get_startedbtn);
         getStartedButton.setOnClickListener(v -> {
             startActivity(new Intent(this, LoginActivity.class));

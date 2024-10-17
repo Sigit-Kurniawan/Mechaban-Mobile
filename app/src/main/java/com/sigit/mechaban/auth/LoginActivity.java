@@ -19,6 +19,7 @@ import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
 import com.sigit.mechaban.api.model.login.Login;
 import com.sigit.mechaban.api.model.login.LoginData;
+import com.sigit.mechaban.components.LoadingDialog;
 import com.sigit.mechaban.components.ModalBottomSheet;
 import com.sigit.mechaban.connection.Connection;
 import com.sigit.mechaban.dashboard.customer.DashboardActivity;
@@ -37,6 +38,7 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
     private Button loginButton;
     private String email, password;
     private boolean isValidateEmail, isValidatePassword;
+    private final LoadingDialog loadingDialog = new LoadingDialog(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,8 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
         loginButton = findViewById(R.id.login_button);
 
         loginButton.setEnabled(false);
+        isValidateEmail = true;
+        isValidatePassword = true;
 
         emailEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -69,7 +73,7 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
                     isValidateEmail = false;
                     emailLayout.setError("Kolom email-nya masih kosong!");
                     emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                } else if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                     isValidateEmail = false;
                     emailLayout.setError("Format email tidak valid!");
                     emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
@@ -96,28 +100,35 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
             @Override
             public void afterTextChanged(Editable s) {
                 password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
-                if (!password.isEmpty()) {
+                if (password.isEmpty()) {
+                    isValidatePassword = false;
+                    passwordLayout.setError("Kolom password tidak boleh kosong!");
+                    passwordLayout.setErrorIconDrawable(null);
+                    passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
+                    passwordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
+                } else {
                     isValidatePassword = true;
                     passwordLayout.setError(null);
                     passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                } else {
-                    isValidatePassword = false;
-                    passwordLayout.setError("Kolom password tidak boleh kosong!");
-                    passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
+                    passwordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
                 }
                 updateLoginButtonState();
             }
         });
 
         emailEditText.setOnFocusChangeListener((v, hasFocus) -> {
-            if (isValidateEmail) {
-                if (hasFocus) {
-                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
+            if (hasFocus) {
+                if (isValidateEmail) {
+                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
                 } else {
-                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_onSurfaceVariant));
+                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
                 }
             } else {
-                emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
+                if (isValidateEmail) {
+                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_onSurfaceVariant));
+                } else {
+                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
+                }
             }
         });
 
@@ -125,17 +136,23 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
             if (hasFocus) {
                 if (isValidatePassword) {
                     passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
+                    passwordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
                 } else {
                     passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
                 }
             } else {
-                passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_onSurfaceVariant));
+                if (isValidatePassword) {
+                    passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_onSurfaceVariant));
+                    passwordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_onSurfaceVariant));
+                } else {
+                    passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
+                }
             }
         });
 
         loginButton.setOnClickListener(v -> {
             email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
-            password = Objects.requireNonNull(passwordEditText.getText()).toString();
+            password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
 
             loginEvent();
         });
@@ -144,13 +161,15 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
     }
 
     private void updateLoginButtonState() {
-        loginButton.setEnabled(isValidateEmail && isValidatePassword);
+        email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
+        password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
+        if (!email.isEmpty() && !password.isEmpty()) {
+            loginButton.setEnabled(isValidateEmail && isValidatePassword);
+        }
     }
 
-
     private void loginEvent() {
-        ModalBottomSheet bottomSheet = new ModalBottomSheet(this);
-
+        loadingDialog.startLoadingDialog();
         if (new Connection(this).isNetworkAvailable()) {
             SessionManager sessionManager = new SessionManager(this);
             ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
@@ -163,7 +182,9 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
                         sessionManager.createLoginSession(loginData);
                         startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
                         finish();
+                        loadingDialog.dismissDialog();
                     } else {
+                        loadingDialog.dismissDialog();
                         Toast.makeText(LoginActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -174,12 +195,18 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
                 }
             });
         } else {
-            bottomSheet.show(getSupportFragmentManager(), "ModalBottomSheet");
+            loadingDialog.dismissDialog();
+            new ModalBottomSheet(R.drawable.no_internet,
+                    "Tidak Terhubung dengan Internet",
+                    "Periksa kembali koneksi internet Anda.",
+                    "Coba Lagi",
+                    this)
+                    .show(getSupportFragmentManager(), "ModalBottomSheet");
         }
     }
 
     @Override
-    public void buttonTryAgain() {
+    public void buttonBottomSheetFirst() {
         loginEvent();
     }
 }

@@ -7,6 +7,7 @@ import com.sigit.mechaban.R;
 
 public class LoadingDialog {
     private final Activity activity;
+    private AlertDialog alertDialog;
 
     public LoadingDialog(Activity activity) {
         this.activity = activity;
@@ -16,6 +17,12 @@ public class LoadingDialog {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setView(activity.getLayoutInflater().inflate(R.layout.loading_dialog, null));
         builder.setCancelable(true);
-        builder.create().show();
+
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    public void dismissDialog() {
+        alertDialog.dismiss();
     }
 }

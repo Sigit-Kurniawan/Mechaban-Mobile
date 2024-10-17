@@ -20,8 +20,7 @@
             android:layout_height="wrap_content"
             android:text="@string/login"
             android:textAppearance="?attr/textAppearanceTitleLarge"
-            android:fontFamily="@font/montserrat_semibold"
-            android:textColor="@android:color/white" />
+            android:fontFamily="@font/montserrat_semibold" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -107,6 +106,7 @@
         android:layout_marginHorizontal="16dp"
         android:text="@string/login"
         android:fontFamily="@font/montserrat_semibold"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
         app:layout_constraintBottom_toTopOf="@id/text_caption_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
