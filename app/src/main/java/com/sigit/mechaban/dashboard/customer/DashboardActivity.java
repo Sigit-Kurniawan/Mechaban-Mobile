@@ -2,8 +2,10 @@ package com.sigit.mechaban.dashboard.customer;
 
 import android.os.Bundle;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.sigit.mechaban.R;
@@ -36,6 +38,14 @@ public class DashboardActivity extends AppCompatActivity {
                 .add(R.id.frame_layout, garageFragment, "Garage").hide(garageFragment)
                 .add(R.id.frame_layout, homeFragment, "Home")
                 .commit();
+
+        // Reset fragments and switch to AccountFragment
+        registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == RESULT_OK) {
+                // Reset fragments and switch to AccountFragment
+                resetFragmentsToAccount();
+            }
+        });
 
         setSupportActionBar(findViewById(R.id.action_bar));
 
@@ -74,5 +84,23 @@ public class DashboardActivity extends AppCompatActivity {
                     .commit();
             activeFragment = fragment;
         }
+    }
+
+    private void resetFragmentsToAccount() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        fragmentManager.beginTransaction()
+                .remove(accountFragment)
+                .commitNow();
+
+        // Recreate fragments
+        accountFragment = new AccountFragment();
+
+        // Add AccountFragment and make it the active fragment
+        fragmentManager.beginTransaction()
+                .add(R.id.frame_layout, accountFragment, "Account").commit();
+
+        activeFragment = accountFragment;
+        Objects.requireNonNull(getSupportActionBar()).hide();
     }
 }

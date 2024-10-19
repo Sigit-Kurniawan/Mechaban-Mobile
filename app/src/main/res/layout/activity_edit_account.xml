@@ -12,6 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ubah Profil"
+            android:fontFamily="@font/montserrat_semibold"
+            android:textAppearance="?attr/textAppearanceTitleLarge"/>
+
         <Button
             android:id="@+id/save_button"
             android:layout_width="wrap_content"
@@ -24,55 +31,143 @@
             android:layout_gravity="end" />
     </androidx.appcompat.widget.Toolbar>
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar"
-        android:layout_marginHorizontal="16dp">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar">
 
-        <TextView
-            android:id="@+id/title_profile"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Foto Profil"
-            android:fontFamily="@font/montserrat_semibold"
-            android:textAppearance="?attr/textAppearanceTitleMedium"/>
-
-        <LinearLayout
-            android:id="@+id/edit_profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:layout_below="@+id/title_profile">
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/photo_profile"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                app:srcCompat="@drawable/baseline_account_circle_24" />
+            android:layout_marginHorizontal="16dp">
 
             <TextView
-                android:id="@+id/coption_tambah_foto"
+                android:id="@+id/title_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:text="Tambah foto"
+                android:layout_marginTop="8dp"
+                android:text="Foto Profil"
+                android:fontFamily="@font/montserrat_semibold"
+                android:textAppearance="?attr/textAppearanceTitleMedium"/>
+
+            <LinearLayout
+                android:id="@+id/edit_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_below="@+id/title_profile">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/photo_profile"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/baseline_account_circle_24" />
+
+                <TextView
+                    android:id="@+id/coption_tambah_foto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="Tambah foto"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textAppearance="?attr/textAppearanceCaption"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@+id/edit_profile"
+                android:layout_alignTop="@id/edit_profile"
+                android:text="Pasang foto yang oke! Semua orang bakal bisa lihat."
                 android:fontFamily="@font/montserrat_medium"
-                android:textAppearance="?attr/textAppearanceCaption"/>
+                android:gravity="center_vertical"/>
 
-        </LinearLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="92dp"
+                android:layout_marginTop="40dp"
+                android:layout_below="@id/edit_profile"
+                android:hint="@string/nama"
+                android:paddingBottom="8dp"
+                app:helperTextEnabled="true"
+                app:startIconDrawable="@drawable/baseline_person_24">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_marginStart="8dp"
-            android:layout_toEndOf="@+id/edit_profile"
-            android:layout_alignTop="@id/edit_profile"
-            android:text="Pasang foto yang oke! Semua orang bakal bisa lihat."
-            android:fontFamily="@font/montserrat_medium"
-            android:gravity="center_vertical"/>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/name_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:inputType="textCapWords" />
 
-    </RelativeLayout>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="92dp"
+                android:layout_below="@+id/name"
+                android:hint="@string/email"
+                android:paddingBottom="8dp"
+                app:helperTextEnabled="true"
+                app:placeholderText="nama@email.com"
+                app:startIconDrawable="@drawable/baseline_email_24">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:inputType="textEmailAddress" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/no_hp"
+                android:layout_width="match_parent"
+                android:layout_height="92dp"
+                android:layout_below="@+id/email"
+                android:hint="@string/no_hp"
+                android:paddingBottom="8dp"
+                app:helperTextEnabled="true"
+                app:placeholderText="81xxxxxxx"
+                app:prefixText="+62 "
+                app:startIconDrawable="@drawable/baseline_local_phone_24">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/nohp_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:inputType="number"
+                    android:maxLength="15" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="104dp"
+                android:layout_below="@+id/no_hp"
+                android:hint="@string/password"
+                android:paddingBottom="8dp"
+                app:helperTextEnabled="true"
+                app:helperText="Password minimal 8 karakter, termasuk huruf kapital, huruf kecil, angka, dan simbol (@$!%*?&amp;)"
+                app:startIconDrawable="@drawable/baseline_key_24"
+                app:endIconMode="password_toggle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/pass_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:inputType="textPassword" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

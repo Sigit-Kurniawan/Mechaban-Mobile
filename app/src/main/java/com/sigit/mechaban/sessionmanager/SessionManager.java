@@ -36,4 +36,9 @@ public class SessionManager {
     public boolean isLoggedIn() {
         return preferences.getBoolean("isLoggedIn", false);
     }
+
+    public void updateEmail(String email) {
+        editor.putString("email", email);
+        editor.commit();
+    }
 }

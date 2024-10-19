@@ -69,7 +69,7 @@ public class AddCarActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            getOnBackPressedDispatcher().onBackPressed();
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);

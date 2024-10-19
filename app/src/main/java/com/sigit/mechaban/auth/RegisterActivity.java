@@ -368,6 +368,8 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
                             isValidateEmail = false;
                             emailLayout.setError(response.body().getMessage());
                             emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
+                        } else {
+                            Toast.makeText(RegisterActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -396,7 +398,7 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            getOnBackPressedDispatcher().onBackPressed();
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
