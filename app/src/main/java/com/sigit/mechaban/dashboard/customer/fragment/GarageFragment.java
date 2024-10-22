@@ -1,6 +1,5 @@
 package com.sigit.mechaban.dashboard.customer.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,7 +17,6 @@ import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
 import com.sigit.mechaban.api.model.readcar.ReadCar;
 import com.sigit.mechaban.api.model.readcar.ReadCarData;
-import com.sigit.mechaban.dashboard.customer.garage.AddCarActivity;
 import com.sigit.mechaban.dashboard.customer.garage.CarAdapter;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 
@@ -56,8 +54,6 @@ public class GarageFragment extends Fragment {
         carList = view.findViewById(R.id.car_recycler_view);
 
         setCar();
-
-        view.findViewById(R.id.tambah_mobil_btn).setOnClickListener(v -> startActivity(new Intent(getActivity(), AddCarActivity.class)));
 
         return view;
     }

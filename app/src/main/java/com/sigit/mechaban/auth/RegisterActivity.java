@@ -359,8 +359,8 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
                 @Override
                 public void onResponse(@NonNull Call<Register> call, @NonNull Response<Register> response) {
                     if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                        Toast.makeText(RegisterActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
-                        getOnBackPressedDispatcher().onBackPressed();
+                        Toast.makeText(RegisterActivity.this, "Registrasi Berhasil", Toast.LENGTH_SHORT).show();
+                        finish();
                         loadingDialog.dismissDialog();
                     } else {
                         loadingDialog.dismissDialog();

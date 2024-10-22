@@ -41,15 +41,6 @@
             android:text="@string/percayakan_perawatan_mobilmu_pada_kami"
             android:textAlignment="center"
             android:textAppearance="?attr/textAppearanceBodyLarge" />
-
-        <Button
-            android:id="@+id/tambah_mobil_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/montserrat_semibold"
-            android:text="@string/tambah_mobil"
-            android:textAppearance="?attr/textAppearanceLabelLarge" />
     </LinearLayout>
 
     <LinearLayout
