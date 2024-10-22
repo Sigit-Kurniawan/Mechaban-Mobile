@@ -51,18 +51,6 @@
 
         </HorizontalScrollView>
 
-<!--        <TextView-->
-<!--            android:id="@+id/empty_message"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginHorizontal="16dp"-->
-<!--            android:text="Tidak ada order yang ditemukan."-->
-<!--            android:fontFamily="@font/montserrat_medium"-->
-<!--            android:textSize="18sp"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/chips"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"/>-->
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/activity_recyclerview"
             android:layout_width="match_parent"

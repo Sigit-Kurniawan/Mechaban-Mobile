@@ -4,17 +4,17 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@drawable/background_component"
-    android:layout_margin="16dp"
-    android:padding="16dp">
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="4dp">
 
     <TextView
         android:id="@+id/merk_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_semibold"
-        android:textSize="24sp"
-        android:text="Merk"
+        android:textSize="20sp"
+        android:textColor="@color/md_theme_onBackground"
+        android:text="Merek"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -22,8 +22,8 @@
         android:id="@+id/type_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:fontFamily="@font/montserrat_medium"
+        android:textColor="@color/md_theme_onBackground"
         android:text="Tipe"
         app:layout_constraintTop_toBottomOf="@+id/merk_text"
         app:layout_constraintLeft_toLeftOf="parent" />
@@ -32,8 +32,8 @@
         android:id="@+id/year_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:fontFamily="@font/montserrat_medium"
+        android:textColor="@color/md_theme_onBackground"
         android:text="Tahun"
         app:layout_constraintTop_toBottomOf="@+id/type_text"
         app:layout_constraintLeft_toLeftOf="parent"/>

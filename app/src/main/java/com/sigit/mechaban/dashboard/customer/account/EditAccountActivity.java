@@ -104,10 +104,6 @@ public class EditAccountActivity extends AppCompatActivity {
                         if (response.body().getMessage().equals("Update email")) {
                             sessionManager.updateEmail(email);
                         }
-                        Intent intent = new Intent();
-                        intent.putExtra("updated_name", name);
-                        intent.putExtra("updated_email", email);
-                        setResult(RESULT_OK, intent);
                         finish();
                     } else {
                         Toast.makeText(EditAccountActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();

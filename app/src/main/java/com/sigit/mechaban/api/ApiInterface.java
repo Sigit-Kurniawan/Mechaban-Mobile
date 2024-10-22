@@ -1,7 +1,9 @@
 package com.sigit.mechaban.api;
 
+import com.sigit.mechaban.api.model.createcar.CreateCar;
 import com.sigit.mechaban.api.model.readaccount.ReadAccount;
 import com.sigit.mechaban.api.model.login.Login;
+import com.sigit.mechaban.api.model.readcar.ReadCar;
 import com.sigit.mechaban.api.model.register.Register;
 import com.sigit.mechaban.api.model.updateaccount.UpdateAccount;
 
@@ -42,5 +44,22 @@ public interface ApiInterface {
             @Field("name") String name,
             @Field("no_hp") String noHP,
             @Field("password") String password
+    );
+
+    @FormUrlEncoded
+    @POST("create_car.php")
+    Call<CreateCar> createCarResponse(
+            @Field("nopol") String nopol,
+            @Field("merk") String merk,
+            @Field("type") String type,
+            @Field("transmition") String transmition,
+            @Field("year") String year,
+            @Field("email") String email
+    );
+
+    @FormUrlEncoded
+    @POST("read_car.php")
+    Call<ReadCar> readCarResponse(
+            @Field("email") String email
     );
 }

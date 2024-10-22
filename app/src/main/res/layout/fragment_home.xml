@@ -142,7 +142,8 @@
                 android:layout_height="match_parent"
                 app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
                 app:behavior_hideable="false"
-                app:behavior_peekHeight="570dp">
+                app:behavior_peekHeight="570dp"
+                app:behavior_draggable="false">
 
                 <ScrollView
                     android:layout_width="match_parent"
