@@ -11,7 +11,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.auth.LoginActivity;
-import com.sigit.mechaban.dashboard.customer.DashboardActivity;
+import com.sigit.mechaban.dashboard.customer.dashboard.DashboardActivity;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
@@ -49,7 +49,7 @@ public class OnboardingActivity extends AppCompatActivity {
         screenItemList.add(new ScreenItem("Konsultasi Gratis dengan Montir Ahli", "Hubungi dan rasakan manfaatnya tanpa biaya tambahan.", R.drawable.onboarding4));
 
         viewPager = findViewById(R.id.viewPager);
-        viewPager.setAdapter(new ViewPagerAdapter(this, screenItemList));
+        viewPager.setAdapter(new ViewPagerAdapter(screenItemList));
 
         dotsIndicator = findViewById(R.id.dots_indicator);
         dotsIndicator.attachTo(viewPager);

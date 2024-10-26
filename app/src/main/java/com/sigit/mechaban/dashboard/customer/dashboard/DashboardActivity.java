@@ -1,4 +1,4 @@
-package com.sigit.mechaban.dashboard.customer;
+package com.sigit.mechaban.dashboard.customer.dashboard;
 
 import android.content.Intent;
 import android.os.Bundle;

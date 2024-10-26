@@ -1,6 +1,5 @@
 package com.sigit.mechaban.onboarding;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,20 +14,18 @@ import com.sigit.mechaban.R;
 import java.util.List;
 
 public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.ViewPagerViewHolder> {
-
-    private final Context context;
     private final List<ScreenItem> screenItemList;
 
-    public ViewPagerAdapter(Context context, List<ScreenItem> screenItemList) {
-        this.context = context;
+    public ViewPagerAdapter(List<ScreenItem> screenItemList) {
         this.screenItemList = screenItemList;
     }
 
     @NonNull
     @Override
     public ViewPagerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.view_pager_onboarding, parent, false);
-        return new ViewPagerViewHolder(view);
+        return new ViewPagerViewHolder(LayoutInflater
+                .from(parent.getContext())
+                .inflate(R.layout.view_pager_onboarding, parent, false));
     }
 
     @Override
@@ -44,7 +41,6 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
     }
 
     public static class ViewPagerViewHolder extends RecyclerView.ViewHolder {
-
         ImageView imgSlide;
         TextView title;
         TextView desc;

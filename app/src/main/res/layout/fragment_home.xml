@@ -9,7 +9,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/md_theme_primaryContainer">
+        android:background="@color/md_theme_primaryContainer"
+        tools:ignore="UselessParent">
 
         <ImageView
             android:id="@+id/logo"
@@ -18,7 +19,8 @@
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
             android:layout_alignParentStart="true"
-            android:src="@drawable/logo_white" />
+            android:contentDescription="@string/logo"
+            android:src="@drawable/logo" />
 
         <Button
             style="?attr/materialIconButtonStyle"
@@ -27,7 +29,8 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="6dp"
             app:icon="@drawable/baseline_notifications_24"
-            app:iconSize="24dp"/>
+            app:iconSize="24dp"
+            tools:ignore="RelativeOverlap" />
 
         <RelativeLayout
             android:id="@+id/menu_home"
@@ -119,8 +122,26 @@
                     android:layout_height="wrap_content"
                     android:text="Servis"
                     android:fontFamily="@font/montserrat_semibold"
+                    android:drawableTop="@drawable/baseline_engineering_24"
+                    style="@style/Widget.MaterialComponents.Button" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/inspection_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="inspeksi"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:drawableTop="@drawable/baseline_engineering_24"
+                    style="@style/Widget.MaterialComponents.Button" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/consultation_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Konsultasi"
+                    android:fontFamily="@font/montserrat_semibold"
                     android:gravity="center"
-                    android:drawableTop="@drawable/baseline_edit_24"
+                    android:drawableTop="@drawable/baseline_engineering_24"
                     style="@style/Widget.MaterialComponents.Button" />
 
             </GridLayout>

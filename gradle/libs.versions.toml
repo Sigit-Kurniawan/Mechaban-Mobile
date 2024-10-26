@@ -1,6 +1,5 @@
 [versions]
 agp = "8.5.2"
-androidImageCropper = "4.4.0"
 dotsindicator = "5.1.0"
 glide = "4.12.0"
 gson = "2.9.1"
@@ -13,13 +12,11 @@ material = "1.12.0"
 activity = "1.9.2"
 constraintlayout = "2.1.4"
 retrofit = "2.6.1"
-ucrop = "2.2.8"
-volley = "1.2.1"
+stepviewVersion = "1.5.1"
 googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.0.0"
 
 [libraries]
-android-image-cropper = { module = "com.github.canhub:android-image-cropper", version.ref = "androidImageCropper" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 dotsindicator = { module = "com.tbuonomo:dotsindicator", version.ref = "dotsindicator" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
@@ -33,8 +30,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
-ucrop = { module = "com.github.yalantis:ucrop", version.ref = "ucrop" }
-volley = { module = "com.android.volley:volley", version.ref = "volley" }
+shuhart-stepview = { module = "com.github.shuhart:stepview", version.ref = "stepviewVersion" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 
 [plugins]

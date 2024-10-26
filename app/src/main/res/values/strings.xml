@@ -28,4 +28,11 @@
     <string name="empty_illustration">Empty illustration</string>
     <string name="simpan">Simpan</string>
     <string name="memuat">Memuat...</string>
+    <string name="logo">Logo</string>
+    <string name="servis">Servis</string>
+    <string name="rp">Rp</string>
+    <string name="pilih">Pilih</string>
+    <string name="tutup">Tutup</string>
+    <string name="total">Total</string>
+    <string name="detail_servis">Detail Servis</string>
 </resources>

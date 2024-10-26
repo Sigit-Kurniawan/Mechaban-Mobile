@@ -22,7 +22,7 @@ import com.sigit.mechaban.api.model.login.LoginData;
 import com.sigit.mechaban.components.LoadingDialog;
 import com.sigit.mechaban.components.ModalBottomSheet;
 import com.sigit.mechaban.connection.Connection;
-import com.sigit.mechaban.dashboard.customer.DashboardActivity;
+import com.sigit.mechaban.dashboard.customer.dashboard.DashboardActivity;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 

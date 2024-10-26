@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".dashboard.customer.service.ServiceActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="@string/servis"
+            android:textAppearance="?attr/textAppearanceTitleLarge" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <com.shuhart.stepview.StepView
+        android:id="@+id/step_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:sv_animationType="All"
+        app:sv_selectedCircleColor="@color/md_theme_primary"
+        app:sv_selectedStepNumberColor="@color/md_theme_onPrimary"
+        app:sv_selectedTextColor="@color/md_theme_onBackground"
+        app:sv_nextStepCircleColor="@color/md_theme_surfaceVariant"
+        app:sv_nextTextColor="@color/md_theme_onSurfaceVariant"
+        app:sv_nextStepCircleEnabled="true"
+        app:sv_nextStepLineColor="@color/md_theme_onSurfaceVariant"
+        app:sv_stepNumberTextSize="16sp"
+        app:sv_typeface="@font/montserrat_medium"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/service_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/keterangan"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/step_view" />
+
+    <RelativeLayout
+        android:id="@+id/keterangan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/cardview_default_elevation"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/detail_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/baseline_shopping_bag_24"
+                app:tint="@color/md_theme_onSurface" />
+
+            <TextView
+                android:id="@+id/total_harga"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/icon"
+                android:layout_marginStart="8dp"
+                android:text="Total harga"
+                android:fontFamily="@font/montserrat_medium" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_toEndOf="@id/total_harga"
+                android:rotation="180"
+                android:src="@drawable/baseline_keyboard_arrow_down_24"
+                app:tint="@color/md_theme_onSurface" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/total_harga"
+                android:layout_alignStart="@+id/total_harga"
+                android:fontFamily="@font/montserrat_semibold"
+                android:text="@string/rp"
+                android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/total_harga"
+                android:layout_toEndOf="@+id/textView3"
+                android:fontFamily="@font/montserrat_semibold"
+                android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/next_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lanjut"
+            android:fontFamily="@font/montserrat_semibold"
+            android:layout_alignParentEnd="true"/>
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

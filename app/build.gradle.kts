@@ -62,8 +62,8 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.gson)
     implementation(libs.dotsindicator)
-    implementation(libs.volley)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.javax.annotation)
+    implementation(libs.shuhart.stepview)
 }
