@@ -6,19 +6,17 @@ import com.sigit.mechaban.api.model.login.Login;
 import com.sigit.mechaban.api.model.readcar.ReadCar;
 import com.sigit.mechaban.api.model.register.Register;
 import com.sigit.mechaban.api.model.updateaccount.UpdateAccount;
+import com.sigit.mechaban.object.Account;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 
 public interface ApiInterface {
-    @FormUrlEncoded
     @POST("login.php")
-    Call<Login> loginResponse(
-            @Field("email") String email,
-            @Field("password") String password
-    );
+    Call<Login> loginResponse(@Body Account account);
 
     @FormUrlEncoded
     @POST("register.php")

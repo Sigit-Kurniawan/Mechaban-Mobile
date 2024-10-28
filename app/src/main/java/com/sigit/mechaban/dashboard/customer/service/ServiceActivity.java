@@ -3,7 +3,9 @@ package com.sigit.mechaban.dashboard.customer.service;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -20,7 +22,10 @@ import java.util.Objects;
 
 public class ServiceActivity extends AppCompatActivity implements ServiceAdapter.OnItemSelectedListener {
     private TextView priceTextView;
-    private int totalPrice = 0;
+    private int totalPrice = 0, currentStep = 0;
+    private final List<ServiceAdapter.ServiceItem> selectedServices = new ArrayList<>();
+    private StepView stepView;
+    private ViewFlipper viewFlipper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,15 +38,16 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        StepView stepView = findViewById(R.id.step_view);
+        stepView = findViewById(R.id.step_view);
         stepView.getState()
                 .steps(new ArrayList<String>() {{
                     add("Pilih Servis");
-                    add("Second step");
-                    add("Third step");
-                    add("Forth step");
+                    add("Pilih Lokasi");
+                    add("Konfirmasi");
                 }})
                 .commit();
+
+        viewFlipper = findViewById(R.id.view_flipper);
 
         RecyclerView serviceListRecyclerView = findViewById(R.id.service_list);
         serviceListRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -68,25 +74,53 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
 
         priceTextView = findViewById(R.id.price);
 
-        findViewById(R.id.detail_service).setOnClickListener(v -> new DetailBottomSheet(totalPrice).show(getSupportFragmentManager(), "ModalBottomSheet"));
+        findViewById(R.id.detail_service).setOnClickListener(v -> new DetailBottomSheet(totalPrice, selectedServices).show(getSupportFragmentManager(), "ModalBottomSheet"));
+
+        findViewById(R.id.next_button).setOnClickListener(v -> onNextClicked());
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                backPressed();
+            }
+        });
+    }
+
+    private void onNextClicked() {
+        if (currentStep < stepView.getStepCount() - 1) {
+            currentStep++;
+            stepView.go(currentStep, true);
+            viewFlipper.showNext();
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
+            backPressed();
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onItemSelected(int price, boolean isChoosen) {
-        if (isChoosen) {
+    public void onItemSelected(String service, int price, boolean isSelected) {
+        if (isSelected) {
             totalPrice += price;
+            selectedServices.add(new ServiceAdapter.ServiceItem(service, price));
         } else {
             totalPrice -= price;
+            selectedServices.removeIf(item -> item.getService().equals(service));
         }
         priceTextView.setText(String.valueOf(totalPrice));
+    }
+
+    private void backPressed() {
+        if (currentStep == 1) {
+            currentStep--;
+            stepView.go(currentStep, true);
+            viewFlipper.showPrevious();
+        } else if (currentStep == 0) {
+            finish();
+        }
     }
 }

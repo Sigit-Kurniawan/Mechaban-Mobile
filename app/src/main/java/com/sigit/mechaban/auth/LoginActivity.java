@@ -24,6 +24,7 @@ import com.sigit.mechaban.components.ModalBottomSheet;
 import com.sigit.mechaban.connection.Connection;
 import com.sigit.mechaban.dashboard.customer.dashboard.DashboardActivity;
 import com.sigit.mechaban.R;
+import com.sigit.mechaban.object.Account;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 
 import java.util.Objects;
@@ -39,6 +40,7 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
     private String email, password;
     private boolean isValidateEmail, isValidatePassword;
     private final LoadingDialog loadingDialog = new LoadingDialog(this);
+    private Account account;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +156,8 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
             email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
             password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
 
+            account = new Account(email, password);
+
             loginEvent();
         });
 
@@ -173,7 +177,7 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
         if (new Connection(this).isNetworkAvailable()) {
             SessionManager sessionManager = new SessionManager(this);
             ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
-            Call<Login> loginCall = apiInterface.loginResponse(email, password);
+            Call<Login> loginCall = apiInterface.loginResponse(account);
             loginCall.enqueue(new Callback<Login>() {
                 @Override
                 public void onResponse(@NonNull Call<Login> call, @NonNull Response<Login> response) {

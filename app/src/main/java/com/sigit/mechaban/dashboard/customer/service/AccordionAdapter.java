@@ -1,6 +1,5 @@
 package com.sigit.mechaban.dashboard.customer.service;
 
-import android.animation.ObjectAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +17,11 @@ import java.util.List;
 
 public class AccordionAdapter extends RecyclerView.Adapter<AccordionAdapter.AccordionViewHolder>{
     private final List<AccordionItem> itemList;
-    private final ServiceAdapter.OnItemSelectedListener listener;
+    private final ServiceAdapter.OnItemSelectedListener itemSelectedListener;
 
-    public AccordionAdapter(List<AccordionItem> itemList, ServiceAdapter.OnItemSelectedListener listener) {
+    public AccordionAdapter(List<AccordionItem> itemList, ServiceAdapter.OnItemSelectedListener itemSelectedListener) {
         this.itemList = itemList;
-        this.listener = listener;
+        this.itemSelectedListener = itemSelectedListener;
     }
 
     @NonNull
@@ -37,7 +36,7 @@ public class AccordionAdapter extends RecyclerView.Adapter<AccordionAdapter.Acco
     public void onBindViewHolder(@NonNull AccordionViewHolder holder, int position) {
         AccordionItem item = itemList.get(position);
         holder.logoView.setImageResource(item.getLogo());
-        holder.textViewHeader.setText(item.getHeader());
+        holder.textViewHeader.setText(item.getComponent());
 
         holder.serviceList.setVisibility(item.isExpanded() ? View.VISIBLE : View.GONE);
 
@@ -47,7 +46,7 @@ public class AccordionAdapter extends RecyclerView.Adapter<AccordionAdapter.Acco
         });
 
         if (item.isExpanded()) {
-            ServiceAdapter serviceAdapter = new ServiceAdapter(item.getItem(), listener);
+            ServiceAdapter serviceAdapter = new ServiceAdapter(item.getItem(), itemSelectedListener);
             holder.serviceList.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
             holder.serviceList.setAdapter(serviceAdapter);
         }
@@ -76,13 +75,13 @@ public class AccordionAdapter extends RecyclerView.Adapter<AccordionAdapter.Acco
 
     public static class AccordionItem {
         private final int logo;
-        private final String header;
+        private final String component;
         private boolean isExpanded;
         private final List<ServiceAdapter.ServiceItem> item;
 
-        public AccordionItem(int logo, String header, List<ServiceAdapter.ServiceItem> item) {
+        public AccordionItem(int logo, String component, List<ServiceAdapter.ServiceItem> item) {
             this.logo = logo;
-            this.header = header;
+            this.component = component;
             this.isExpanded = false;
             this.item = item;
         }
@@ -91,8 +90,8 @@ public class AccordionAdapter extends RecyclerView.Adapter<AccordionAdapter.Acco
             return logo;
         }
 
-        public String getHeader() {
-            return header;
+        public String getComponent() {
+            return component;
         }
 
         public boolean isExpanded() {

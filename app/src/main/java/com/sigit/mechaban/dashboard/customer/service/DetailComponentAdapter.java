@@ -13,9 +13,9 @@ import com.sigit.mechaban.R;
 import java.util.List;
 
 public class DetailComponentAdapter extends RecyclerView.Adapter<DetailComponentAdapter.DetailComponentViewHolder>{
-    private final List<DetailComponentItem> itemList;
+    private final List<ServiceAdapter.ServiceItem> itemList;
 
-    public DetailComponentAdapter(List<DetailComponentItem> itemList) {
+    public DetailComponentAdapter(List<ServiceAdapter.ServiceItem> itemList) {
         this.itemList = itemList;
     }
 
@@ -29,7 +29,9 @@ public class DetailComponentAdapter extends RecyclerView.Adapter<DetailComponent
 
     @Override
     public void onBindViewHolder(@NonNull DetailComponentViewHolder holder, int position) {
-
+        ServiceAdapter.ServiceItem item = itemList.get(position);
+        holder.serviceView.setText(item.getService());
+        holder.priceVIew.setText(String.valueOf(item.getPrice()));
     }
 
     @Override
@@ -47,27 +49,27 @@ public class DetailComponentAdapter extends RecyclerView.Adapter<DetailComponent
         }
     }
 
-    public static class DetailComponentItem {
-        private final String component;
-        private final int subtotal;
-        private final List<DetailServiceAdapter.DetailServiceItem> item;
-
-        public DetailComponentItem(String component, int price, List<DetailServiceAdapter.DetailServiceItem> item) {
-            this.component = component;
-            this.subtotal = price;
-            this.item = item;
-        }
-
-        public String getComponent() {
-            return component;
-        }
-
-        public int getSubtotal() {
-            return subtotal;
-        }
-
-        public List<DetailServiceAdapter.DetailServiceItem> getItem() {
-            return item;
-        }
-    }
+//    public static class DetailComponentItem {
+//        private final String component;
+//        private final int subtotal;
+////        private final List<DetailServiceAdapter.DetailServiceItem> item;
+//
+//        public DetailComponentItem(String component, int price) {
+//            this.component = component;
+//            this.subtotal = price;
+////            this.item = item;
+//        }
+//
+//        public String getComponent() {
+//            return component;
+//        }
+//
+//        public int getSubtotal() {
+//            return subtotal;
+//        }
+//
+////        public List<DetailServiceAdapter.DetailServiceItem> getItem() {
+////            return item;
+////        }
+//    }
 }

@@ -8,16 +8,24 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.sigit.mechaban.R;
+import com.sigit.mechaban.dashboard.customer.service.DetailComponentAdapter;
+import com.sigit.mechaban.dashboard.customer.service.DetailServiceAdapter;
+import com.sigit.mechaban.dashboard.customer.service.ServiceAdapter;
+
+import java.util.List;
 
 public class DetailBottomSheet extends BottomSheetDialogFragment {
     private final int price;
+    private final List<ServiceAdapter.ServiceItem> selectedServices;
 
-    public DetailBottomSheet(int price) {
+    public DetailBottomSheet(int price, List<ServiceAdapter.ServiceItem> selectedServices) {
         this.price = price;
+        this.selectedServices = selectedServices;
     }
 
     @Nullable
@@ -26,6 +34,9 @@ public class DetailBottomSheet extends BottomSheetDialogFragment {
         View view = inflater.inflate(R.layout.detail_bottom_sheet, container, false);
 
         RecyclerView detailRecycler = view.findViewById(R.id.detail_recycler);
+        detailRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        DetailComponentAdapter adapter = new DetailComponentAdapter(selectedServices);
+        detailRecycler.setAdapter(adapter);
 
         TextView priceTextView = view.findViewById(R.id.price_text);
         priceTextView.setText(String.valueOf(price));

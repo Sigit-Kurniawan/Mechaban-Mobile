@@ -1,6 +1,5 @@
 package com.sigit.mechaban.dashboard.customer.service;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +16,15 @@ import java.util.List;
 
 public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>{
     private final List<ServiceItem> itemList;
-    private final OnItemSelectedListener listener;
+    private final OnItemSelectedListener itemSelectedListener;
 
     public ServiceAdapter(List<ServiceItem> itemList, OnItemSelectedListener listener) {
         this.itemList = itemList;
-        this.listener = listener;
+        this.itemSelectedListener = listener;
     }
 
     public interface OnItemSelectedListener {
-        void onItemSelected(int price, boolean isChoosen);
+        void onItemSelected(String service, int price, boolean isSelected);
     }
 
     @NonNull
@@ -36,7 +35,6 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
                 .inflate(R.layout.service_item_recyclerview, parent, false));
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ServiceViewHolder holder, int position) {
         ServiceItem item = itemList.get(position);
@@ -51,11 +49,11 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
         if (!item.isChoosen()) {
             item.setChoosen(true);
             holder.checkBox.setChecked(true);
-            listener.onItemSelected(item.getPrice(), true);
+            itemSelectedListener.onItemSelected(item.getService(), item.getPrice(), true);
         } else {
             item.setChoosen(false);
             holder.checkBox.setChecked(false);
-            listener.onItemSelected(item.getPrice(), false);
+            itemSelectedListener.onItemSelected(item.getService(), item.getPrice(), false);
         }
     }
 
