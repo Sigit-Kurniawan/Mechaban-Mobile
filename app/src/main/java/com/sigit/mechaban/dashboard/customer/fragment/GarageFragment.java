@@ -15,9 +15,10 @@ import android.view.ViewGroup;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
-import com.sigit.mechaban.api.model.readcar.ReadCar;
-import com.sigit.mechaban.api.model.readcar.ReadCarData;
+import com.sigit.mechaban.api.model.car.CarAPI;
+import com.sigit.mechaban.api.model.car.CarData;
 import com.sigit.mechaban.dashboard.customer.garage.CarAdapter;
+import com.sigit.mechaban.object.Car;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class GarageFragment extends Fragment {
     private SessionManager sessionManager;
     private RecyclerView carList;
     private final CallbackInterface callback;
+    private final Car car = new Car();
 
     public interface CallbackInterface {
         void updateFabVisibility(boolean isCarListEmpty);
@@ -60,16 +62,18 @@ public class GarageFragment extends Fragment {
 
     private void setCar() {
         ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
-        Call<ReadCar> readCarCall = apiInterface.readCarResponse(sessionManager.getUserDetail().get("email"));
-        readCarCall.enqueue(new Callback<ReadCar>() {
+        car.setAction("read");
+        car.setEmail(sessionManager.getUserDetail().get("email"));
+        Call<CarAPI> readCarCall = apiInterface.carResponse(car);
+        readCarCall.enqueue(new Callback<CarAPI>() {
             @Override
-            public void onResponse(@NonNull Call<ReadCar> call, @NonNull Response<ReadCar> response) {
+            public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
                 if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
                     if (response.body().isExist()) {
                         requireView().findViewById(R.id.empty_view).setVisibility(View.GONE);
                         requireView().findViewById(R.id.car_list_view).setVisibility(View.VISIBLE);
                         List<CarAdapter.CarItem> carItemList = new ArrayList<>();
-                        for (ReadCarData carData : response.body().getReadCarData()) {
+                        for (CarData carData : response.body().getCarData()) {
                             carItemList.add(new CarAdapter.CarItem(carData.getMerk(), carData.getType(), carData.getYear()));
                         }
                         carList.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -81,7 +85,7 @@ public class GarageFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(@NonNull Call<ReadCar> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<CarAPI> call, @NonNull Throwable t) {
                 Log.e("GarageFragment", t.toString(), t);
             }
         });

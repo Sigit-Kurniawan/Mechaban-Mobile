@@ -3,8 +3,6 @@ package com.sigit.mechaban.dashboard.customer.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
@@ -18,9 +16,10 @@ import android.widget.Toast;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
-import com.sigit.mechaban.api.model.readaccount.ReadAccount;
+import com.sigit.mechaban.api.model.account.AccountAPI;
 import com.sigit.mechaban.auth.LoginActivity;
 import com.sigit.mechaban.dashboard.customer.account.EditAccountActivity;
+import com.sigit.mechaban.object.Account;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 
 import retrofit2.Call;
@@ -29,8 +28,8 @@ import retrofit2.Response;
 
 public class AccountFragment extends Fragment {
     private TextView tvName, tvEmail;
-//    private ActivityResultLauncher<Intent> editAccountLauncher;
     private SessionManager sessionManager;
+    private final Account account = new Account();
 
     public AccountFragment() {
         // Required empty public constructor
@@ -64,10 +63,12 @@ public class AccountFragment extends Fragment {
 
     private void setDataAccount() {
         ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
-        Call<ReadAccount> accountCall = apiInterface.readAccountResponse(sessionManager.getUserDetail().get("email"));
-        accountCall.enqueue(new Callback<ReadAccount>() {
+        account.setAction("read");
+        account.setEmail(sessionManager.getUserDetail().get("email"));
+        Call<AccountAPI> accountCall = apiInterface.accountResponse(account);
+        accountCall.enqueue(new Callback<AccountAPI>() {
             @Override
-            public void onResponse(@NonNull Call<ReadAccount> call, @NonNull Response<ReadAccount> response) {
+            public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
                 if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
                     tvName.setText(response.body().getAccountData().getName());
                     tvEmail.setText(response.body().getAccountData().getEmail());
@@ -77,7 +78,7 @@ public class AccountFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(@NonNull Call<ReadAccount> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
                 Log.e("AccountFragment", t.toString(), t);
             }
         });

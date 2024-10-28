@@ -19,10 +19,11 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
-import com.sigit.mechaban.api.model.register.Register;
+import com.sigit.mechaban.api.model.account.AccountAPI;
 import com.sigit.mechaban.components.LoadingDialog;
 import com.sigit.mechaban.components.ModalBottomSheet;
 import com.sigit.mechaban.connection.Connection;
+import com.sigit.mechaban.object.Account;
 
 import java.util.Objects;
 
@@ -37,6 +38,7 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
     private boolean isValidateName, isValidateEmail, isValidateNoHP, isValidatePassword, isValidateConfirmPassword;
     private String name, email, noHP, password, confirmPassword;
     private final LoadingDialog loadingDialog = new LoadingDialog(this);
+    private final Account account = new Account();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -325,6 +327,12 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
             password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
             confirmPassword = Objects.requireNonNull(confirmPasswordEditText.getText()).toString().trim();
 
+            account.setAction("register");
+            account.setName(name);
+            account.setEmail(email);
+            account.setNo_hp(noHP);
+            account.setPassword(password);
+
             registerEvent();
         });
 
@@ -354,10 +362,10 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
         loadingDialog.startLoadingDialog();
         if (new Connection(this).isNetworkAvailable()) {
             ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
-            Call<Register> registerCall = apiInterface.registerResponse(email, name, noHP, password, confirmPassword);
-            registerCall.enqueue(new Callback<Register>() {
+            Call<AccountAPI> registerCall = apiInterface.accountResponse(account);
+            registerCall.enqueue(new Callback<AccountAPI>() {
                 @Override
-                public void onResponse(@NonNull Call<Register> call, @NonNull Response<Register> response) {
+                public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
                     if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
                         Toast.makeText(RegisterActivity.this, "Registrasi Berhasil", Toast.LENGTH_SHORT).show();
                         finish();
@@ -375,7 +383,7 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<Register> call, @NonNull Throwable t) {
+                public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
                     Log.e("RegisterActivity", t.toString(), t);
                 }
             });

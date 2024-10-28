@@ -1,13 +1,12 @@
-package com.sigit.mechaban.api.model.readcar;
+package com.sigit.mechaban.api.model.car;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class ReadCar {
-
+public class CarAPI {
     @SerializedName("data")
-    private final List<ReadCarData> readCarData;
+    private final List<CarData> carData;
 
     @SerializedName("message")
     private final String message;
@@ -18,15 +17,15 @@ public class ReadCar {
     @SerializedName("exist")
     private final boolean exist;
 
-    public ReadCar(List<ReadCarData> readCarData, String message, boolean status, boolean exist) {
-        this.readCarData = readCarData;
+    public CarAPI(List<CarData> carData, String message, boolean status, boolean exist) {
+        this.carData = carData;
         this.message = message;
         this.status = status;
         this.exist = exist;
     }
 
-    public List<ReadCarData> getReadCarData() {
-        return readCarData;
+    public List<CarData> getCarData() {
+        return carData;
     }
 
     public String getMessage() {

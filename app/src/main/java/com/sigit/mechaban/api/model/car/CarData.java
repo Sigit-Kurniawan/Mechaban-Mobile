@@ -1,8 +1,8 @@
-package com.sigit.mechaban.api.model.readcar;
+package com.sigit.mechaban.api.model.car;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ReadCarData {
+public class CarData {
 
     @SerializedName("nopol")
     private final String nopol;
@@ -19,7 +19,7 @@ public class ReadCarData {
     @SerializedName("year")
     private final String year;
 
-    public ReadCarData(String nopol, String merk, String type, String transmition, String year) {
+    public CarData(String nopol, String merk, String type, String transmition, String year) {
         this.nopol = nopol;
         this.merk = merk;
         this.type = type;

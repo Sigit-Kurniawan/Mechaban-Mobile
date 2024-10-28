@@ -3,7 +3,7 @@ package com.sigit.mechaban.sessionmanager;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.sigit.mechaban.api.model.login.LoginData;
+import com.sigit.mechaban.api.model.account.AccountData;
 
 import java.util.HashMap;
 
@@ -16,9 +16,9 @@ public class SessionManager {
         editor = preferences.edit();
     }
 
-    public void createLoginSession(LoginData loginData) {
+    public void createLoginSession(AccountData accountData) {
         editor.putBoolean("isLoggedIn", true);
-        editor.putString("email", loginData.getEmail());
+        editor.putString("email", accountData.getEmail());
         editor.commit();
     }
 

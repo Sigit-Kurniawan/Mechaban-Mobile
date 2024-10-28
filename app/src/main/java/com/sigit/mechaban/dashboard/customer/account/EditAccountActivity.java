@@ -22,8 +22,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
-import com.sigit.mechaban.api.model.readaccount.ReadAccount;
-import com.sigit.mechaban.api.model.updateaccount.UpdateAccount;
+import com.sigit.mechaban.api.model.account.AccountAPI;
+import com.sigit.mechaban.object.Account;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 
 import java.util.Objects;
@@ -38,6 +38,7 @@ public class EditAccountActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> launcher;
     private Button saveButton;
     private String email, name, noHP, password;
+    private final Account account = new Account();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +64,13 @@ public class EditAccountActivity extends AppCompatActivity {
         }
 
         SessionManager sessionManager = new SessionManager(this);
+        account.setAction("read");
+        account.setEmail(sessionManager.getUserDetail().get("email"));
         ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
-        Call<ReadAccount> readAccountCall = apiInterface.readAccountResponse(sessionManager.getUserDetail().get("email"));
-        readAccountCall.enqueue(new Callback<ReadAccount>() {
+        Call<AccountAPI> readAccountCall = apiInterface.accountResponse(account);
+        readAccountCall.enqueue(new Callback<AccountAPI>() {
             @Override
-            public void onResponse(@NonNull Call<ReadAccount> call, @NonNull Response<ReadAccount> response) {
+            public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
                 if (response.body() != null && response.isSuccessful()) {
                     emailEditText.setText(response.body().getAccountData().getEmail());
                     nameEditText.setText(response.body().getAccountData().getName());
@@ -77,8 +80,8 @@ public class EditAccountActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<ReadAccount> call, @NonNull Throwable t) {
-
+            public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
+                Log.e("EditAccountActivity", t.toString(), t);
             }
         });
 
@@ -89,16 +92,17 @@ public class EditAccountActivity extends AppCompatActivity {
             noHP = Objects.requireNonNull(noHPEditText.getText()).toString().trim();
             password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
 
-            Call<UpdateAccount> updateAccountCall = apiInterface.updateAccountResponse(
-                    sessionManager.getUserDetail().get("email"),
-                    email,
-                    name,
-                    noHP,
-                    password
-            );
-            updateAccountCall.enqueue(new Callback<UpdateAccount>() {
+            account.setAction("update");
+            account.setEmail(sessionManager.getUserDetail().get("email"));
+            account.setEmailUpdate(email);
+            account.setName(name);
+            account.setNo_hp(noHP);
+            account.setPassword(password);
+
+            Call<AccountAPI> updateAccountCall = apiInterface.accountResponse(account);
+            updateAccountCall.enqueue(new Callback<AccountAPI>() {
                 @Override
-                public void onResponse(@NonNull Call<UpdateAccount> call, @NonNull Response<UpdateAccount> response) {
+                public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
                     if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
                         Toast.makeText(EditAccountActivity.this, "Edit berhasil", Toast.LENGTH_SHORT).show();
                         if (response.body().getMessage().equals("Update email")) {
@@ -111,7 +115,7 @@ public class EditAccountActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<UpdateAccount> call, @NonNull Throwable t) {
+                public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
                     Log.e("EditAccountActivity", t.toString(), t);
                 }
             });

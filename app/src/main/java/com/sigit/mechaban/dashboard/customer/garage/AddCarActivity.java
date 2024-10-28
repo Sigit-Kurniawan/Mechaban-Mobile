@@ -15,7 +15,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
-import com.sigit.mechaban.api.model.createcar.CreateCar;
+import com.sigit.mechaban.api.model.car.CarAPI;
+import com.sigit.mechaban.object.Car;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 
 import java.util.Objects;
@@ -27,6 +28,7 @@ import retrofit2.Response;
 public class AddCarActivity extends AppCompatActivity {
     private TextInputEditText kodeWilayahEditText, angkaEditText, hurufEditText, merkEditText, typeEditText, variantEditText, yearEditText;
     private String nopol, merk, type, variant, year, email;
+    private final Car car = new Car();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,11 +90,19 @@ public class AddCarActivity extends AppCompatActivity {
             year = Objects.requireNonNull(yearEditText.getText()).toString();
             email = new SessionManager(this).getUserDetail().get("email");
 
+            car.setAction("create");
+            car.setNopol(nopol);
+            car.setMerk(merk);
+            car.setType(type);
+            car.setTransmition(variant);
+            car.setYear(year);
+            car.setEmail(email);
+
             ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
-            Call<CreateCar> createCarCall = apiInterface.createCarResponse(nopol, merk, type, variant, year, email);
-            createCarCall.enqueue(new Callback<CreateCar>() {
+            Call<CarAPI> createCarCall = apiInterface.carResponse(car);
+            createCarCall.enqueue(new Callback<CarAPI>() {
                 @Override
-                public void onResponse(@NonNull Call<CreateCar> call, @NonNull Response<CreateCar> response) {
+                public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
                     if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
                         Toast.makeText(AddCarActivity.this, "Berhasil menambahkan mobil", Toast.LENGTH_SHORT).show();
                         finish();
@@ -102,7 +112,7 @@ public class AddCarActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<CreateCar> call, @NonNull Throwable t) {
+                public void onFailure(@NonNull Call<CarAPI> call, @NonNull Throwable t) {
                     Log.e("AddCarActivity", t.toString(), t);
                 }
             });

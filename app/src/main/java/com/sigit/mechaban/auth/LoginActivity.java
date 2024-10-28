@@ -17,8 +17,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
-import com.sigit.mechaban.api.model.login.Login;
-import com.sigit.mechaban.api.model.login.LoginData;
+import com.sigit.mechaban.api.model.account.AccountAPI;
+import com.sigit.mechaban.api.model.account.AccountData;
 import com.sigit.mechaban.components.LoadingDialog;
 import com.sigit.mechaban.components.ModalBottomSheet;
 import com.sigit.mechaban.connection.Connection;
@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
     private String email, password;
     private boolean isValidateEmail, isValidatePassword;
     private final LoadingDialog loadingDialog = new LoadingDialog(this);
-    private Account account;
+    private final Account account = new Account();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,7 +156,9 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
             email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
             password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
 
-            account = new Account(email, password);
+            account.setAction("login");
+            account.setEmail(email);
+            account.setPassword(password);
 
             loginEvent();
         });
@@ -177,12 +179,12 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
         if (new Connection(this).isNetworkAvailable()) {
             SessionManager sessionManager = new SessionManager(this);
             ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
-            Call<Login> loginCall = apiInterface.loginResponse(account);
-            loginCall.enqueue(new Callback<Login>() {
+            Call<AccountAPI> loginCall = apiInterface.accountResponse(account);
+            loginCall.enqueue(new Callback<AccountAPI>() {
                 @Override
-                public void onResponse(@NonNull Call<Login> call, @NonNull Response<Login> response) {
+                public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
                     if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                        LoginData loginData = response.body().getLoginData();
+                        AccountData loginData = response.body().getAccountData();
                         sessionManager.createLoginSession(loginData);
                         startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
                         finish();
@@ -194,7 +196,7 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<Login> call, @NonNull Throwable t) {
+                public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
                     Log.e("LoginActivity", t.toString(), t);
                 }
             });
