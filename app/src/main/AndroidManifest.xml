@@ -45,6 +45,9 @@
         <activity
             android:name=".dashboard.customer.dashboard.DashboardActivity"
             android:exported="false" />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 
 </manifest>

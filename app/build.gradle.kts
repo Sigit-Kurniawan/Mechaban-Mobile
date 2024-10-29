@@ -66,4 +66,5 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.javax.annotation)
     implementation(libs.shuhart.stepview)
+    implementation("com.github.yalantis:ucrop:2.2.8")
 }

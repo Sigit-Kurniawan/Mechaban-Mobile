@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.sigit.mechaban.BuildConfig;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
@@ -27,6 +30,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AccountFragment extends Fragment {
+    private ShapeableImageView photoProfile;
     private TextView tvName, tvEmail;
     private SessionManager sessionManager;
     private final Account account = new Account();
@@ -48,6 +52,7 @@ public class AccountFragment extends Fragment {
 
         tvName = view.findViewById(R.id.tv_name);
         tvEmail = view.findViewById(R.id.tv_email);
+        photoProfile = view.findViewById(R.id.profile_icon);
         setDataAccount();
 
         view.findViewById(R.id.edit_button).setOnClickListener(v -> startActivity(new Intent(getActivity(), EditAccountActivity.class)));
@@ -70,6 +75,12 @@ public class AccountFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
                 if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
+                    String photoBase64 = response.body().getAccountData().getPhoto();
+                    if (photoBase64 != null && !photoBase64.isEmpty()) {
+                        Glide.with(requireActivity())
+                                .load("http://" + BuildConfig.ip + "/api/" + photoBase64)
+                                .into(photoProfile);
+                    }
                     tvName.setText(response.body().getAccountData().getName());
                     tvEmail.setText(response.body().getAccountData().getEmail());
                 } else {
