@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ubah Profil"
+            android:text="@string/ubah_profil"
             android:fontFamily="@font/montserrat_semibold"
             android:textAppearance="?attr/textAppearanceTitleLarge"/>
 
@@ -46,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Foto Profil"
+                android:text="@string/foto_profil"
                 android:fontFamily="@font/montserrat_semibold"
                 android:textAppearance="?attr/textAppearanceTitleMedium"/>
 
@@ -63,6 +63,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/CircleImageShape"
                     app:srcCompat="@drawable/baseline_account_circle_24" />
 
                 <TextView
@@ -70,7 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
-                    android:text="Tambah foto"
+                    android:text="@string/tambah_foto"
                     android:fontFamily="@font/montserrat_medium"
                     android:textAppearance="?attr/textAppearanceCaption"/>
 
@@ -82,7 +83,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_toEndOf="@+id/edit_profile"
                 android:layout_alignTop="@id/edit_profile"
-                android:text="Pasang foto yang oke! Semua orang bakal bisa lihat."
+                android:text="@string/pasang_foto_yang_oke_semua_orang_bakal_bisa_lihat"
                 android:fontFamily="@font/montserrat_medium"
                 android:gravity="center_vertical"/>
 
