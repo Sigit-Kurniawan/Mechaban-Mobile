@@ -1,7 +1,7 @@
 package com.sigit.mechaban.object;
 
 public class Account {
-    private String action, email, emailUpdate, name, no_hp, password, photo;
+    private String action, email, emailUpdate, name, no_hp, password, photo, otp;
 
     public void setAction(String action) {
         this.action = action;
@@ -29,5 +29,9 @@ public class Account {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
     }
 }

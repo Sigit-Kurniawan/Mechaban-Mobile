@@ -3,10 +3,11 @@ package com.sigit.mechaban.dashboard.customer.account;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
@@ -22,11 +23,13 @@ import androidx.appcompat.widget.Toolbar;
 import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.sigit.mechaban.BuildConfig;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
 import com.sigit.mechaban.api.model.account.AccountAPI;
+import com.sigit.mechaban.components.behavior.EditTextBehavior;
 import com.sigit.mechaban.object.Account;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 import com.yalantis.ucrop.UCrop;
@@ -42,10 +45,12 @@ import retrofit2.Response;
 
 public class EditAccountActivity extends AppCompatActivity {
     private ShapeableImageView photoProfile;
+    private TextInputLayout nameLayout, emailLayout, noHPLayout, passwordLayout;
     private TextInputEditText emailEditText, nameEditText, noHPEditText, passwordEditText;
     private ActivityResultLauncher<Intent> launcher;
     private Button saveButton;
     private String email, name, noHP, password;
+    private boolean isValidateName, isValidateEmail, isValidateNoHP, isValidatePassword;
     private final Account account = new Account();
 
     @Override
@@ -59,12 +64,22 @@ public class EditAccountActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        emailEditText = findViewById(R.id.email_field);
+        nameLayout = findViewById(R.id.name);
         nameEditText = findViewById(R.id.name_field);
+        emailLayout = findViewById(R.id.email);
+        emailEditText = findViewById(R.id.email_field);
+        noHPLayout = findViewById(R.id.no_hp);
         noHPEditText = findViewById(R.id.nohp_field);
+        passwordLayout = findViewById(R.id.password);
         passwordEditText = findViewById(R.id.pass_field);
-
         photoProfile = findViewById(R.id.photo_profile);
+        saveButton = findViewById(R.id.save_button);
+
+        saveButton.setEnabled(false);
+        isValidateName = true;
+        isValidateEmail = true;
+        isValidateNoHP = true;
+        isValidatePassword = true;
 
         findViewById(R.id.edit_profile).setOnClickListener(v -> pickImage());
         launcher = registerForActivityResult(
@@ -78,6 +93,86 @@ public class EditAccountActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        nameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isValidateName = EditTextBehavior.validateName(getApplicationContext(), nameEditText, nameLayout);
+                updateEditButtonState();
+            }
+        });
+
+        emailEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isValidateEmail = EditTextBehavior.validateEmail(getApplicationContext(), emailEditText, emailLayout);
+                updateEditButtonState();
+            }
+        });
+
+        noHPEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isValidateNoHP = EditTextBehavior.validateNoHP(getApplicationContext(), noHPEditText, noHPLayout);
+                updateEditButtonState();
+            }
+        });
+
+        passwordEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isValidatePassword = EditTextBehavior.validatePasswordRegister(getApplicationContext(), passwordEditText, passwordLayout);
+                updateEditButtonState();
+            }
+        });
+
+        nameEditText.setOnFocusChangeListener(((v, hasFocus) -> EditTextBehavior.setIconTintOnFocus(getApplicationContext(), nameLayout, hasFocus, isValidateName)));
+
+        emailEditText.setOnFocusChangeListener((v, hasFocus) -> EditTextBehavior.setIconTintOnFocus(getApplicationContext(), emailLayout, hasFocus, isValidateEmail));
+
+        noHPEditText.setOnFocusChangeListener(((v, hasFocus) -> EditTextBehavior.setIconTintOnFocus(getApplicationContext(), noHPLayout, hasFocus, isValidateNoHP)));
+
+        passwordEditText.setOnFocusChangeListener((v, hasFocus) -> EditTextBehavior.setIconTintOnFocus(getApplicationContext(), passwordLayout, hasFocus, isValidatePassword));
 
         SessionManager sessionManager = new SessionManager(this);
         account.setAction("read");
@@ -107,7 +202,6 @@ public class EditAccountActivity extends AppCompatActivity {
             }
         });
 
-        saveButton = findViewById(R.id.save_button);
         saveButton.setOnClickListener(v -> {
             email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
             name = Objects.requireNonNull(nameEditText.getText()).toString().trim();
@@ -199,5 +293,15 @@ public class EditAccountActivity extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
         byte[] byteArray = outputStream.toByteArray();
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
+
+    private void updateEditButtonState() {
+        name = Objects.requireNonNull(nameEditText.getText()).toString().trim();
+        email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
+        noHP = Objects.requireNonNull(noHPEditText.getText()).toString().trim();
+        password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
+        if (!name.isEmpty() && !email.isEmpty() && !noHP.isEmpty() && !password.isEmpty()) {
+            saveButton.setEnabled(isValidateName && isValidateEmail && isValidateNoHP && isValidatePassword);
+        }
     }
 }

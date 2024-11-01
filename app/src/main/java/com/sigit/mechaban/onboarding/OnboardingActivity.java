@@ -73,9 +73,15 @@ public class OnboardingActivity extends AppCompatActivity {
                 }
 
                 if (position == screenItemList.size() - 1) {
-                    loadLastScreen();
+                    nextButton.setVisibility(View.INVISIBLE);
+                    dotsIndicator.setVisibility(View.INVISIBLE);
+                    skipButton.setVisibility(View.INVISIBLE);
+                    getStartedButton.setVisibility(View.VISIBLE);
                 } else {
-                    reloadScreen();
+                    nextButton.setVisibility(View.VISIBLE);
+                    dotsIndicator.setVisibility(View.VISIBLE);
+                    skipButton.setVisibility(View.VISIBLE);
+                    getStartedButton.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -94,19 +100,5 @@ public class OnboardingActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         });
-    }
-
-    private void loadLastScreen() {
-        nextButton.setVisibility(View.INVISIBLE);
-        dotsIndicator.setVisibility(View.INVISIBLE);
-        skipButton.setVisibility(View.INVISIBLE);
-        getStartedButton.setVisibility(View.VISIBLE);
-    }
-
-    private void reloadScreen() {
-        nextButton.setVisibility(View.VISIBLE);
-        dotsIndicator.setVisibility(View.VISIBLE);
-        skipButton.setVisibility(View.VISIBLE);
-        getStartedButton.setVisibility(View.INVISIBLE);
     }
 }

@@ -1,10 +1,10 @@
 package com.sigit.mechaban.auth;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
@@ -22,6 +22,7 @@ import com.sigit.mechaban.api.ApiInterface;
 import com.sigit.mechaban.api.model.account.AccountAPI;
 import com.sigit.mechaban.components.LoadingDialog;
 import com.sigit.mechaban.components.ModalBottomSheet;
+import com.sigit.mechaban.components.behavior.EditTextBehavior;
 import com.sigit.mechaban.connection.Connection;
 import com.sigit.mechaban.object.Account;
 
@@ -36,7 +37,10 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
     private TextInputLayout nameLayout, emailLayout, noHPLayout, passwordLayout, confirmPasswordLayout;
     private Button registerButton;
     private boolean isValidateName, isValidateEmail, isValidateNoHP, isValidatePassword, isValidateConfirmPassword;
-    private String name, email, noHP, password, confirmPassword;
+    private String name;
+    private String email;
+    private String noHP;
+    private String password;
     private final LoadingDialog loadingDialog = new LoadingDialog(this);
     private final Account account = new Account();
 
@@ -83,16 +87,7 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
 
             @Override
             public void afterTextChanged(Editable s) {
-                name = Objects.requireNonNull(nameEditText.getText()).toString().trim();
-                if (!name.isEmpty()) {
-                    isValidateName = true;
-                    nameLayout.setError(null);
-                    nameLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                } else {
-                    isValidateName = false;
-                    nameLayout.setError("Kolom nama tidak boleh kosong!");
-                    nameLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                }
+                isValidateName = EditTextBehavior.validateName(getApplicationContext(), nameEditText, nameLayout);
                 updateRegisterButtonState();
             }
         });
@@ -110,20 +105,7 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
 
             @Override
             public void afterTextChanged(Editable s) {
-                email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
-                if (email.isEmpty()) {
-                    isValidateEmail = false;
-                    emailLayout.setError("Kolom email-nya masih kosong!");
-                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    isValidateEmail = false;
-                    emailLayout.setError("Format email tidak valid!");
-                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                } else {
-                    isValidateEmail = true;
-                    emailLayout.setError(null);
-                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                }
+                isValidateEmail = EditTextBehavior.validateEmail(getApplicationContext(), emailEditText, emailLayout);
                 updateRegisterButtonState();
             }
         });
@@ -141,20 +123,7 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
 
             @Override
             public void afterTextChanged(Editable s) {
-                noHP = Objects.requireNonNull(noHPEditText.getText()).toString().trim();
-                if (noHP.isEmpty()) {
-                    isValidateNoHP = false;
-                    noHPLayout.setError("Kolom no. HP-nya tidak boleh kosong!");
-                    noHPLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                } else if (noHP.length() < 10) {
-                    isValidateNoHP = false;
-                    noHPLayout.setError("No. HP tidak valid!");
-                    noHPLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                } else {
-                    isValidateNoHP = true;
-                    noHPLayout.setError(null);
-                    noHPLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                }
+                isValidateNoHP = EditTextBehavior.validateNoHP(getApplicationContext(), noHPEditText, noHPLayout);
                 updateRegisterButtonState();
             }
         });
@@ -172,29 +141,7 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
 
             @Override
             public void afterTextChanged(Editable s) {
-                password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
-                if (password.isEmpty()) {
-                    isValidatePassword = false;
-                    passwordLayout.setError("Kolom password tidak boleh kosong!");
-                    passwordLayout.setErrorIconDrawable(null);
-                    passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                    passwordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                } else if (!(password.length() >= 8)) {
-                    unvalidPassword();
-                } else if (!password.matches("(.*[A-Z].*)")) {
-                    unvalidPassword();
-                } else if (!password.matches("(.*[a-z].*)")) {
-                    unvalidPassword();
-                } else if (!password.matches(".*[0-9].*")) {
-                    unvalidPassword();
-                } else if (!password.matches(".*[@$!%*?&].*")) {
-                    unvalidPassword();
-                } else {
-                    isValidatePassword = true;
-                    passwordLayout.setError(null);
-                    passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                    passwordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                }
+                isValidatePassword = EditTextBehavior.validatePasswordRegister(getApplicationContext(), passwordEditText, passwordLayout);
                 updateRegisterButtonState();
             }
         });
@@ -212,131 +159,54 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
 
             @Override
             public void afterTextChanged(Editable s) {
-                password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
-                confirmPassword = Objects.requireNonNull(confirmPasswordEditText.getText()).toString().trim();
-                if (confirmPassword.isEmpty()) {
-                    isValidateConfirmPassword = false;
-                    confirmPasswordLayout.setError("Kolom konfirmasi password-nya tidak boleh kosong!");
-                    confirmPasswordLayout.setErrorIconDrawable(null);
-                    confirmPasswordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                    confirmPasswordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                } else if (!confirmPassword.equals(password)) {
-                    isValidateConfirmPassword = false;
-                    confirmPasswordLayout.setError("Password tidak sama!");
-                    confirmPasswordLayout.setErrorIconDrawable(null);
-                    confirmPasswordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                    confirmPasswordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                } else {
-                    isValidateConfirmPassword = true;
-                    confirmPasswordLayout.setError(null);
-                    confirmPasswordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                    confirmPasswordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                }
+                isValidateConfirmPassword = EditTextBehavior.validateConfirmPassword(getApplicationContext(), passwordEditText, confirmPasswordEditText, confirmPasswordLayout);
                 updateRegisterButtonState();
             }
         });
 
-        nameEditText.setOnFocusChangeListener(((v, hasFocus) -> {
-            if (hasFocus) {
-                if (isValidateName) {
-                    nameLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                } else {
-                    nameLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                }
-            } else {
-                if (isValidateName) {
-                    nameLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_onSurfaceVariant));
-                } else {
-                    nameLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                }
-            }
-        }));
+        nameEditText.setOnFocusChangeListener(((v, hasFocus) -> EditTextBehavior.setIconTintOnFocus(getApplicationContext(), nameLayout, hasFocus, isValidateName)));
 
-        emailEditText.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                if (isValidateEmail) {
-                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                } else {
-                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                }
-            } else {
-                if (isValidateEmail) {
-                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_onSurfaceVariant));
-                } else {
-                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                }
-            }
-        });
+        emailEditText.setOnFocusChangeListener((v, hasFocus) -> EditTextBehavior.setIconTintOnFocus(getApplicationContext(), emailLayout, hasFocus, isValidateEmail));
 
-        noHPEditText.setOnFocusChangeListener(((v, hasFocus) -> {
-            if (hasFocus) {
-                if (isValidateNoHP) {
-                    noHPLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                } else {
-                    noHPLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                }
-            } else {
-                if (isValidateNoHP) {
-                    noHPLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_onSurfaceVariant));
-                } else {
-                    noHPLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                }
-            }
-        }));
+        noHPEditText.setOnFocusChangeListener(((v, hasFocus) -> EditTextBehavior.setIconTintOnFocus(getApplicationContext(), noHPLayout, hasFocus, isValidateNoHP)));
 
-        passwordEditText.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                if (isValidatePassword) {
-                    passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                    passwordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                } else {
-                    passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                }
-            } else {
-                if (isValidatePassword) {
-                    passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_onSurfaceVariant));
-                    passwordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_onSurfaceVariant));
-                } else {
-                    passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                }
-            }
-        });
+        passwordEditText.setOnFocusChangeListener((v, hasFocus) -> EditTextBehavior.setIconTintOnFocus(getApplicationContext(), passwordLayout, hasFocus, isValidatePassword));
 
-        confirmPasswordEditText.setOnFocusChangeListener(((v, hasFocus) -> {
-            if (hasFocus) {
-                if (isValidateConfirmPassword) {
-                    confirmPasswordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                    confirmPasswordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                } else {
-                    confirmPasswordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                }
-            } else {
-                if (isValidateConfirmPassword) {
-                    confirmPasswordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_onSurfaceVariant));
-                    confirmPasswordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_onSurfaceVariant));
-                } else {
-                    confirmPasswordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                }
-            }
-        }));
+        confirmPasswordEditText.setOnFocusChangeListener(((v, hasFocus) -> EditTextBehavior.setIconTintOnFocus(getApplicationContext(), confirmPasswordLayout, hasFocus, isValidateConfirmPassword)));
 
         registerButton.setOnClickListener(v -> {
             name = Objects.requireNonNull(nameEditText.getText()).toString().trim();
             email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
             noHP = Objects.requireNonNull(noHPEditText.getText()).toString().trim();
             password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
-            confirmPassword = Objects.requireNonNull(confirmPasswordEditText.getText()).toString().trim();
 
-            account.setAction("register");
-            account.setName(name);
+            account.setAction("verification");
             account.setEmail(email);
-            account.setNo_hp(noHP);
-            account.setPassword(password);
 
-            registerEvent();
+            ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
+            Call<AccountAPI> sendOtpCall = apiInterface.accountResponse(account);
+            sendOtpCall.enqueue(new Callback<AccountAPI>() {
+                @Override
+                public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
+                    if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
+                        Intent intent = new Intent(getApplicationContext(), VerifyOtpActivity.class);
+                        intent.putExtra("name", name);
+                        intent.putExtra("email", email);
+                        intent.putExtra("noHP", noHP);
+                        intent.putExtra("password", password);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
+                    Log.e("RegisterActivity", t.toString(), t);
+                }
+            });
         });
 
-        findViewById(R.id.login_hyperlink).setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        findViewById(R.id.login_hyperlink).setOnClickListener(v -> finish());
     }
 
     private void updateRegisterButtonState() {
@@ -344,18 +214,10 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
         email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
         noHP = Objects.requireNonNull(noHPEditText.getText()).toString().trim();
         password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
-        confirmPassword = Objects.requireNonNull(confirmPasswordEditText.getText()).toString().trim();
+        String confirmPassword = Objects.requireNonNull(confirmPasswordEditText.getText()).toString().trim();
         if (!name.isEmpty() && !email.isEmpty() && !noHP.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty()) {
             registerButton.setEnabled(isValidateName && isValidateEmail && isValidateNoHP && isValidatePassword && isValidateConfirmPassword);
         }
-    }
-    
-    private void unvalidPassword() {
-        isValidatePassword = false;
-        passwordLayout.setError("Password minimal 8 karakter, termasuk huruf kapital, huruf kecil, angka, dan simbol (@$!%*?&)!");
-        passwordLayout.setErrorIconDrawable(null);
-        passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-        passwordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
     }
 
     private void registerEvent() {

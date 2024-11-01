@@ -21,6 +21,7 @@ import com.sigit.mechaban.api.model.account.AccountAPI;
 import com.sigit.mechaban.api.model.account.AccountData;
 import com.sigit.mechaban.components.LoadingDialog;
 import com.sigit.mechaban.components.ModalBottomSheet;
+import com.sigit.mechaban.components.behavior.EditTextBehavior;
 import com.sigit.mechaban.connection.Connection;
 import com.sigit.mechaban.dashboard.customer.dashboard.DashboardActivity;
 import com.sigit.mechaban.R;
@@ -70,20 +71,7 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
 
             @Override
             public void afterTextChanged(Editable s) {
-                email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
-                if (email.isEmpty()) {
-                    isValidateEmail = false;
-                    emailLayout.setError("Kolom email-nya masih kosong!");
-                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    isValidateEmail = false;
-                    emailLayout.setError("Format email tidak valid!");
-                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                } else {
-                    isValidateEmail = true;
-                    emailLayout.setError(null);
-                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                }
+                isValidateEmail = EditTextBehavior.validateEmail(getApplicationContext(), emailEditText, emailLayout);
                 updateLoginButtonState();
             }
         });
@@ -101,56 +89,14 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
 
             @Override
             public void afterTextChanged(Editable s) {
-                password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
-                if (password.isEmpty()) {
-                    isValidatePassword = false;
-                    passwordLayout.setError("Kolom password tidak boleh kosong!");
-                    passwordLayout.setErrorIconDrawable(null);
-                    passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                    passwordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                } else {
-                    isValidatePassword = true;
-                    passwordLayout.setError(null);
-                    passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                    passwordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                }
+                isValidatePassword = EditTextBehavior.validatePassword(getApplicationContext(), passwordEditText, passwordLayout);
                 updateLoginButtonState();
             }
         });
 
-        emailEditText.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                if (isValidateEmail) {
-                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                } else {
-                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                }
-            } else {
-                if (isValidateEmail) {
-                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_onSurfaceVariant));
-                } else {
-                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                }
-            }
-        });
+        emailEditText.setOnFocusChangeListener((v, hasFocus) -> EditTextBehavior.setIconTintOnFocus(getApplicationContext(), emailLayout, hasFocus, isValidateEmail));
 
-        passwordEditText.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                if (isValidatePassword) {
-                    passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                    passwordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_primary));
-                } else {
-                    passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                }
-            } else {
-                if (isValidatePassword) {
-                    passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_onSurfaceVariant));
-                    passwordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_onSurfaceVariant));
-                } else {
-                    passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                }
-            }
-        });
+        passwordEditText.setOnFocusChangeListener((v, hasFocus) -> EditTextBehavior.setIconTintOnFocus(getApplicationContext(), passwordLayout, hasFocus, isValidatePassword));
 
         loginButton.setOnClickListener(v -> {
             email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
@@ -183,15 +129,24 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
             loginCall.enqueue(new Callback<AccountAPI>() {
                 @Override
                 public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
-                    if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
+                    if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
                         AccountData loginData = response.body().getAccountData();
                         sessionManager.createLoginSession(loginData);
                         startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
                         finish();
                         loadingDialog.dismissDialog();
-                    } else {
+                    } else if (Objects.requireNonNull(response.body()).getCode() == 400) {
                         loadingDialog.dismissDialog();
-                        Toast.makeText(LoginActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        isValidatePassword = false;
+                        passwordLayout.setError("Password salah!");
+                        passwordLayout.setErrorIconDrawable(null);
+                        passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
+                        passwordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
+                    } else if (response.body().getCode() == 401) {
+                        loadingDialog.dismissDialog();
+                        isValidateEmail = false;
+                        emailLayout.setError("Email belum terdaftar!");
+                        emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
                     }
                 }
 
