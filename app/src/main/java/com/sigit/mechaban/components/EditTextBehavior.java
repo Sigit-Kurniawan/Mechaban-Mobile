@@ -1,4 +1,4 @@
-package com.sigit.mechaban.components.behavior;
+package com.sigit.mechaban.components;
 
 import android.content.Context;
 import android.util.Patterns;

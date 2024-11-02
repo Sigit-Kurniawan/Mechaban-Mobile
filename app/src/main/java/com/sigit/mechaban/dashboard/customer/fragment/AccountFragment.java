@@ -78,7 +78,7 @@ public class AccountFragment extends Fragment {
                     String photoBase64 = response.body().getAccountData().getPhoto();
                     if (photoBase64 != null && !photoBase64.isEmpty()) {
                         Glide.with(requireActivity())
-                                .load("http://" + BuildConfig.ip + "/api/" + photoBase64)
+                                .load("http://" + BuildConfig.ip + "/api/src/" + photoBase64)
                                 .into(photoProfile);
                     }
                     tvName.setText(response.body().getAccountData().getName());

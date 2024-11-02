@@ -22,7 +22,7 @@ import com.sigit.mechaban.api.ApiInterface;
 import com.sigit.mechaban.api.model.account.AccountAPI;
 import com.sigit.mechaban.components.LoadingDialog;
 import com.sigit.mechaban.components.ModalBottomSheet;
-import com.sigit.mechaban.components.behavior.EditTextBehavior;
+import com.sigit.mechaban.components.EditTextBehavior;
 import com.sigit.mechaban.connection.Connection;
 import com.sigit.mechaban.object.Account;
 

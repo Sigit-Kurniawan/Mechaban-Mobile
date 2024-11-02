@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.dashboard.customer.service.DetailComponentAdapter;
-import com.sigit.mechaban.dashboard.customer.service.DetailServiceAdapter;
 import com.sigit.mechaban.dashboard.customer.service.ServiceAdapter;
 
 import java.util.List;
@@ -31,7 +30,7 @@ public class DetailBottomSheet extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.detail_bottom_sheet, container, false);
+        View view = inflater.inflate(R.layout.bottom_sheet_detail_service, container, false);
 
         RecyclerView detailRecycler = view.findViewById(R.id.detail_recycler);
         detailRecycler.setLayoutManager(new LinearLayoutManager(getContext()));

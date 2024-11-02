@@ -29,7 +29,8 @@ import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
 import com.sigit.mechaban.api.model.account.AccountAPI;
-import com.sigit.mechaban.components.behavior.EditTextBehavior;
+import com.sigit.mechaban.auth.LoginActivity;
+import com.sigit.mechaban.components.EditTextBehavior;
 import com.sigit.mechaban.object.Account;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 import com.yalantis.ucrop.UCrop;
@@ -190,7 +191,7 @@ public class EditAccountActivity extends AppCompatActivity {
                     String photoBase64 = response.body().getAccountData().getPhoto();
                     if (photoBase64 != null && !photoBase64.isEmpty()) {
                         Glide.with(EditAccountActivity.this)
-                                .load("http://" + BuildConfig.ip + "/api/" + photoBase64)
+                                .load("http://" + BuildConfig.ip + "/api/src/" + photoBase64)
                                 .into(photoProfile);
                     }
                 }
@@ -227,6 +228,28 @@ public class EditAccountActivity extends AppCompatActivity {
                         finish();
                     } else {
                         Toast.makeText(EditAccountActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
+                    Log.e("EditAccountActivity", t.toString(), t);
+                }
+            });
+        });
+
+        findViewById(R.id.delete_button).setOnClickListener(v -> {
+            account.setAction("delete");
+            account.setEmail(sessionManager.getUserDetail().get("email"));
+
+            Call<AccountAPI> deleteAccountCall = apiInterface.accountResponse(account);
+            deleteAccountCall.enqueue(new Callback<AccountAPI>() {
+                @Override
+                public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
+                    if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
+                        sessionManager.logoutSession();
+                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                        finish();
                     }
                 }
 

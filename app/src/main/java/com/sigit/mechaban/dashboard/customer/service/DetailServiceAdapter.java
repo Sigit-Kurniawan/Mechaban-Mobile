@@ -23,7 +23,7 @@ public class DetailServiceAdapter extends RecyclerView.Adapter<DetailServiceAdap
     public DetailServiceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new DetailServiceViewHolder(LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.detail_service_item_recyclerview, parent, false));
+                .inflate(R.layout.recyclerview_detail_service_item, parent, false));
     }
 
     @Override

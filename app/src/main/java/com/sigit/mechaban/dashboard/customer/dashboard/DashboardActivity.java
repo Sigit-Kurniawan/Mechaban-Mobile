@@ -1,7 +1,9 @@
 package com.sigit.mechaban.dashboard.customer.dashboard;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -19,9 +21,11 @@ import java.util.Objects;
 
 public class DashboardActivity extends AppCompatActivity {
     private Fragment homeFragment, garageFragment, activityFragment, accountFragment, activeFragment;
+    private TextView toolbarTitle;
     private FloatingActionButton floatingActionButton;
     private int id;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +49,8 @@ public class DashboardActivity extends AppCompatActivity {
                 .commit();
 
         setSupportActionBar(findViewById(R.id.action_bar));
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        toolbarTitle = findViewById(R.id.toolbar_title);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -55,12 +61,12 @@ public class DashboardActivity extends AppCompatActivity {
                 return true;
             } else if (id == R.id.garage) {
                 switchFragment(garageFragment);
-                Objects.requireNonNull(getSupportActionBar()).setTitle("Garasi");
+                toolbarTitle.setText("Garasi");
                 getSupportActionBar().show();
                 return true;
             } else if (id == R.id.activity) {
                 switchFragment(activityFragment);
-                Objects.requireNonNull(getSupportActionBar()).setTitle("Aktivitas");
+                toolbarTitle.setText("Aktivitas");
                 getSupportActionBar().show();
                 return true;
             } else if (id == R.id.account) {

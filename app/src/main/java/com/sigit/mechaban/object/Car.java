@@ -1,7 +1,7 @@
 package com.sigit.mechaban.object;
 
 public class Car {
-    private String action, nopol, merk, type, transmition, year, email;
+    private String action, nopol, nopolUpdate, merk, type, transmition, year, email;
 
     public void setAction(String action) {
         this.action = action;
@@ -9,6 +9,10 @@ public class Car {
 
     public void setNopol(String nopol) {
         this.nopol = nopol;
+    }
+
+    public void setNopolUpdate(String nopolUpdate) {
+        this.nopolUpdate = nopolUpdate;
     }
 
     public void setMerk(String merk) {

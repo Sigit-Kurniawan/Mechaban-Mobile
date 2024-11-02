@@ -43,7 +43,7 @@
             android:textAppearance="?attr/textAppearanceBodyLarge" />
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/car_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -55,5 +55,6 @@
             android:id="@+id/car_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </LinearLayout>
+
+    </RelativeLayout>
 </FrameLayout>

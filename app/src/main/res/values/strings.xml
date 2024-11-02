@@ -41,4 +41,18 @@
     <string name="tambah_foto">Tambah foto</string>
     <string name="pasang_foto_yang_oke_semua_orang_bakal_bisa_lihat">Pasang foto yang oke! Semua orang bakal bisa lihat.</string>
     <string name="verifikasi_akun">Verifikasi Akun</string>
+    <string name="masukkan_data_mobil_anda">Masukkan Data Mobil Anda</string>
+    <string name="nomor_polisi_mobil">Nomor Polisi Mobil</string>
+    <string name="ab">AB</string>
+    <string name="_1234">1234</string>
+    <string name="cde">CDE</string>
+    <string name="merek">Merek</string>
+    <string name="tipe_model">Tipe/Model</string>
+    <string name="transmisi">Transmisi</string>
+    <string name="tahun_produksi">Tahun Produksi</string>
+    <string name="check_icon">Check icon</string>
+    <string name="manual">Manual</string>
+    <string name="auto">Auto</string>
+    <string name="hapus_mobil">Hapus Mobil</string>
+    <string name="hapus_akun">Hapus Akun</string>
 </resources>

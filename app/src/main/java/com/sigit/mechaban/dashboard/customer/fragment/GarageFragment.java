@@ -73,8 +73,8 @@ public class GarageFragment extends Fragment {
                         requireView().findViewById(R.id.empty_view).setVisibility(View.GONE);
                         requireView().findViewById(R.id.car_list_view).setVisibility(View.VISIBLE);
                         List<CarAdapter.CarItem> carItemList = new ArrayList<>();
-                        for (CarData carData : response.body().getCarData()) {
-                            carItemList.add(new CarAdapter.CarItem(carData.getMerk(), carData.getType(), carData.getYear()));
+                        for (CarData carData : response.body().getListCarData()) {
+                            carItemList.add(new CarAdapter.CarItem(carData.getNopol(), carData.getMerk(), carData.getType(), carData.getYear()));
                         }
                         carList.setLayoutManager(new LinearLayoutManager(getContext()));
                         carList.setAdapter(new CarAdapter(requireActivity().getApplicationContext(), carItemList));

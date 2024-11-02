@@ -15,6 +15,7 @@ retrofit = "2.6.1"
 stepviewVersion = "1.5.1"
 googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.0.0"
+ucrop = "2.2.8"
 
 [libraries]
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
@@ -32,6 +33,7 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 shuhart-stepview = { module = "com.github.shuhart:stepview", version.ref = "stepviewVersion" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+ucrop = { module = "com.github.yalantis:ucrop", version.ref = "ucrop" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -24,7 +24,7 @@ public class DetailComponentAdapter extends RecyclerView.Adapter<DetailComponent
     public DetailComponentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new DetailComponentViewHolder(LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.detail_component_item_recyclerview, parent, false));
+                .inflate(R.layout.recyclerview_detail_component_item, parent, false));
     }
 
     @Override

@@ -29,7 +29,7 @@ public class AccordionAdapter extends RecyclerView.Adapter<AccordionAdapter.Acco
     public AccordionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new AccordionViewHolder(LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.accordion_item_recyclerview, parent, false));
+                .inflate(R.layout.recyclerview_accordion_item, parent, false));
     }
 
     @Override

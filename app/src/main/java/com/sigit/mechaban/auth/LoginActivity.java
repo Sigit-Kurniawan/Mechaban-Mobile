@@ -5,9 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.Patterns;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,7 +19,7 @@ import com.sigit.mechaban.api.model.account.AccountAPI;
 import com.sigit.mechaban.api.model.account.AccountData;
 import com.sigit.mechaban.components.LoadingDialog;
 import com.sigit.mechaban.components.ModalBottomSheet;
-import com.sigit.mechaban.components.behavior.EditTextBehavior;
+import com.sigit.mechaban.components.EditTextBehavior;
 import com.sigit.mechaban.connection.Connection;
 import com.sigit.mechaban.dashboard.customer.dashboard.DashboardActivity;
 import com.sigit.mechaban.R;
