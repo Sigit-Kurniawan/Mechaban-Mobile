@@ -32,7 +32,7 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
 
         homeFragment = new HomeFragment();
-        garageFragment = new GarageFragment(this::updateFabVisibility);
+        garageFragment = new GarageFragment();
         activityFragment = new ActivityFragment();
         accountFragment = new AccountFragment();
         floatingActionButton = findViewById(R.id.fab_button);
@@ -89,14 +89,6 @@ public class DashboardActivity extends AppCompatActivity {
         }
 
         if (fragment == garageFragment) {
-            floatingActionButton.show();
-        } else {
-            floatingActionButton.hide();
-        }
-    }
-
-    private void updateFabVisibility(boolean isCarListNotEmpty) {
-        if (isCarListNotEmpty) {
             floatingActionButton.show();
         } else {
             floatingActionButton.hide();

@@ -31,16 +31,7 @@ import retrofit2.Response;
 public class GarageFragment extends Fragment {
     private SessionManager sessionManager;
     private RecyclerView carList;
-    private final CallbackInterface callback;
     private final Car car = new Car();
-
-    public interface CallbackInterface {
-        void updateFabVisibility(boolean isCarListEmpty);
-    }
-
-    public GarageFragment(CallbackInterface callback) {
-        this.callback = callback;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,7 +70,8 @@ public class GarageFragment extends Fragment {
                         carList.setLayoutManager(new LinearLayoutManager(getContext()));
                         carList.setAdapter(new CarAdapter(requireActivity().getApplicationContext(), carItemList));
                     } else {
-                        callback.updateFabVisibility(false);
+                        requireView().findViewById(R.id.empty_view).setVisibility(View.VISIBLE);
+                        requireView().findViewById(R.id.car_list_view).setVisibility(View.GONE);
                     }
                 }
             }

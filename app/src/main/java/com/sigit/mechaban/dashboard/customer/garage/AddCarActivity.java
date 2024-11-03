@@ -202,43 +202,43 @@ public class AddCarActivity extends AppCompatActivity {
                     }
                 });
             });
-        }
+        } else {
+            saveButton.setOnClickListener(v -> {
+                nopol = String.join("", Objects.requireNonNull(kodeWilayahEditText.getText()).toString(), Objects.requireNonNull(angkaEditText.getText()).toString(), Objects.requireNonNull(hurufEditText.getText()).toString());
+                merk = Objects.requireNonNull(merkEditText.getText()).toString();
+                type = Objects.requireNonNull(typeEditText.getText()).toString();
+                transmition = Objects.requireNonNull(transmitionEditText.getText()).toString().toLowerCase();
+                year = Objects.requireNonNull(yearEditText.getText()).toString();
+                email = new SessionManager(this).getUserDetail().get("email");
 
-        saveButton.setOnClickListener(v -> {
-            nopol = String.join("", Objects.requireNonNull(kodeWilayahEditText.getText()).toString(), Objects.requireNonNull(angkaEditText.getText()).toString(), Objects.requireNonNull(hurufEditText.getText()).toString());
-            merk = Objects.requireNonNull(merkEditText.getText()).toString();
-            type = Objects.requireNonNull(typeEditText.getText()).toString();
-            transmition = Objects.requireNonNull(transmitionEditText.getText()).toString().toLowerCase();
-            year = Objects.requireNonNull(yearEditText.getText()).toString();
-            email = new SessionManager(this).getUserDetail().get("email");
+                car.setAction("create");
+                car.setNopol(nopol);
+                car.setMerk(merk);
+                car.setType(type);
+                car.setTransmition(transmition);
+                car.setYear(year);
+                car.setEmail(email);
 
-            car.setAction("create");
-            car.setNopol(nopol);
-            car.setMerk(merk);
-            car.setType(type);
-            car.setTransmition(transmition);
-            car.setYear(year);
-            car.setEmail(email);
-
-            ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
-            Call<CarAPI> createCarCall = apiInterface.carResponse(car);
-            createCarCall.enqueue(new Callback<CarAPI>() {
-                @Override
-                public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
-                    if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                        Toast.makeText(AddCarActivity.this, "Berhasil menambahkan mobil", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Toast.makeText(AddCarActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
+                Call<CarAPI> createCarCall = apiInterface.carResponse(car);
+                createCarCall.enqueue(new Callback<CarAPI>() {
+                    @Override
+                    public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
+                        if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
+                            Toast.makeText(AddCarActivity.this, "Berhasil menambahkan mobil", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(AddCarActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(@NonNull Call<CarAPI> call, @NonNull Throwable t) {
-                    Log.e("AddCarActivity", t.toString(), t);
-                }
+                    @Override
+                    public void onFailure(@NonNull Call<CarAPI> call, @NonNull Throwable t) {
+                        Log.e("AddCarActivity", t.toString(), t);
+                    }
+                });
             });
-        });
+        }
     }
 
     @Override
