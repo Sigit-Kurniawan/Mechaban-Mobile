@@ -3,6 +3,7 @@ package com.sigit.mechaban.dashboard.customer.account;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -50,9 +52,10 @@ public class EditAccountActivity extends AppCompatActivity {
     private TextInputEditText emailEditText, nameEditText, noHPEditText, passwordEditText;
     private ActivityResultLauncher<Intent> launcher;
     private Button saveButton;
-    private String email, name, noHP, password;
+    private String email, name, noHP, password, photo;
     private boolean isValidateName, isValidateEmail, isValidateNoHP, isValidatePassword;
     private final Account account = new Account();
+    private Uri uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,9 +91,7 @@ public class EditAccountActivity extends AppCompatActivity {
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Uri imageUri = result.getData().getData();
-                        startCrop(Objects.requireNonNull(imageUri));
-                    } else {
-                        Toast.makeText(EditAccountActivity.this, "Tidak ada foto yang dipilih", Toast.LENGTH_SHORT).show();
+                        startCrop(imageUri);
                     }
                 }
         );
@@ -192,6 +193,8 @@ public class EditAccountActivity extends AppCompatActivity {
                     if (photoBase64 != null && !photoBase64.isEmpty()) {
                         Glide.with(EditAccountActivity.this)
                                 .load("http://" + BuildConfig.ip + "/api/src/" + photoBase64)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
                                 .into(photoProfile);
                     }
                 }
@@ -208,6 +211,13 @@ public class EditAccountActivity extends AppCompatActivity {
             name = Objects.requireNonNull(nameEditText.getText()).toString().trim();
             noHP = Objects.requireNonNull(noHPEditText.getText()).toString().trim();
             password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
+            Bitmap bitmap;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            photo = convertImageToBase64(bitmap);
 
             account.setAction("update");
             account.setEmail(sessionManager.getUserDetail().get("email"));
@@ -215,6 +225,7 @@ public class EditAccountActivity extends AppCompatActivity {
             account.setName(name);
             account.setNo_hp(noHP);
             account.setPassword(password);
+            account.setPhoto(photo);
 
             Call<AccountAPI> updateAccountCall = apiInterface.accountResponse(account);
             updateAccountCall.enqueue(new Callback<AccountAPI>() {
@@ -225,6 +236,7 @@ public class EditAccountActivity extends AppCompatActivity {
                         if (response.body().getMessage().equals("Update email")) {
                             sessionManager.updateEmail(email);
                         }
+                        new File(getCacheDir(), "cropped_image.jpg").delete();
                         finish();
                     } else {
                         Toast.makeText(EditAccountActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
@@ -265,7 +277,6 @@ public class EditAccountActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -277,7 +288,7 @@ public class EditAccountActivity extends AppCompatActivity {
         launcher.launch(intent);
     }
 
-    private void startCrop(@NonNull Uri uri) {
+    private void startCrop(Uri uri) {
         Uri destinationUri = Uri.fromFile(new File(getCacheDir(), "cropped_image.jpg"));
         UCrop.Options options = new UCrop.Options();
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
@@ -294,20 +305,8 @@ public class EditAccountActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == UCrop.REQUEST_CROP) {
-            if (resultCode == RESULT_OK) {
-                Uri resultUri = UCrop.getOutput(data);
-                photoProfile.setImageURI(resultUri);
-                try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
-                    String imageBase64 = convertImageToBase64(bitmap);
-                    account.setPhoto(imageBase64);
-                } catch (IOException e) {
-                    Toast.makeText(this, "Gagal mengonversi gambar", Toast.LENGTH_SHORT).show();
-                }
-            } else if (resultCode == UCrop.RESULT_ERROR) {
-                Throwable cropError = UCrop.getError(data);
-                Toast.makeText(this, "Gagal crop: " + cropError, Toast.LENGTH_SHORT).show();
-            }
+            uri = UCrop.getOutput(data);
+            photoProfile.setImageBitmap(BitmapFactory.decodeFile(new File(getCacheDir(), "cropped_image.jpg").getAbsolutePath()));
         }
     }
 

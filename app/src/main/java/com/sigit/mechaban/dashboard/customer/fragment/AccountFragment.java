@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.sigit.mechaban.BuildConfig;
 import com.sigit.mechaban.R;
@@ -75,12 +76,11 @@ public class AccountFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
                 if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                    String photoBase64 = response.body().getAccountData().getPhoto();
-                    if (photoBase64 != null && !photoBase64.isEmpty()) {
-                        Glide.with(requireActivity())
-                                .load("http://" + BuildConfig.ip + "/api/src/" + photoBase64)
-                                .into(photoProfile);
-                    }
+                    Glide.with(requireActivity())
+                            .load("http://" + BuildConfig.ip + "/api/src/" + response.body().getAccountData().getPhoto())
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into(photoProfile);
                     tvName.setText(response.body().getAccountData().getName());
                     tvEmail.setText(response.body().getAccountData().getEmail());
                 } else {
