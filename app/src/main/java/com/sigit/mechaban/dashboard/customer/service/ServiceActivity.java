@@ -1,6 +1,8 @@
 package com.sigit.mechaban.dashboard.customer.service;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -14,11 +16,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shuhart.stepview.StepView;
 import com.sigit.mechaban.R;
+import com.sigit.mechaban.api.ApiClient;
+import com.sigit.mechaban.api.ApiInterface;
+import com.sigit.mechaban.api.model.service.ServiceAPI;
+import com.sigit.mechaban.api.model.service.ServiceData;
 import com.sigit.mechaban.components.DetailBottomSheet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ServiceActivity extends AppCompatActivity implements ServiceAdapter.OnItemSelectedListener {
     private TextView priceTextView;
@@ -26,6 +37,8 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     private final List<ServiceAdapter.ServiceItem> selectedServices = new ArrayList<>();
     private StepView stepView;
     private ViewFlipper viewFlipper;
+    private final List<AccordionAdapter.AccordionItem> itemList = new ArrayList<>();
+    private AccordionAdapter accordionAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,25 +65,43 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         RecyclerView serviceListRecyclerView = findViewById(R.id.service_list);
         serviceListRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-        List<AccordionAdapter.AccordionItem> itemList = new ArrayList<>();
-        List<ServiceAdapter.ServiceItem> oilServices = new ArrayList<>();
-        oilServices.add(new ServiceAdapter.ServiceItem("Ganti Oli", 20000));
-        oilServices.add(new ServiceAdapter.ServiceItem("Tambah Oli", 3000));
+        accordionAdapter = new AccordionAdapter(itemList, this);
+        serviceListRecyclerView.setAdapter(accordionAdapter);
 
-        List<ServiceAdapter.ServiceItem> tireServices = new ArrayList<>();
-        tireServices.add(new ServiceAdapter.ServiceItem("Tambah angin", 900000));
-        tireServices.add(new ServiceAdapter.ServiceItem("Ganti ban", 1000000));
-        tireServices.add(new ServiceAdapter.ServiceItem("Tambah ban", 23000));
+        ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
+        Call<ServiceAPI> serviceCall = apiInterface.serviceResponse();
+        serviceCall.enqueue(new Callback<ServiceAPI>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onResponse(@NonNull Call<ServiceAPI> call, @NonNull Response<ServiceAPI> response) {
+                if (response.body() != null && response.isSuccessful()) {
+                    Map<String, List<ServiceData>> serviceMap = response.body().getComponent();
 
-        List<ServiceAdapter.ServiceItem> engineServices = new ArrayList<>();
-        engineServices.add(new ServiceAdapter.ServiceItem("Ganti kalbulator", 2000000));
+                    for (String key : serviceMap.keySet()) {
+                        List<ServiceAdapter.ServiceItem> serviceItems = new ArrayList<>();
+                        for (ServiceData serviceData : Objects.requireNonNull(serviceMap.get(key))) {
+                            serviceItems.add(new ServiceAdapter.ServiceItem(
+                                    serviceData.getService(),
+                                    serviceData.getPriceService()
+                            ));
+                        }
 
-        itemList.add(new AccordionAdapter.AccordionItem(R.drawable.oil, "Oli", oilServices));
-        itemList.add(new AccordionAdapter.AccordionItem(R.drawable.oil, "Ban", tireServices));
-        itemList.add(new AccordionAdapter.AccordionItem(R.drawable.oil, "Mesin", engineServices));
+                        itemList.add(new AccordionAdapter.AccordionItem(
+                                R.drawable.oil,
+                                key,
+                                serviceItems
+                        ));
+                    }
 
-        AccordionAdapter adapter = new AccordionAdapter(itemList, this);
-        serviceListRecyclerView.setAdapter(adapter);
+                    accordionAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ServiceAPI> call, @NonNull Throwable t) {
+                Log.e("ServiceActivity", t.toString(), t);
+            }
+        });
 
         priceTextView = findViewById(R.id.price);
 

@@ -193,6 +193,7 @@ public class EditAccountActivity extends AppCompatActivity {
                     if (photoBase64 != null && !photoBase64.isEmpty()) {
                         Glide.with(EditAccountActivity.this)
                                 .load("http://" + BuildConfig.ip + "/api/src/" + photoBase64)
+                                .placeholder(R.drawable.baseline_account_circle_24)
                                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                                 .skipMemoryCache(true)
                                 .into(photoProfile);
@@ -211,13 +212,20 @@ public class EditAccountActivity extends AppCompatActivity {
             name = Objects.requireNonNull(nameEditText.getText()).toString().trim();
             noHP = Objects.requireNonNull(noHPEditText.getText()).toString().trim();
             password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
-            Bitmap bitmap;
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            Log.d("Uri", String.valueOf(uri == null));
+            if (uri != null) {
+                account.setUpdatePhoto(true);
+                Bitmap bitmap;
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+                    photo = convertImageToBase64(bitmap);
+                    account.setPhoto(photo);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                account.setUpdatePhoto(false);
             }
-            photo = convertImageToBase64(bitmap);
 
             account.setAction("update");
             account.setEmail(sessionManager.getUserDetail().get("email"));
@@ -225,7 +233,6 @@ public class EditAccountActivity extends AppCompatActivity {
             account.setName(name);
             account.setNo_hp(noHP);
             account.setPassword(password);
-            account.setPhoto(photo);
 
             Call<AccountAPI> updateAccountCall = apiInterface.accountResponse(account);
             updateAccountCall.enqueue(new Callback<AccountAPI>() {

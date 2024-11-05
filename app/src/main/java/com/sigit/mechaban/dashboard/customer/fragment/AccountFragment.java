@@ -76,11 +76,15 @@ public class AccountFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
                 if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                    Glide.with(requireActivity())
-                            .load("http://" + BuildConfig.ip + "/api/src/" + response.body().getAccountData().getPhoto())
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(photoProfile);
+                    String photo = response.body().getAccountData().getPhoto();
+                    if (photo != null && !photo.isEmpty()) {
+                        Glide.with(requireActivity())
+                                .load("http://" + BuildConfig.ip + "/api/src/" + photo)
+                                .placeholder(R.drawable.baseline_account_circle_24)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .into(photoProfile);
+                    }
                     tvName.setText(response.body().getAccountData().getName());
                     tvEmail.setText(response.body().getAccountData().getEmail());
                 } else {

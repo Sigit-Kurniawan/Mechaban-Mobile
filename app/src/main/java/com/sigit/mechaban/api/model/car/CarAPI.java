@@ -1,7 +1,6 @@
 package com.sigit.mechaban.api.model.car;
 
 import com.google.gson.annotations.SerializedName;
-import com.sigit.mechaban.object.Car;
 
 import java.util.List;
 
