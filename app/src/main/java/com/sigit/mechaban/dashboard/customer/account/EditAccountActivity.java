@@ -212,7 +212,6 @@ public class EditAccountActivity extends AppCompatActivity {
             name = Objects.requireNonNull(nameEditText.getText()).toString().trim();
             noHP = Objects.requireNonNull(noHPEditText.getText()).toString().trim();
             password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
-            Log.d("Uri", String.valueOf(uri == null));
             if (uri != null) {
                 account.setUpdatePhoto(true);
                 Bitmap bitmap;

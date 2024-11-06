@@ -134,7 +134,8 @@ public class AddCarActivity extends AppCompatActivity {
                         }
                         merkEditText.setText(response.body().getCarData().getMerk());
                         typeEditText.setText(response.body().getCarData().getType());
-                        transmitionEditText.setText(response.body().getCarData().getTransmition());
+                        String transmitionResponse = response.body().getCarData().getTransmition();
+                        transmitionEditText.setText(transmitionResponse.substring(0, 1).toUpperCase() + transmitionResponse.substring(1));
                         yearEditText.setText(response.body().getCarData().getYear());
                     }
                 }
