@@ -307,7 +307,6 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     }
 
     private void checkLocationSettings() {
-        // Buat LocationRequest dengan akurasi tinggi
         LocationRequest locationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10000)
