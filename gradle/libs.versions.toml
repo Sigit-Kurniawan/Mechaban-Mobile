@@ -11,6 +11,8 @@ appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.9.2"
 constraintlayout = "2.1.4"
+osmdroidAndroid = "6.1.11"
+playServicesLocation = "21.0.1"
 retrofit = "2.6.1"
 stepviewVersion = "1.5.1"
 googleGmsGoogleServices = "4.4.2"
@@ -30,6 +32,8 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroid" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 shuhart-stepview = { module = "com.github.shuhart:stepview", version.ref = "stepviewVersion" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }

@@ -67,4 +67,6 @@ dependencies {
     implementation(libs.javax.annotation)
     implementation(libs.shuhart.stepview)
     implementation(libs.ucrop)
+    implementation(libs.osmdroid.android)
+    implementation(libs.play.services.location)
 }

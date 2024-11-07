@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
         android:paddingHorizontal="16dp"
-        android:paddingBottom="8dp"
+        android:paddingBottom="16dp"
         app:sv_animationType="All"
         app:sv_doneTextColor="@color/md_theme_onSurfaceVariant"
         app:sv_selectedCircleColor="@color/md_theme_primary"
@@ -137,11 +137,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pilih Lokasi"
-                android:layout_centerInParent="true" />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Pilih Lokasi"-->
+<!--                android:layout_centerInParent="true" />-->
+
+            <org.osmdroid.views.MapView
+                android:id="@+id/map"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </RelativeLayout>
     </ViewFlipper>
 </RelativeLayout>
