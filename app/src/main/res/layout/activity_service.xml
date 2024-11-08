@@ -137,16 +137,32 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Pilih Lokasi"-->
-<!--                android:layout_centerInParent="true" />-->
-
             <org.osmdroid.views.MapView
                 android:id="@+id/map"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:id="@+id/coordinator"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="130dp"
+                android:layout_marginBottom="0dp">
+
+                <FrameLayout
+                    android:id="@+id/bottom_sheet"
+                    style="@style/Widget.Material3.BottomSheet"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+                    app:behavior_hideable="false"
+                    app:behavior_peekHeight="300dp"
+                    app:behavior_draggable="false">
+
+                </FrameLayout>
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
         </RelativeLayout>
     </ViewFlipper>
 </RelativeLayout>

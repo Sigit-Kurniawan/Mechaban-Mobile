@@ -25,6 +25,7 @@ public class SessionManager {
     public HashMap<String, String> getUserDetail() {
         HashMap<String, String> user = new HashMap<>();
         user.put("email", preferences.getString("email", null));
+        user.put("nopol", preferences.getString("nopol", null));
         return user;
     }
 
@@ -39,6 +40,16 @@ public class SessionManager {
 
     public void updateEmail(String email) {
         editor.putString("email", email);
+        editor.commit();
+    }
+
+    public void updateCar(String nopol) {
+        editor.putString("nopol", nopol);
+        editor.commit();
+    }
+
+    public void deleteCar() {
+        editor.remove("nopol");
         editor.commit();
     }
 }

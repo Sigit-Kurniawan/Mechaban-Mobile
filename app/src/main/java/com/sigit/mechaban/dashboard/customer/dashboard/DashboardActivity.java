@@ -15,7 +15,7 @@ import com.sigit.mechaban.dashboard.customer.fragment.AccountFragment;
 import com.sigit.mechaban.dashboard.customer.fragment.ActivityFragment;
 import com.sigit.mechaban.dashboard.customer.fragment.GarageFragment;
 import com.sigit.mechaban.dashboard.customer.fragment.HomeFragment;
-import com.sigit.mechaban.dashboard.customer.garage.AddCarActivity;
+import com.sigit.mechaban.dashboard.customer.garage.CarActivity;
 
 import java.util.Objects;
 
@@ -36,7 +36,7 @@ public class DashboardActivity extends AppCompatActivity {
         activityFragment = new ActivityFragment();
         accountFragment = new AccountFragment();
         floatingActionButton = findViewById(R.id.fab_button);
-        floatingActionButton.setOnClickListener(v -> startActivity(new Intent(this, AddCarActivity.class)));
+        floatingActionButton.setOnClickListener(v -> startActivity(new Intent(this, CarActivity.class)));
         floatingActionButton.hide();
 
         activeFragment = homeFragment;

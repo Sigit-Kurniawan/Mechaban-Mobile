@@ -32,7 +32,7 @@
             android:name=".dashboard.customer.account.EditAccountActivity"
             android:exported="false" />
         <activity
-            android:name=".dashboard.customer.garage.AddCarActivity"
+            android:name=".dashboard.customer.garage.CarActivity"
             android:exported="false" />
         <activity
             android:name=".auth.RegisterActivity"

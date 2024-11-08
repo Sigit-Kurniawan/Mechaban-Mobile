@@ -46,7 +46,8 @@
             android:layout_toStartOf="@+id/price_text"
             android:fontFamily="@font/montserrat_semibold"
             android:text="@string/rp"
-            android:textAppearance="?attr/textAppearanceBodyLarge" />
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            tools:ignore="RelativeOverlap" />
 
         <TextView
             android:id="@+id/price_text"

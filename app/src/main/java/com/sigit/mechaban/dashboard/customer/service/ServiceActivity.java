@@ -5,9 +5,12 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -26,7 +29,9 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.Priority;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.shuhart.stepview.StepView;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
@@ -50,6 +55,8 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 public class ServiceActivity extends AppCompatActivity implements ServiceAdapter.OnItemSelectedListener {
     private TextView priceTextView;
@@ -60,11 +67,11 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     private final List<AccordionAdapter.AccordionItem> itemList = new ArrayList<>();
     private AccordionAdapter accordionAdapter;
     private MapView mapView;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1, REQUEST_CHECK_SETTINGS = 1001;
     private FusedLocationProviderClient fusedLocationClient;
     private Marker userMarker;
-    private static final int REQUEST_CHECK_SETTINGS = 1001;
     private boolean isLocationSettingsEnabled = false;
+    private MyLocationNewOverlay myLocationOverlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,9 +163,10 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            getDeviceLocation();
-        } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            initMyLocationOverlay();
+            getDeviceLocation();
         }
 
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(new MapEventsReceiver() {
@@ -175,9 +183,9 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         });
         mapView.getOverlays().add(mapEventsOverlay);
 
-//        GeoPoint startPoint = new GeoPoint(-6.1751, 106.8650); // Jakarta, sebagai contoh
-//        mapView.getController().setZoom(15.0); // Setel tingkat zoom awal
-//        mapView.getController().setCenter(startPoint);
+        GeoPoint startPoint = new GeoPoint(-8.366329401119295, 114.15234630990764);
+        mapView.getController().setZoom(15.0); // Setel tingkat zoom awal
+        mapView.getController().setCenter(startPoint);
     }
 
     private void onNextClicked() {
@@ -270,6 +278,10 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     }
 
     private void addMarkerAtLocation(GeoPoint location) {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottom_sheet_address, null, false);
+        TextView addressTextView = view.findViewById(R.id.address);
+
         if (userMarker != null) {
             mapView.getOverlays().remove(userMarker); // Hapus marker sebelumnya
         }
@@ -281,10 +293,23 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         userMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM); // Mengatur posisi anchor
         mapView.getOverlays().add(userMarker);
 
-        // Simpan lokasi marker yang dipilih pengguna
-
-        // Tampilkan lokasi dalam Toast
-        Toast.makeText(this, "Lokasi Marker: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_LONG).show();
+        // Konversi koordinat ke alamat menggunakan Geocoder
+        Geocoder geocoder = new Geocoder(this);
+        try {
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                Address address = addresses.get(0);
+                String addressText = address.getAddressLine(0); // Mendapatkan baris alamat pertama
+                addressTextView.setText(addressText);
+                bottomSheetDialog.setContentView(view);
+                bottomSheetDialog.show();
+            } else {
+                Toast.makeText(this, "Alamat tidak ditemukan untuk lokasi ini", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            Log.e("ServiceActivity", e.toString(), e);
+            Toast.makeText(this, "Gagal mendapatkan alamat: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
 
         // Pindahkan peta ke lokasi marker baru
         mapView.getController().animateTo(location);
@@ -307,10 +332,9 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     }
 
     private void checkLocationSettings() {
-        LocationRequest locationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(10000)
-                .setFastestInterval(5000);
+        LocationRequest locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
+                .setMinUpdateIntervalMillis(5000)
+                .build();
 
         // Buat LocationSettingsRequest menggunakan LocationRequest
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
@@ -332,12 +356,28 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
                             resolvable.startResolutionForResult(ServiceActivity.this, REQUEST_CHECK_SETTINGS);
                         } catch (IntentSender.SendIntentException sendEx) {
                             // Tangani kesalahan
-                            sendEx.printStackTrace();
+                            Log.e("ServiceActivity", sendEx.toString(), sendEx);
                         }
                     } else {
                         // Tangani kegagalan lainnya
                         Toast.makeText(ServiceActivity.this, "Tidak bisa mengaktifkan lokasi", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void initMyLocationOverlay() {
+        // Inisialisasi MyLocationNewOverlay
+        myLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this), mapView);
+        myLocationOverlay.enableMyLocation(); // Mulai mendeteksi lokasi perangkat
+        myLocationOverlay.enableFollowLocation(); // Ikuti posisi perangkat
+        mapView.getOverlays().add(myLocationOverlay); // Tambahkan overlay ke MapView
+
+        // Pindahkan kamera ke lokasi pengguna jika tersedia
+        myLocationOverlay.runOnFirstFix(() -> {
+            GeoPoint userLocation = myLocationOverlay.getMyLocation();
+            if (userLocation != null) {
+                mapView.getController().animateTo(userLocation);
+            }
+        });
     }
 }

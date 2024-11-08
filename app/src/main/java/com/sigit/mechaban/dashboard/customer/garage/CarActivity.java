@@ -36,18 +36,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AddCarActivity extends AppCompatActivity {
+public class CarActivity extends AppCompatActivity {
     private TextInputEditText kodeWilayahEditText, angkaEditText, hurufEditText, merkEditText, typeEditText, transmitionEditText, yearEditText;
     private String nopol, merk, type, transmition, year, email;
     private int transmitionOption;
     private Button saveButton;
     private final Car car = new Car();
+    private SessionManager sessionManager;
+    private NumberPicker yearPicker;
 
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_car);
+        setContentView(R.layout.activity_car);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -62,6 +64,7 @@ public class AddCarActivity extends AppCompatActivity {
         transmitionEditText = findViewById(R.id.transmition_field);
         yearEditText = findViewById(R.id.year_field);
         saveButton = findViewById(R.id.save_button);
+        sessionManager = new SessionManager(this);
 
         saveButton.setEnabled(false);
 
@@ -136,7 +139,13 @@ public class AddCarActivity extends AppCompatActivity {
                         typeEditText.setText(response.body().getCarData().getType());
                         String transmitionResponse = response.body().getCarData().getTransmition();
                         transmitionEditText.setText(transmitionResponse.substring(0, 1).toUpperCase() + transmitionResponse.substring(1));
+                        if (transmitionResponse.equals("Auto")) {
+                            transmitionOption = 1;
+                        } else {
+                            transmitionOption = 2;
+                        }
                         yearEditText.setText(response.body().getCarData().getYear());
+//                        yearPicker.setValue(Integer.parseInt(response.body().getCarData().getYear()));
                     }
                 }
 
@@ -167,10 +176,10 @@ public class AddCarActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
                         if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                            Toast.makeText(AddCarActivity.this, "Berhasil update mobil", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CarActivity.this, "Berhasil update mobil", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(AddCarActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CarActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -190,10 +199,13 @@ public class AddCarActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
                         if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                            Toast.makeText(AddCarActivity.this, "Berhasil hapus mobil", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CarActivity.this, "Berhasil hapus mobil", Toast.LENGTH_SHORT).show();
+                            if (Objects.requireNonNull(intent.getStringExtra("nopol")).equals(sessionManager.getUserDetail().get("nopol"))) {
+                                sessionManager.deleteCar();
+                            }
                             finish();
                         } else {
-                            Toast.makeText(AddCarActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CarActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -226,10 +238,10 @@ public class AddCarActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
                         if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                            Toast.makeText(AddCarActivity.this, "Berhasil menambahkan mobil", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CarActivity.this, "Berhasil menambahkan mobil", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(AddCarActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CarActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -338,7 +350,7 @@ public class AddCarActivity extends AppCompatActivity {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         @SuppressLint("InflateParams") View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_year_picker, null, false);
 
-        NumberPicker yearPicker = bottomSheetView.findViewById(R.id.year_picker);
+        yearPicker = bottomSheetView.findViewById(R.id.year_picker);
         int currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
         yearPicker.setMinValue(1900);
         yearPicker.setMaxValue(currentYear);

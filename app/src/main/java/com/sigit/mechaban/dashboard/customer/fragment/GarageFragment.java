@@ -67,8 +67,20 @@ public class GarageFragment extends Fragment {
                         for (CarData carData : response.body().getListCarData()) {
                             carItemList.add(new CarAdapter.CarItem(carData.getNopol(), carData.getMerk(), carData.getType(), carData.getYear()));
                         }
+
+                        String savedNopol = sessionManager.getUserDetail().get("nopol");
+                        int savedPosition = -1;
+                        if (savedNopol != null) {
+                            for (int i = 0; i < carItemList.size(); i++) {
+                                if (carItemList.get(i).getNopol().equals(savedNopol)) {
+                                    savedPosition = i;
+                                    break;
+                                }
+                            }
+                        }
+
                         carList.setLayoutManager(new LinearLayoutManager(getContext()));
-                        carList.setAdapter(new CarAdapter(requireActivity().getApplicationContext(), carItemList));
+                        carList.setAdapter(new CarAdapter(requireActivity().getApplicationContext(), carItemList, savedPosition));
                     } else {
                         requireView().findViewById(R.id.empty_view).setVisibility(View.VISIBLE);
                         requireView().findViewById(R.id.car_list_view).setVisibility(View.GONE);

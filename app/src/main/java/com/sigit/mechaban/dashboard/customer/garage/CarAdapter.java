@@ -14,17 +14,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sigit.mechaban.R;
+import com.sigit.mechaban.sessionmanager.SessionManager;
 
 import java.util.List;
 
 public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     private final Context context;
     private final List<CarItem> carItems;
-    private int selectedPosition = -1;
+    private int selectedPosition;
+    private final SessionManager sessionManager;
 
-    public CarAdapter(Context context, List<CarItem> carItems) {
+    public CarAdapter(Context context, List<CarItem> carItems, int selectedPosition) {
         this.context = context;
         this.carItems = carItems;
+        this.sessionManager = new SessionManager(context);
+        this.selectedPosition = selectedPosition;
     }
 
     @NonNull
@@ -44,6 +48,8 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
             selectedPosition = holder.getBindingAdapterPosition();
             notifyItemChanged(previousPosition);
             notifyItemChanged(selectedPosition);
+
+            sessionManager.updateCar(carItems.get(position).getNopol());
         };
 
         holder.getItem().setOnClickListener(listener);
@@ -54,7 +60,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
         holder.getYearTextView().setText(carItems.get(position).getYear());
 
         holder.getEditButton().setOnClickListener(v -> {
-            Intent intent = new Intent(context, AddCarActivity.class);
+            Intent intent = new Intent(context, CarActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("nopol", carItems.get(position).getNopol());
             context.startActivity(intent);
