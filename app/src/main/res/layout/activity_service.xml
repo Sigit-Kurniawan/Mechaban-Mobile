@@ -32,6 +32,7 @@
         android:paddingBottom="16dp"
         app:sv_animationType="All"
         app:sv_doneTextColor="@color/md_theme_onSurfaceVariant"
+        app:sv_doneStepLineColor="@color/md_theme_background"
         app:sv_selectedCircleColor="@color/md_theme_primary"
         app:sv_selectedStepNumberColor="@color/md_theme_onPrimary"
         app:sv_selectedTextColor="@color/md_theme_onBackground"
@@ -122,7 +123,7 @@
                 </RelativeLayout>
 
                 <Button
-                    android:id="@+id/next_button"
+                    android:id="@+id/to_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -140,29 +141,221 @@
             <org.osmdroid.views.MapView
                 android:id="@+id/map"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="510dp" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_center_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/coordinator"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                app:srcCompat="@android:drawable/ic_menu_mylocation"
+                tools:ignore="ContentDescription" />
 
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:id="@+id/coordinator"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="130dp"
-                android:layout_marginBottom="0dp">
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true">
 
                 <FrameLayout
                     android:id="@+id/bottom_sheet"
                     style="@style/Widget.Material3.BottomSheet"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
                     app:behavior_hideable="false"
-                    app:behavior_peekHeight="300dp"
-                    app:behavior_draggable="false">
+                    app:behavior_peekHeight="205dp"
+                    app:behavior_draggable="false"
+                    app:shapeAppearance="?attr/shapeAppearanceCornerMedium">
 
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="16dp"
+                        android:layout_marginHorizontal="16dp">
+
+                        <TextView
+                            android:id="@+id/title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Set alamat"
+                            android:layout_marginBottom="8dp"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:textAppearance="?attr/textAppearanceTitleLarge" />
+
+                        <TextView
+                            android:id="@+id/address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_below="@id/title"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:textAppearance="?attr/textAppearanceBodySmall"/>
+
+                        <Button
+                            android:id="@+id/to_confirmation"
+                            style="@style/Widget.Material3.Button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/address"
+                            android:text="Lanjut"
+                            android:fontFamily="@font/montserrat_semibold"/>
+
+                    </RelativeLayout>
                 </FrameLayout>
-
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/confirmation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/title_confirmation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/rincian_servis"
+                android:fontFamily="@font/montserrat_semibold"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"/>
+
+            <LinearLayout
+                android:id="@+id/identity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title_confirmation"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="12dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/background_component">
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nama"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"/>
+
+                <TextView
+                    android:id="@+id/tv_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/email"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textAppearance="?attr/textAppearanceBodySmall"/>
+
+                <TextView
+                    android:id="@+id/tv_no_hp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_hp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textAppearance="?attr/textAppearanceBodySmall"/>
+
+                <TextView
+                    android:id="@+id/tv_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Alamat"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textAppearance="?attr/textAppearanceBodySmall"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/car"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/identity"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="12dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/background_component">
+
+                <TextView
+                    android:id="@+id/tv_merk"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/merek"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"/>
+
+                <TextView
+                    android:id="@+id/tv_nopol"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nopol"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textAppearance="?attr/textAppearanceBodySmall"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="@string/tipe_model"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:textAppearance="?attr/textAppearanceBodySmall"/>
+
+                    <TextView
+                        android:id="@+id/tv_transmition"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/transmisi"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:textAppearance="?attr/textAppearanceBodySmall"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/service_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/car"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="12dp"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/background_component">
+
+                <TextView
+                    android:id="@+id/title_service"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cek ringkasan servismu yuk!"
+                    android:fontFamily="@font/montserrat_semibold"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/service_confirmation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
         </RelativeLayout>
     </ViewFlipper>
 </RelativeLayout>

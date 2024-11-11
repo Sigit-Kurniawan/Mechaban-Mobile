@@ -43,6 +43,7 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
     private String password;
     private final LoadingDialog loadingDialog = new LoadingDialog(this);
     private final Account account = new Account();
+    private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,7 +184,6 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
             account.setAction("verification");
             account.setEmail(email);
 
-            ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
             Call<AccountAPI> sendOtpCall = apiInterface.accountResponse(account);
             sendOtpCall.enqueue(new Callback<AccountAPI>() {
                 @Override
@@ -223,7 +223,6 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
     private void registerEvent() {
         loadingDialog.startLoadingDialog();
         if (new Connection(this).isNetworkAvailable()) {
-            ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
             Call<AccountAPI> registerCall = apiInterface.accountResponse(account);
             registerCall.enqueue(new Callback<AccountAPI>() {
                 @Override

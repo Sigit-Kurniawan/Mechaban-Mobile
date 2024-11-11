@@ -10,7 +10,6 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -31,14 +30,18 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.shuhart.stepview.StepView;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
+import com.sigit.mechaban.api.model.account.AccountAPI;
+import com.sigit.mechaban.api.model.car.CarAPI;
 import com.sigit.mechaban.api.model.service.ServiceAPI;
 import com.sigit.mechaban.api.model.service.ServiceData;
 import com.sigit.mechaban.components.DetailBottomSheet;
+import com.sigit.mechaban.object.Account;
+import com.sigit.mechaban.object.Car;
+import com.sigit.mechaban.sessionmanager.SessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,31 +58,37 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 public class ServiceActivity extends AppCompatActivity implements ServiceAdapter.OnItemSelectedListener {
-    private TextView priceTextView;
-    private int totalPrice = 0, currentStep = 0;
-    private final List<ServiceAdapter.ServiceItem> selectedServices = new ArrayList<>();
+    // Variabel di service activity
     private StepView stepView;
     private ViewFlipper viewFlipper;
+    private int currentStep = 0;
+    // Variabel pilih servis
+    private TextView priceTextView, addressTextView;
     private final List<AccordionAdapter.AccordionItem> itemList = new ArrayList<>();
     private AccordionAdapter accordionAdapter;
+    private final List<ServiceAdapter.ServiceItem> selectedServices = new ArrayList<>();
+    private int totalPrice = 0;
+    // Variabel pilih lokasi
     private MapView mapView;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1, REQUEST_CHECK_SETTINGS = 1001;
     private FusedLocationProviderClient fusedLocationClient;
     private Marker userMarker;
     private boolean isLocationSettingsEnabled = false;
-    private MyLocationNewOverlay myLocationOverlay;
+    private String addressDecode;
+    // Variabel konfirmasi
+    private TextView nameTextView, emailTextView, noHPTextView, addressConfirmationTextView, merkTextView, nopolTextView, typeTextView, transmitionTextView;
+    private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
+    private final Account account = new Account();
+    private final Car car = new Car();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_service);
 
         Configuration.getInstance().setUserAgentValue(getPackageName());
-
-        setContentView(R.layout.activity_service);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -98,6 +107,13 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
 
         viewFlipper = findViewById(R.id.view_flipper);
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                backPressed();
+            }
+        });
+
         // View pilih service
         RecyclerView serviceListRecyclerView = findViewById(R.id.service_list);
         serviceListRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -105,7 +121,6 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         accordionAdapter = new AccordionAdapter(itemList, this);
         serviceListRecyclerView.setAdapter(accordionAdapter);
 
-        ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
         Call<ServiceAPI> serviceCall = apiInterface.serviceResponse();
         serviceCall.enqueue(new Callback<ServiceAPI>() {
             @SuppressLint("NotifyDataSetChanged")
@@ -144,28 +159,23 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
 
         findViewById(R.id.detail_service).setOnClickListener(v -> new DetailBottomSheet(totalPrice, selectedServices).show(getSupportFragmentManager(), "ModalBottomSheet"));
 
-        findViewById(R.id.next_button).setOnClickListener(v -> onNextClicked());
-
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                backPressed();
-            }
-        });
+        findViewById(R.id.to_location).setOnClickListener(v -> onNextClicked());
 
         // View pilih lokasi
         checkLocationSettings();
 
         mapView = findViewById(R.id.map);
-//        mapView.setBuiltInZoomControls(true);
+        addressTextView = findViewById(R.id.address);
         mapView.setMultiTouchControls(true);
+        mapView.getZoomController().setVisibility(org.osmdroid.views.CustomZoomButtonsController.Visibility.NEVER);
+
+        findViewById(R.id.fab_center_location).setOnClickListener(v -> getDeviceLocation());
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         } else {
-            initMyLocationOverlay();
             getDeviceLocation();
         }
 
@@ -186,10 +196,75 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         GeoPoint startPoint = new GeoPoint(-8.366329401119295, 114.15234630990764);
         mapView.getController().setZoom(15.0); // Setel tingkat zoom awal
         mapView.getController().setCenter(startPoint);
+
+        findViewById(R.id.to_confirmation).setOnClickListener(v -> onNextClicked());
+
+        // View konfirmasi
+        SessionManager sessionManager = new SessionManager(this);
+
+        nameTextView = findViewById(R.id.tv_name);
+        emailTextView = findViewById(R.id.tv_email);
+        noHPTextView = findViewById(R.id.tv_no_hp);
+        addressConfirmationTextView = findViewById(R.id.tv_address);
+
+        account.setAction("read");
+        account.setEmail(sessionManager.getUserDetail().get("email"));
+        Call<AccountAPI> readAccount = apiInterface.accountResponse(account);
+        readAccount.enqueue(new Callback<AccountAPI>() {
+            @Override
+            public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isStatus()) {
+                    nameTextView.setText(response.body().getAccountData().getName());
+                    emailTextView.setText(response.body().getAccountData().getEmail());
+                    noHPTextView.setText(response.body().getAccountData().getNoHp());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
+                Log.e("Confirmation", t.toString(), t);
+            }
+        });
+
+        merkTextView = findViewById(R.id.tv_merk);
+        nopolTextView = findViewById(R.id.tv_nopol);
+        typeTextView = findViewById(R.id.tv_type);
+        transmitionTextView = findViewById(R.id.tv_transmition);
+
+        car.setAction("detail");
+        car.setNopol(sessionManager.getUserDetail().get("nopol"));
+        Call<CarAPI> readDetailCar = apiInterface.carResponse(car);
+        readDetailCar.enqueue(new Callback<CarAPI>() {
+            @Override
+            public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isStatus()) {
+                    merkTextView.setText(response.body().getCarData().getMerk());
+                    nopolTextView.setText(response.body().getCarData().getNopol());
+                    typeTextView.setText(response.body().getCarData().getType());
+                    transmitionTextView.setText(response.body().getCarData().getTransmition());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<CarAPI> call, @NonNull Throwable t) {
+                Log.e("Confirmation", t.toString(), t);
+            }
+        });
     }
 
     private void onNextClicked() {
-        if (currentStep < stepView.getStepCount() - 1) {
+        if (currentStep == 1) {
+            currentStep++;
+            stepView.go(currentStep, true);
+            viewFlipper.showNext();
+
+            addressConfirmationTextView.setText(addressDecode);
+
+            DetailComponentAdapter detailComponentAdapter = new DetailComponentAdapter(selectedServices);
+            RecyclerView serviceSelected = findViewById(R.id.service_confirmation);
+            serviceSelected.setLayoutManager(new LinearLayoutManager(this));
+            serviceSelected.setAdapter(detailComponentAdapter);
+        } else if (currentStep < stepView.getStepCount() - 1) {
             currentStep++;
             stepView.go(currentStep, true);
             viewFlipper.showNext();
@@ -217,7 +292,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     }
 
     private void backPressed() {
-        if (currentStep == 1) {
+        if (currentStep == 1 || currentStep == 2) {
             currentStep--;
             stepView.go(currentStep, true);
             viewFlipper.showPrevious();
@@ -259,7 +334,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
                         // Set posisi awal peta ke lokasi perangkat
                         GeoPoint userLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
                         mapView.getController().setZoom(15.0);
-                        mapView.getController().setCenter(userLocation);
+                        mapView.getController().animateTo(userLocation);
 
                         // Tambahkan marker di lokasi perangkat
                         addMarkerAtLocation(userLocation);
@@ -278,12 +353,8 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     }
 
     private void addMarkerAtLocation(GeoPoint location) {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottom_sheet_address, null, false);
-        TextView addressTextView = view.findViewById(R.id.address);
-
         if (userMarker != null) {
-            mapView.getOverlays().remove(userMarker); // Hapus marker sebelumnya
+            mapView.getOverlays().remove(userMarker);
         }
 
         // Buat marker baru di lokasi yang dipilih
@@ -299,10 +370,8 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             if (addresses != null && !addresses.isEmpty()) {
                 Address address = addresses.get(0);
-                String addressText = address.getAddressLine(0); // Mendapatkan baris alamat pertama
-                addressTextView.setText(addressText);
-                bottomSheetDialog.setContentView(view);
-                bottomSheetDialog.show();
+                addressDecode = address.getAddressLine(0); // Mendapatkan baris alamat pertama
+                addressTextView.setText(addressDecode);
             } else {
                 Toast.makeText(this, "Alamat tidak ditemukan untuk lokasi ini", Toast.LENGTH_LONG).show();
             }
@@ -321,11 +390,8 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         if (requestCode == REQUEST_CHECK_SETTINGS) {
             if (resultCode == RESULT_OK) {
                 isLocationSettingsEnabled = true;
-                // Pengguna mengaktifkan layanan lokasi
-                Toast.makeText(this, "Layanan lokasi diaktifkan", Toast.LENGTH_SHORT).show();
                 getDeviceLocation();
             } else {
-                // Pengguna menolak mengaktifkan layanan lokasi
                 Toast.makeText(this, "Layanan lokasi tidak diaktifkan", Toast.LENGTH_SHORT).show();
             }
         }
@@ -344,10 +410,6 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
 
         // Periksa pengaturan lokasi
         client.checkLocationSettings(builder.build())
-                .addOnSuccessListener(locationSettingsResponse -> {
-                    // Pengaturan lokasi sudah sesuai, Anda bisa memulai mendapatkan lokasi di sini
-                    Toast.makeText(ServiceActivity.this, "Pengaturan lokasi aktif", Toast.LENGTH_SHORT).show();
-                })
                 .addOnFailureListener(e -> {
                     if (e instanceof ResolvableApiException) {
                         // Pengaturan lokasi tidak sesuai, tampilkan dialog bawaan untuk mengaktifkannya
@@ -355,29 +417,11 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
                             ResolvableApiException resolvable = (ResolvableApiException) e;
                             resolvable.startResolutionForResult(ServiceActivity.this, REQUEST_CHECK_SETTINGS);
                         } catch (IntentSender.SendIntentException sendEx) {
-                            // Tangani kesalahan
                             Log.e("ServiceActivity", sendEx.toString(), sendEx);
                         }
                     } else {
-                        // Tangani kegagalan lainnya
                         Toast.makeText(ServiceActivity.this, "Tidak bisa mengaktifkan lokasi", Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    private void initMyLocationOverlay() {
-        // Inisialisasi MyLocationNewOverlay
-        myLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this), mapView);
-        myLocationOverlay.enableMyLocation(); // Mulai mendeteksi lokasi perangkat
-        myLocationOverlay.enableFollowLocation(); // Ikuti posisi perangkat
-        mapView.getOverlays().add(myLocationOverlay); // Tambahkan overlay ke MapView
-
-        // Pindahkan kamera ke lokasi pengguna jika tersedia
-        myLocationOverlay.runOnFirstFix(() -> {
-            GeoPoint userLocation = myLocationOverlay.getMyLocation();
-            if (userLocation != null) {
-                mapView.getController().animateTo(userLocation);
-            }
-        });
     }
 }

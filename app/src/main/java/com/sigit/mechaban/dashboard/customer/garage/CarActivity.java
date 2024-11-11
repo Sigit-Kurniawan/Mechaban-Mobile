@@ -44,6 +44,7 @@ public class CarActivity extends AppCompatActivity {
     private final Car car = new Car();
     private SessionManager sessionManager;
     private NumberPicker yearPicker;
+    private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -123,7 +124,6 @@ public class CarActivity extends AppCompatActivity {
             deleteButton.setVisibility(View.VISIBLE);
             car.setAction("detail");
             car.setNopol(intent.getStringExtra("nopol"));
-            ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
             Call<CarAPI> readCarCall = apiInterface.carResponse(car);
             readCarCall.enqueue(new Callback<CarAPI>() {
                 @Override
@@ -232,7 +232,6 @@ public class CarActivity extends AppCompatActivity {
                 car.setYear(year);
                 car.setEmail(email);
 
-                ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
                 Call<CarAPI> createCarCall = apiInterface.carResponse(car);
                 createCarCall.enqueue(new Callback<CarAPI>() {
                     @Override

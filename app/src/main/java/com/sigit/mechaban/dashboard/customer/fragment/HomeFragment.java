@@ -40,6 +40,7 @@ public class HomeFragment extends Fragment {
     private final Car car = new Car();
     private SessionManager sessionManager;
     private RecyclerView carList;
+    private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,7 +81,6 @@ public class HomeFragment extends Fragment {
 
             car.setAction("read");
             car.setEmail(sessionManager.getUserDetail().get("email"));
-            ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
             Call<CarAPI> readCarCall = apiInterface.carResponse(car);
             readCarCall.enqueue(new Callback<CarAPI>() {
                 @Override
@@ -138,7 +138,6 @@ public class HomeFragment extends Fragment {
     private void setCarSelected() {
         car.setAction("detail");
         car.setNopol(sessionManager.getUserDetail().get("nopol"));
-        ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
         Call<CarAPI> readDetailCall = apiInterface.carResponse(car);
         readDetailCall.enqueue(new Callback<CarAPI>() {
             @Override
