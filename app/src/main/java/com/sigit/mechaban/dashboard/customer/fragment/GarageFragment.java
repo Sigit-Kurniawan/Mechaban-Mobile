@@ -1,5 +1,6 @@
 package com.sigit.mechaban.dashboard.customer.fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import com.sigit.mechaban.sessionmanager.SessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,6 +34,11 @@ public class GarageFragment extends Fragment {
     private SessionManager sessionManager;
     private RecyclerView carList;
     private final Car car = new Car();
+    private final SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener = (sharedPreferences, key) -> {
+        if (Objects.requireNonNull(key).equals("nopol")) {
+            setCar();
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,5 +106,12 @@ public class GarageFragment extends Fragment {
     public void onResume() {
         super.onResume();
         setCar();
+        sessionManager.getPreferences().registerOnSharedPreferenceChangeListener(preferenceChangeListener);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        sessionManager.getPreferences().unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
     }
 }

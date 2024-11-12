@@ -16,6 +16,10 @@ public class SessionManager {
         editor = preferences.edit();
     }
 
+    public SharedPreferences getPreferences() {
+        return preferences;
+    }
+
     public void createLoginSession(AccountData accountData) {
         editor.putBoolean("isLoggedIn", true);
         editor.putString("email", accountData.getEmail());

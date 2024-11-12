@@ -1,14 +1,18 @@
 package com.sigit.mechaban.auth;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -33,6 +37,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements ModalBottomSheet.ModalBottomSheetListener {
+    private Toolbar toolbar;
+    private ImageView loginIllustration;
     private TextInputLayout emailLayout, passwordLayout;
     private TextInputEditText emailEditText, passwordEditText;
     private Button loginButton;
@@ -46,6 +52,8 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        toolbar = findViewById(R.id.toolbar);
+        loginIllustration = findViewById(R.id.illustration);
         emailLayout = findViewById(R.id.email);
         emailEditText = findViewById(R.id.email_field);
         passwordLayout = findViewById(R.id.password);
@@ -108,6 +116,22 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
         });
 
         findViewById(R.id.register_hyperlink).setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
+
+        final View rootView = findViewById(android.R.id.content);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            Rect rect = new Rect();
+            rootView.getWindowVisibleDisplayFrame(rect);
+            int screenHeight = rootView.getRootView().getHeight();
+            int keypadHeight = screenHeight - rect.bottom;
+
+            if (keypadHeight > screenHeight * 0.15) {
+                loginIllustration.setVisibility(View.GONE);
+                toolbar.setVisibility(View.VISIBLE);
+            } else {
+                loginIllustration.setVisibility(View.VISIBLE);
+                toolbar.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void updateLoginButtonState() {

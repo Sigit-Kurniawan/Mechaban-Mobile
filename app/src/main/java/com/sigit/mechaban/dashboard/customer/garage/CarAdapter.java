@@ -23,12 +23,25 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     private final List<CarItem> carItems;
     private int selectedPosition;
     private final SessionManager sessionManager;
+    private OnCarSelectedListener listener;
+
+    public CarAdapter(Context context, List<CarItem> carItems, int selectedPosition, OnCarSelectedListener listener) {
+        this.context = context;
+        this.carItems = carItems;
+        this.sessionManager = new SessionManager(context);
+        this.selectedPosition = selectedPosition;
+        this.listener = listener;
+    }
 
     public CarAdapter(Context context, List<CarItem> carItems, int selectedPosition) {
         this.context = context;
         this.carItems = carItems;
         this.sessionManager = new SessionManager(context);
         this.selectedPosition = selectedPosition;
+    }
+
+    public interface OnCarSelectedListener {
+        void onCarSelected(String nopol, String merk);
     }
 
     @NonNull
@@ -43,17 +56,21 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     public void onBindViewHolder(@NonNull CarViewHolder holder, int position) {
         holder.getRadioButton().setChecked(position == selectedPosition);
 
-        View.OnClickListener listener = v -> {
+        View.OnClickListener selectionListener = v -> {
             int previousPosition = selectedPosition;
             selectedPosition = holder.getBindingAdapterPosition();
             notifyItemChanged(previousPosition);
             notifyItemChanged(selectedPosition);
 
             sessionManager.updateCar(carItems.get(position).getNopol());
+
+            if (listener != null) {
+                listener.onCarSelected(carItems.get(position).getNopol(), carItems.get(position).getMerk());
+            }
         };
 
-        holder.getItem().setOnClickListener(listener);
-        holder.getRadioButton().setOnClickListener(listener);
+        holder.getItem().setOnClickListener(selectionListener);
+        holder.getRadioButton().setOnClickListener(selectionListener);
 
         holder.getMerkTextView().setText(carItems.get(position).getMerk());
         holder.getTypeTextView().setText(carItems.get(position).getType());

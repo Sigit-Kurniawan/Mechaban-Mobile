@@ -12,7 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/description"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/toolbar_title"
@@ -24,16 +26,27 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <ImageView
+        android:id="@+id/illustration"
+        android:layout_width="wrap_content"
+        android:layout_height="350dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/login"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <TextView
         android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/montserrat_medium"
         android:text="@string/login_untuk_melanjutkan"
         android:textAppearance="?attr/textAppearanceBody1"
+        app:layout_constraintTop_toBottomOf="@+id/illustration"
         app:layout_constraintBottom_toTopOf="@+id/field"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <LinearLayout
@@ -50,7 +63,7 @@
             android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="92dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="16dp"
             android:hint="@string/email"
             app:helperTextEnabled="true"
             app:placeholderText="nama@email.com"
