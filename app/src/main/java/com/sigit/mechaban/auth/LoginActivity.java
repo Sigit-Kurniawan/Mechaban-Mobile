@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.sigit.mechaban.dashboard.customer.DashboardActivity;
 import com.sigit.mechaban.R;
+import com.sigit.mechaban.dashboard.montir.MainActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -19,7 +20,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Button loginBtn = findViewById(R.id.login_button);
         loginBtn.setOnClickListener(v -> {
-            startActivity(new Intent(this, DashboardActivity.class));
+            startActivity(new Intent(this, MainActivity.class));
             finish();
         });
 

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".dashboard.montir.fragment.AccountMontirFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="12dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/background_component">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="UselessParent">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/profile_icon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_centerVertical="true"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/CircleImageShape"
+                    app:srcCompat="@drawable/baseline_account_circle_24" />
+
+                <LinearLayout
+                    android:id="@+id/detail_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/profile_icon"
+                    android:layout_marginStart="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_name"
+                        android:layout_width="240dp"
+                        android:layout_height="wrap_content"
+                        android:text="nama"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:textAppearance="?attr/textAppearanceHeadline6"/>
+
+                    <TextView
+                        android:id="@+id/tv_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/email"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:textAppearance="?attr/textAppearanceBody2"/>
+                </LinearLayout>
+
+<!--                <Button-->
+<!--                    android:id="@+id/edit_button"-->
+<!--                    style="?attr/materialIconButtonStyle"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_alignParentEnd="true"-->
+<!--                    app:icon="@drawable/baseline_edit_24"-->
+<!--                    app:iconSize="28dp"/>-->
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/background_component">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pengaturan"
+                android:fontFamily="@font/montserrat_medium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"/>
+
+            <Button
+                android:id="@+id/help_button"
+                style="@style/Widget.Material3.Button.TextButton.Icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pusat Bantuan"
+                android:fontFamily="@font/montserrat_medium"
+                android:textAlignment="textStart"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:icon="@drawable/baseline_help_outline_24"
+                app:iconPadding="16dp"
+                app:iconSize="32dp" />
+
+            <Button
+                android:id="@+id/contact_button"
+                style="@style/Widget.Material3.Button.TextButton.Icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hubungi Kami"
+                android:fontFamily="@font/montserrat_medium"
+                android:textAlignment="textStart"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:icon="@drawable/baseline_headset_mic_24"
+                app:iconPadding="16dp"
+                app:iconSize="32dp"/>
+
+            <Button
+                android:id="@+id/info_button"
+                style="@style/Widget.Material3.Button.TextButton.Icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tentang Kami"
+                android:fontFamily="@font/montserrat_medium"
+                android:textAlignment="textStart"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:icon="@drawable/baseline_info_outline_24"
+                app:iconPadding="16dp"
+                app:iconSize="32dp" />
+
+            <Button
+                android:id="@+id/logout_button"
+                style="@style/Widget.Material3.Button.TextButton.Icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Keluar"
+                android:fontFamily="@font/montserrat_medium"
+                android:textColor="@color/md_theme_error"
+                android:textAlignment="textStart"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:rippleColor="@color/md_theme_errorContainer"
+                app:icon="@drawable/baseline_logout_24"
+                app:iconPadding="16dp"
+                app:iconSize="32dp"
+                app:iconTint="@color/md_theme_error" />
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>
