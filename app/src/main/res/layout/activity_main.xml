@@ -1,0 +1,152 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".dashboard.montir.MainActivity">
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/maps" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <FrameLayout
+            android:id="@+id/standard_bottom_sheet"
+            style="@style/Widget.Material3.BottomSheet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:behavior_peekHeight="350dp"
+            app:behavior_hideable="false"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <!-- Drag handle for accessibility -->
+                <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+                    android:id="@+id/drag_handle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <RelativeLayout
+                    android:id="@+id/contactCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/drag_handle"
+                    android:padding="16dp">
+
+                    <!-- Nama -->
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="145dp"
+                        android:layout_height="wrap_content"
+                        android:text="NARAYA"
+                        android:textSize="20sp"
+                        android:layout_alignParentStart="true"
+
+                        android:textStyle="bold" />
+
+                    <!-- Email -->
+                    <TextView
+                        android:id="@+id/email"
+                        android:layout_width="202dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/name"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="10dp"
+                        android:text="naraya@gmail.com"
+                        android:textSize="16sp" />
+
+                    <!-- No HP -->
+                    <TextView
+                        android:id="@+id/no_hp"
+                        android:layout_width="184dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/email"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="10dp"
+                        android:text="0854443565"
+                        android:textSize="16sp" />
+
+                    <!-- Image Montir -->
+                    <ImageView
+                        android:id="@+id/imageView7"
+                        android:layout_width="175dp"
+                        android:layout_height="120dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="0dp"
+                        android:layout_marginBottom="1dp"
+                        app:srcCompat="@drawable/montir_removebg_preview" />
+                </RelativeLayout>
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/contactCard"
+                    app:dividerInsetStart="16dp"
+                    app:dividerInsetEnd="16dp"/>
+
+                <RelativeLayout
+                    android:id="@+id/vehicleStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/contactCard"
+                    android:layout_marginTop="4dp"
+                    android:padding="16dp">
+
+                    <!-- Vehicle info -->
+                    <LinearLayout
+                        android:id="@+id/vehicle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <!-- Vehicle name -->
+                        <TextView
+                            android:id="@+id/vehicle_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="TOYOTA"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <!-- Vehicle status -->
+                        <TextView
+                            android:id="@+id/vehicle_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="Mati Mesin"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- Vehicle image -->
+                    <ImageView
+                        android:id="@+id/imageView5"
+                        android:layout_width="150dp"
+                        android:layout_height="129dp"
+                        android:layout_alignParentEnd="true"
+                        app:srcCompat="@drawable/mobil__removebg_preview" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </FrameLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

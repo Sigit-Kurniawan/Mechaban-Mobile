@@ -25,6 +25,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".dashboard.montir.DashboardMontirActivity"
+            android:exported="false" />
+        <activity
+            android:name=".dashboard.montir.MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".auth.ChangePasswordActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
