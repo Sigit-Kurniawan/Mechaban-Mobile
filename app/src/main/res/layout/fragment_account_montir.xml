@@ -34,6 +34,7 @@
                     android:layout_centerVertical="true"
                     android:scaleType="centerCrop"
                     app:shapeAppearanceOverlay="@style/CircleImageShape"
+                    android:tint="@color/md_theme_onSurface"
                     app:srcCompat="@drawable/baseline_account_circle_24" />
 
                 <LinearLayout
@@ -66,14 +67,14 @@
                         android:textAppearance="?attr/textAppearanceBody2"/>
                 </LinearLayout>
 
-<!--                <Button-->
-<!--                    android:id="@+id/edit_button"-->
-<!--                    style="?attr/materialIconButtonStyle"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_alignParentEnd="true"-->
-<!--                    app:icon="@drawable/baseline_edit_24"-->
-<!--                    app:iconSize="28dp"/>-->
+                <Button
+                    android:id="@+id/edit_button"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    app:icon="@drawable/baseline_edit_24"
+                    app:iconSize="28dp"/>
             </RelativeLayout>
         </LinearLayout>
 

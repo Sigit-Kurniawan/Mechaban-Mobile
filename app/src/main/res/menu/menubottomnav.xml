@@ -7,11 +7,11 @@
     <item
         android:id="@+id/Booking"
         android:title="Booking"
-        android:icon="@drawable/booking" />
+        android:icon="@drawable/booking2" />
     <item
         android:id="@+id/activity"
         android:title="Activity"
-        android:icon="@drawable/activity" />
+        android:icon="@drawable/activi" />
     <item
         android:id="@+id/account"
         android:title="Account"
