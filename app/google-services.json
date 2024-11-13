@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "508870632163",
+    "project_id": "mechaban-9e25d",
+    "storage_bucket": "mechaban-9e25d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:508870632163:android:ba0d98238c8e07a9e99bd6",
+        "android_client_info": {
+          "package_name": "com.sigit.mechaban"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLQ5QQ7Pzfdqi_S1A0uKIDDqXbs0-1eAA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

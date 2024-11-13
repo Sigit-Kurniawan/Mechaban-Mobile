@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/md_theme_primaryContainer"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".dashboard.customer.fragment.HomeFragment">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="80dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_alignParentStart="true"
+        android:contentDescription="@string/logo"
+        android:src="@drawable/logo" />
+
+    <Button
+        style="?attr/materialIconButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="6dp"
+        app:icon="@drawable/baseline_notifications_24"
+        app:iconSize="24dp"
+        tools:ignore="RelativeOverlap" />
+
+    <RelativeLayout
+        android:id="@+id/menu_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:background="@drawable/background_home">
+
+        <LinearLayout
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/car_button"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Status"
+                android:textColor="@color/md_theme_onPrimary"
+                android:fontFamily="@font/montserrat_medium"
+                android:textAppearance="?attr/textAppearanceTitleSmall" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Buka"
+                android:textColor="@color/md_theme_onPrimary"
+                android:fontFamily="@font/montserrat_semibold"
+                android:textAppearance="?attr/textAppearanceTitleMedium"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/car_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="4dp"
+            android:paddingHorizontal="8dp"
+            android:background="@drawable/button_car_home">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="38dp"
+                android:src="@drawable/car"
+                android:layout_marginEnd="4dp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/merk_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Honda"
+                    android:textColor="@color/md_theme_onPrimaryContainer"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textAppearance="?attr/textAppearanceBody2"/>
+
+                <TextView
+                    android:id="@+id/nopol_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="P 1234 DE"
+                    android:textColor="@color/md_theme_onPrimaryContainer"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <GridLayout
+            android:id="@+id/main_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/car_button">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/service_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Servis"
+                android:fontFamily="@font/montserrat_semibold"
+                android:drawableTop="@drawable/baseline_engineering_24"
+                style="@style/Widget.MaterialComponents.Button" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/inspection_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="inspeksi"
+                android:fontFamily="@font/montserrat_semibold"
+                android:drawableTop="@drawable/baseline_engineering_24"
+                style="@style/Widget.MaterialComponents.Button" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/consultation_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Konsultasi"
+                android:fontFamily="@font/montserrat_semibold"
+                android:gravity="center"
+                android:drawableTop="@drawable/baseline_engineering_24"
+                style="@style/Widget.MaterialComponents.Button" />
+
+        </GridLayout>
+
+    </RelativeLayout>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="130dp"
+        android:layout_marginBottom="0dp">
+
+        <FrameLayout
+            android:id="@+id/bottom_sheet"
+            style="@style/Widget.Material3.BottomSheet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+            app:behavior_hideable="false"
+            app:behavior_peekHeight="570dp"
+            app:behavior_draggable="false">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never"
+                android:scrollbars="vertical"
+                android:layout_marginBottom="80dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/promo_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="24dp"
+                        android:text="#SpesialUntukmu"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"/>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/promo_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_below="@id/promo_text"
+                        app:cardCornerRadius="8dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="136dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/card_dashboard"/>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/car_service_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/promo_card"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginHorizontal="16dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="16dp">
+
+                            <ImageView
+                                android:id="@+id/icon_car_service"
+                                android:layout_width="90dp"
+                                android:layout_height="90dp"
+                                android:layout_centerVertical="true"
+                                android:src="@drawable/car_service" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:orientation="vertical"
+                                android:layout_toEndOf="@id/icon_car_service">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Mobil Bermasalah?"
+                                    android:fontFamily="@font/montserrat_semibold"
+                                    android:textAppearance="?attr/textAppearanceTitleMedium"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginVertical="4dp"
+                                    android:text="Konsultasikan masalahmu via aplikasi Mechaban"
+                                    android:fontFamily="@font/montserrat_medium"/>
+
+                                <Button
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:paddingHorizontal="16dp"
+                                    android:text="Konsultasikan Sekarang"
+                                    android:fontFamily="@font/montserrat_semibold"/>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:id="@+id/title_addition"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:text="Yang Menarik di Mechaban"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:layout_below="@+id/car_service_card" />
+
+                    <TextView
+                        android:id="@+id/caption_addition"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/title_addition"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="8dp"
+                        android:text="Jangan ngaku update kalau tidak mencoba fitur ini"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:textAppearance="?attr/textAppearanceCaption"/>
+
+                    <GridLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_below="@+id/caption_addition"
+                        android:rowCount="2"
+                        android:columnCount="2">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_row="0"
+                            android:layout_column="0"
+                            android:layout_marginBottom="16dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="180dp"
+                                    android:layout_height="120dp"
+                                    android:src="@drawable/help" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="raya"/>
+
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_row="0"
+                            android:layout_column="1"
+                            android:layout_gravity="end">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="180dp"
+                                    android:layout_height="120dp"
+                                    android:src="@drawable/help" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="raya"/>
+
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_row="1"
+                            android:layout_column="0">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="180dp"
+                                    android:layout_height="120dp"
+                                    android:src="@drawable/help" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="raya"/>
+
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_row="1"
+                            android:layout_column="1"
+                            android:layout_gravity="end">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="180dp"
+                                    android:layout_height="120dp"
+                                    android:src="@drawable/help" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="raya"/>
+
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+                    </GridLayout>
+                </RelativeLayout>
+            </ScrollView>
+        </FrameLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>>
+</RelativeLayout>

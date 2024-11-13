@@ -1,6 +1,18 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.gms.google.services)
+    id("org.jetbrains.kotlin.android")
 }
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { localProperties.load(it) }
+}
+
+val ip: String = localProperties.getProperty("ip") ?: ""
 
 android {
     namespace = "com.sigit.mechaban"
@@ -14,6 +26,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "ip", "\"$ip\"")
     }
 
     buildTypes {
@@ -29,6 +43,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
 }
 
 dependencies {
@@ -37,7 +55,18 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.firebase.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation(libs.glide)
+    implementation(libs.gson)
+    implementation(libs.dotsindicator)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.javax.annotation)
+    implementation(libs.shuhart.stepview)
+    implementation(libs.ucrop)
+    implementation(libs.osmdroid.android)
+    implementation(libs.play.services.location)
 }

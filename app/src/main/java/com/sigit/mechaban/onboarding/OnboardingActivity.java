@@ -1,41 +1,40 @@
 package com.sigit.mechaban.onboarding;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.auth.LoginActivity;
+import com.sigit.mechaban.dashboard.customer.dashboard.DashboardActivity;
+import com.sigit.mechaban.sessionmanager.SessionManager;
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class OnboardingActivity extends AppCompatActivity {
-    private TextView skipButton;
     private ViewPager2 viewPager;
-    private ImageButton backButton, nextButton;
-    private TabLayout tabLayout;
-    private Button getStartedButton;
+    private DotsIndicator dotsIndicator;
+    private Button getStartedButton, backButton, nextButton, skipButton;
     private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         setContentView(R.layout.activity_onboarding);
+
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+
+        if (new SessionManager(this).isLoggedIn()) {
+            startActivity(new Intent(this, DashboardActivity.class));
+            finish();
+        }
 
         skipButton = findViewById(R.id.skip);
         skipButton.setOnClickListener(v -> {
@@ -43,40 +42,17 @@ public class OnboardingActivity extends AppCompatActivity {
             finish();
         });
 
-        List<ScreenItem> screenItemList = new ArrayList<>();
-        screenItemList.add(new ScreenItem("Selamat Datang di Mechaban", "Siap melayani mobil Anda di dalam satu genggamanmu.", R.drawable.onboarding1));
-        screenItemList.add(new ScreenItem("Servis Cepat dan Berkualitas", "Membuat mobilmu seperti baru kembali.", R.drawable.onboarding2));
-        screenItemList.add(new ScreenItem("Mampu Melayani di Manapun Anda Berada", "Siap mengantarkan montir andalan ke lokasi.", R.drawable.onboarding3));
-        screenItemList.add(new ScreenItem("Konsultasi Gratis dengan Montir Ahli", "Hubungi dan rasakan manfaatnya tanpa biaya tambahan.", R.drawable.onboarding4));
+        List<ViewPagerAdapter.ScreenItem> screenItemList = new ArrayList<>();
+        screenItemList.add(new ViewPagerAdapter.ScreenItem("Selamat Datang di Mechaban", "Siap melayani mobil Anda di dalam satu genggamanmu.", R.drawable.onboarding1));
+        screenItemList.add(new ViewPagerAdapter.ScreenItem("Servis Cepat dan Berkualitas", "Membuat mobilmu seperti baru kembali.", R.drawable.onboarding2));
+        screenItemList.add(new ViewPagerAdapter.ScreenItem("Mampu Melayani di Manapun Anda Berada", "Siap mengantarkan montir andalan ke lokasi.", R.drawable.onboarding3));
+        screenItemList.add(new ViewPagerAdapter.ScreenItem("Konsultasi Gratis dengan Montir Ahli", "Hubungi dan rasakan manfaatnya tanpa biaya tambahan.", R.drawable.onboarding4));
 
         viewPager = findViewById(R.id.viewPager);
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this, screenItemList);
-        viewPager.setAdapter(viewPagerAdapter);
+        viewPager.setAdapter(new ViewPagerAdapter(screenItemList));
 
-        tabLayout = findViewById(R.id.tab_indicator);
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {}).attach();
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getPosition() < screenItemList.size() - 1) {
-                    reloadScreen();
-                }
-
-                if (tab.getPosition() == screenItemList.size() - 1) {
-                    loadLastScreen();
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
+        dotsIndicator = findViewById(R.id.dots_indicator);
+        dotsIndicator.attachTo(viewPager);
 
         backButton = findViewById(R.id.back);
         backButton.setOnClickListener(v -> {
@@ -97,9 +73,15 @@ public class OnboardingActivity extends AppCompatActivity {
                 }
 
                 if (position == screenItemList.size() - 1) {
-                    loadLastScreen();
+                    nextButton.setVisibility(View.INVISIBLE);
+                    dotsIndicator.setVisibility(View.INVISIBLE);
+                    skipButton.setVisibility(View.INVISIBLE);
+                    getStartedButton.setVisibility(View.VISIBLE);
                 } else {
-                    reloadScreen();
+                    nextButton.setVisibility(View.VISIBLE);
+                    dotsIndicator.setVisibility(View.VISIBLE);
+                    skipButton.setVisibility(View.VISIBLE);
+                    getStartedButton.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -113,25 +95,10 @@ public class OnboardingActivity extends AppCompatActivity {
             }
         });
 
-//        TODO: menambahkan animasi muncul tombol mulai sekarang
         getStartedButton = findViewById(R.id.get_startedbtn);
         getStartedButton.setOnClickListener(v -> {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         });
-    }
-
-    private void loadLastScreen() {
-        nextButton.setVisibility(View.INVISIBLE);
-        tabLayout.setVisibility(View.INVISIBLE);
-        skipButton.setVisibility(View.INVISIBLE);
-        getStartedButton.setVisibility(View.VISIBLE);
-    }
-
-    private void reloadScreen() {
-        nextButton.setVisibility(View.VISIBLE);
-        tabLayout.setVisibility(View.VISIBLE);
-        skipButton.setVisibility(View.VISIBLE);
-        getStartedButton.setVisibility(View.INVISIBLE);
     }
 }

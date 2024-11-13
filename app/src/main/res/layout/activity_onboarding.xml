@@ -7,16 +7,15 @@
     android:layout_height="match_parent"
     tools:context=".onboarding.OnboardingActivity">
 
-    <TextView
+    <Button
         android:id="@+id/skip"
+        style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/montserrat_semibold"
         android:text="@string/lewati"
-        android:textColor="@color/primary"
-        android:textSize="16sp"
+        android:textAppearance="?attr/textAppearanceLargePopupMenu"
         app:layout_constraintBottom_toTopOf="@+id/viewPager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,45 +29,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/skip" />
 
-    <ImageButton
+    <Button
         android:id="@+id/back"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="16dp"
-        android:scaleType="fitStart"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/back_icon"
+        style="?attr/materialIconButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewPager"
-        app:srcCompat="@drawable/baseline_arrow_back_24" />
+        app:icon="@drawable/baseline_arrow_back_24"
+        app:iconSize="70dp" />
 
-<!--TODO: menghilangkan garis di bawah tab indicator-->
-    <com.google.android.material.tabs.TabLayout
-        app:tabBackground="@drawable/indicator_onboarding_selector"
-        android:id="@+id/tab_indicator"
+    <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+        android:id="@+id/dots_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:tabIndicatorHeight="0dp"
+        app:dotsSize="12dp"
+        app:selectedDotColor="@color/md_theme_primary"
+        app:dotsColor="@color/md_theme_onSurface"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/back"
         app:layout_constraintEnd_toStartOf="@+id/next"
-        app:layout_constraintTop_toBottomOf="@+id/viewPager">
+        app:layout_constraintStart_toEndOf="@+id/back"
+        app:layout_constraintTop_toBottomOf="@+id/viewPager" />
 
-    </com.google.android.material.tabs.TabLayout>
-
-    <ImageButton
+    <Button
         android:id="@+id/next"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginEnd="16dp"
-        android:scaleType="fitEnd"
-        android:contentDescription="@string/next_icon"
-        android:background="@android:color/transparent"
+        style="?attr/materialIconButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewPager"
-        app:srcCompat="@drawable/baseline_arrow_forward_24" />
+        app:icon="@drawable/baseline_arrow_forward_24"
+        app:iconSize="70dp" />
 
     <Button
         android:visibility="invisible"
@@ -76,10 +69,9 @@
         android:layout_width="250dp"
         android:layout_height="55dp"
         android:layout_marginHorizontal="16dp"
-        android:backgroundTint="@color/primary"
         android:fontFamily="@font/montserrat_semibold"
         android:text="@string/mulai_sekarang"
-        android:textSize="16sp"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
