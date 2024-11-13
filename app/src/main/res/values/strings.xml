@@ -57,4 +57,9 @@
     <string name="hapus_akun">Hapus Akun</string>
     <string name="kirim">Kirim</string>
     <string name="rincian_servis">Rincian Servis</string>
+    <string name="lupa_password2">Lupa Password</string>
+    <string name="ilustrasi_forget_password">Ilustrasi forget password</string>
+    <string name="masukkan_email_untuk_menerima_kode_otp">Masukkan email untuk menerima kode OTP</string>
+    <string name="ganti_password">Ganti Password</string>
+    <string name="ganti">Ganti</string>
 </resources>

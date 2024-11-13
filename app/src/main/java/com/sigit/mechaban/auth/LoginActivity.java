@@ -104,6 +104,8 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
 
         passwordEditText.setOnFocusChangeListener((v, hasFocus) -> EditTextBehavior.setIconTintOnFocus(getApplicationContext(), passwordLayout, hasFocus, isValidatePassword));
 
+        findViewById(R.id.forget_password).setOnClickListener(v -> startActivity(new Intent(this, ForgetPasswordActivity.class)));
+
         loginButton.setOnClickListener(v -> {
             email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
             password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();

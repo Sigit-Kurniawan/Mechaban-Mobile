@@ -36,10 +36,6 @@ public class AccountFragment extends Fragment {
     private SessionManager sessionManager;
     private final Account account = new Account();
 
-    public AccountFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

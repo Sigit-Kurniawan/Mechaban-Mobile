@@ -33,6 +33,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
     private final Account account = new Account();
     private final LoadingDialog loadingDialog = new LoadingDialog(this);
     private TextInputEditText code1, code2, code3, code4;
+    private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,29 +65,63 @@ public class VerifyOtpActivity extends AppCompatActivity {
 
         findViewById(R.id.send_otp_btn).setOnClickListener(v -> {
             Intent intent = getIntent();
-            account.setAction("register");
-            account.setName(intent.getStringExtra("name"));
-            account.setEmail(intent.getStringExtra("email"));
-            account.setNo_hp(intent.getStringExtra("noHP"));
-            account.setPassword(intent.getStringExtra("password"));
-            account.setOtp(String.join("", Objects.requireNonNull(code1.getText()).toString(), Objects.requireNonNull(code2.getText()).toString(), Objects.requireNonNull(code3.getText()).toString(), Objects.requireNonNull(code4.getText()).toString()));
+            String name = intent.getStringExtra("name");
+            String email = intent.getStringExtra("email");
+            String noHP = intent.getStringExtra("noHP");
+            String password = intent.getStringExtra("password");
+            String otp = String.join("",
+                    Objects.requireNonNull(code1.getText()).toString(),
+                    Objects.requireNonNull(code2.getText()).toString(),
+                    Objects.requireNonNull(code3.getText()).toString(),
+                    Objects.requireNonNull(code4.getText()).toString());
 
-            ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
-            Call<AccountAPI> verifyCall = apiInterface.accountResponse(account);
-            verifyCall.enqueue(new Callback<AccountAPI>() {
-                @Override
-                public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
-                    if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                        Toast.makeText(VerifyOtpActivity.this, "Register berhasil", Toast.LENGTH_SHORT).show();
-                        finish();
+            if (Objects.requireNonNull(name).isEmpty() && Objects.requireNonNull(noHP).isEmpty() && Objects.requireNonNull(password).isEmpty()) {
+                account.setAction("forget_password");
+                account.setEmail(email);
+                account.setOtp(otp);
+
+                Call<AccountAPI> forgetCall = apiInterface.accountResponse(account);
+                forgetCall.enqueue(new Callback<AccountAPI>() {
+                    @Override
+                    public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
+                        if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
+                            Toast.makeText(VerifyOtpActivity.this, "Ganti password berhasil", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getApplicationContext(), VerifyOtpActivity.class);
+                            intent.putExtra("email", email);
+                            startActivity(intent);
+                            finish();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
-                    Log.e("VerifyOtpActivity", t.toString(), t);
-                }
-            });
+                    @Override
+                    public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
+                        Log.e("ForgetActivity", t.toString(), t);
+                    }
+                });
+            } else {
+                account.setAction("register");
+                account.setName(name);
+                account.setEmail(email);
+                account.setNo_hp(noHP);
+                account.setPassword(password);
+                account.setOtp(otp);
+
+                Call<AccountAPI> verifyCall = apiInterface.accountResponse(account);
+                verifyCall.enqueue(new Callback<AccountAPI>() {
+                    @Override
+                    public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
+                        if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
+                            Toast.makeText(VerifyOtpActivity.this, "Register berhasil", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
+                        Log.e("VerifyOtpActivity", t.toString(), t);
+                    }
+                });
+            }
         });
     }
 

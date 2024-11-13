@@ -37,10 +37,7 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
     private TextInputLayout nameLayout, emailLayout, noHPLayout, passwordLayout, confirmPasswordLayout;
     private Button registerButton;
     private boolean isValidateName, isValidateEmail, isValidateNoHP, isValidatePassword, isValidateConfirmPassword;
-    private String name;
-    private String email;
-    private String noHP;
-    private String password;
+    private String name, email, noHP, password;
     private final LoadingDialog loadingDialog = new LoadingDialog(this);
     private final Account account = new Account();
     private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
@@ -268,7 +265,6 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }
