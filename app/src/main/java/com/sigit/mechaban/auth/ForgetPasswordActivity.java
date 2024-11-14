@@ -14,6 +14,7 @@ import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
 import com.sigit.mechaban.api.model.account.AccountAPI;
+import com.sigit.mechaban.components.LoadingDialog;
 import com.sigit.mechaban.object.Account;
 
 import java.util.Objects;
@@ -23,6 +24,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ForgetPasswordActivity extends AppCompatActivity {
+    private final LoadingDialog loadingDialog = new LoadingDialog(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
         TextInputEditText emailTextView = findViewById(R.id.email_field);
 
         findViewById(R.id.send_otp).setOnClickListener(v -> {
+            loadingDialog.startLoadingDialog();
             String email = Objects.requireNonNull(emailTextView.getText()).toString().trim();
             Account account = new Account();
             account.setAction("verification_forget");
@@ -50,8 +53,10 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                     if (response.isSuccessful() && response.body() != null && response.body().isStatus()) {
                         Intent intent = new Intent(getApplicationContext(), VerifyOtpActivity.class);
                         intent.putExtra("email", email);
+                        intent.putExtra("isForgetPassword", true);
                         startActivity(intent);
                         finish();
+                        loadingDialog.dismissDialog();
                     }
                 }
 

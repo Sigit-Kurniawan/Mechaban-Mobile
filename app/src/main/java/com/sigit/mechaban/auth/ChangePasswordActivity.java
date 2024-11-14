@@ -1,5 +1,6 @@
 package com.sigit.mechaban.auth;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -15,7 +16,6 @@ import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
 import com.sigit.mechaban.api.model.account.AccountAPI;
 import com.sigit.mechaban.object.Account;
-import com.sigit.mechaban.sessionmanager.SessionManager;
 
 import java.util.Objects;
 
@@ -37,34 +37,37 @@ public class ChangePasswordActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         TextInputEditText passwordTextView = findViewById(R.id.pass_field);
-        String password = Objects.requireNonNull(passwordTextView.getText()).toString().trim();
         TextInputEditText confirmPasswordTextView = findViewById(R.id.confirm_pass_field);
-        String confirmPassword = Objects.requireNonNull(confirmPasswordTextView.getText()).toString().trim();
 
-        if (confirmPassword.equals(password)) {
-            Account account = new Account();
-            SessionManager sessionManager = new SessionManager(this);
-            account.setAction("change_password");
-            account.setEmail(sessionManager.getUserDetail().get("email"));
-            account.setPassword(password);
+        findViewById(R.id.change_password).setOnClickListener(v -> {
+            String password = Objects.requireNonNull(passwordTextView.getText()).toString().trim();
+            String confirmPassword = Objects.requireNonNull(confirmPasswordTextView.getText()).toString().trim();
 
-            ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
-            Call<AccountAPI> changePasswordCall = apiInterface.accountResponse(account);
-            changePasswordCall.enqueue(new Callback<AccountAPI>() {
-                @Override
-                public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
-                    if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                        Toast.makeText(ChangePasswordActivity.this, "Ganti Password Berhasil", Toast.LENGTH_SHORT).show();
-                        finish();
+            if (confirmPassword.equals(password)) {
+                Account account = new Account();
+                Intent intent = getIntent();
+                account.setAction("change_password");
+                account.setEmail(intent.getStringExtra("email"));
+                account.setPassword(password);
+
+                ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
+                Call<AccountAPI> changePasswordCall = apiInterface.accountResponse(account);
+                changePasswordCall.enqueue(new Callback<AccountAPI>() {
+                    @Override
+                    public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
+                        if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
+                            Toast.makeText(ChangePasswordActivity.this, "Ganti Password Berhasil", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
-                    Log.e("ChangePassword", t.toString(), t);
-                }
-            });
-        }
+                    @Override
+                    public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
+                        Log.e("ChangePassword", t.toString(), t);
+                    }
+                });
+            }
+        });
     }
 
     @Override

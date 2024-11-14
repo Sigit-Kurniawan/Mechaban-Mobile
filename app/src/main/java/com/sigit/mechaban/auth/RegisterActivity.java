@@ -187,6 +187,7 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
                 public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
                     if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
                         Intent intent = new Intent(getApplicationContext(), VerifyOtpActivity.class);
+                        intent.putExtra("isForgetPassword", false);
                         intent.putExtra("name", name);
                         intent.putExtra("email", email);
                         intent.putExtra("noHP", noHP);
