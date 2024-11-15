@@ -68,4 +68,5 @@ dependencies {
     implementation(libs.ucrop)
     implementation(libs.osmdroid.android)
     implementation(libs.play.services.location)
+    implementation(libs.motiontoast)
 }

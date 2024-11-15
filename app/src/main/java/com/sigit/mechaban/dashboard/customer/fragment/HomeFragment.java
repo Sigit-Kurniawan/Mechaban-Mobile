@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +37,8 @@ import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import www.sanju.motiontoast.MotionToast;
+import www.sanju.motiontoast.MotionToastStyle;
 
 public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedListener {
     private TextView merkTextView, nopolTextView;
@@ -91,6 +94,17 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
         merkTextView = view.findViewById(R.id.merk_text);
         nopolTextView = view.findViewById(R.id.nopol_text);
         setCarSelected();
+
+        view.findViewById(R.id.consul_button).setOnClickListener(v -> {
+            MotionToast.Companion.darkToast(requireActivity(),
+                    "Hurray success 😍",
+                    "Upload Completed successfully!",
+                    MotionToastStyle.SUCCESS,
+                    MotionToast.GRAVITY_TOP,
+                    MotionToast.SHORT_DURATION,
+                    ResourcesCompat.getFont(requireActivity(),R.font.montserrat_semibold));
+
+        });
         return view;
     }
 
@@ -98,7 +112,6 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
     public void onResume() {
         super.onResume();
         setCarSelected();
-        openCarList();
         sessionManager.getPreferences().registerOnSharedPreferenceChangeListener(preferenceChangeListener);
     }
 
@@ -134,6 +147,21 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
         @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottom_sheet_car_list, null, false);
         carList = view.findViewById(R.id.car_recycler);
 
+        loadCarList();
+
+        bottomSheetDialog.setContentView(view);
+        bottomSheetDialog.show();
+    }
+
+    @Override
+    public void onCarSelected(String nopol, String merk) {
+        merkTextView.setText(merk);
+        String[] parts = nopol.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+        nopolTextView.setText(String.join(" ", parts));
+        bottomSheetDialog.dismiss();
+    }
+
+    private void loadCarList() {
         car.setAction("read");
         car.setEmail(sessionManager.getUserDetail().get("email"));
         Call<CarAPI> readCarCall = apiInterface.carResponse(car);
@@ -160,9 +188,6 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
 
                         carList.setLayoutManager(new LinearLayoutManager(getContext()));
                         carList.setAdapter(new CarAdapter(requireActivity().getApplicationContext(), carItemList, savedPosition, HomeFragment.this));
-
-                        bottomSheetDialog.setContentView(view);
-                        bottomSheetDialog.show();
                     }
                 }
             }
@@ -172,17 +197,5 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
                 Log.e("GarageFragment", t.toString(), t);
             }
         });
-    }
-
-    @Override
-    public void onCarSelected(String nopol, String merk) {
-        merkTextView.setText(merk);
-        String[] parts = nopol.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-        nopolTextView.setText(String.join(" ", parts));
-        bottomSheetDialog.dismiss();
-
-        Bundle result = new Bundle();
-        result.putString("nopol", nopol);
-        getParentFragmentManager().setFragmentResult("carSelection", result);
     }
 }
