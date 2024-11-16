@@ -7,7 +7,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -181,27 +180,7 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
             account.setAction("verification");
             account.setEmail(email);
 
-            Call<AccountAPI> sendOtpCall = apiInterface.accountResponse(account);
-            sendOtpCall.enqueue(new Callback<AccountAPI>() {
-                @Override
-                public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
-                    if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                        Intent intent = new Intent(getApplicationContext(), VerifyOtpActivity.class);
-                        intent.putExtra("isForgetPassword", false);
-                        intent.putExtra("name", name);
-                        intent.putExtra("email", email);
-                        intent.putExtra("noHP", noHP);
-                        intent.putExtra("password", password);
-                        startActivity(intent);
-                        finish();
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
-                    Log.e("RegisterActivity", t.toString(), t);
-                }
-            });
+            registerEvent();
         });
 
         findViewById(R.id.login_hyperlink).setOnClickListener(v -> finish());
@@ -221,29 +200,38 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
     private void registerEvent() {
         loadingDialog.startLoadingDialog();
         if (new Connection(this).isNetworkAvailable()) {
-            Call<AccountAPI> registerCall = apiInterface.accountResponse(account);
-            registerCall.enqueue(new Callback<AccountAPI>() {
+            Call<AccountAPI> sendOtpCall = apiInterface.accountResponse(account);
+            sendOtpCall.enqueue(new Callback<AccountAPI>() {
                 @Override
                 public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
-                    if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                        Toast.makeText(RegisterActivity.this, "Registrasi Berhasil", Toast.LENGTH_SHORT).show();
+                    if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
+                        Intent intent = new Intent(getApplicationContext(), VerifyOtpActivity.class);
+                        intent.putExtra("isForgetPassword", false);
+                        intent.putExtra("name", name);
+                        intent.putExtra("email", email);
+                        intent.putExtra("noHP", noHP);
+                        intent.putExtra("password", password);
+                        startActivity(intent);
                         finish();
                         loadingDialog.dismissDialog();
-                    } else {
+                    } else if (response.body() != null && response.body().getCode() == 400) {
                         loadingDialog.dismissDialog();
-                        if (response.body().getMessage().equals("Email telah terdaftar")) {
-                            isValidateEmail = false;
-                            emailLayout.setError(response.body().getMessage());
-                            emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                        } else {
-                            Toast.makeText(RegisterActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+                        isValidateEmail = false;
+                        emailLayout.setError("Email telah terdaftar!");
+                        emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
+                    loadingDialog.dismissDialog();
                     Log.e("RegisterActivity", t.toString(), t);
+                    new ModalBottomSheet(R.drawable.not_found,
+                            "Tidak Ditemukan",
+                            "Coba lagi lain kali.",
+                            "Coba Lagi",
+                            RegisterActivity.this)
+                            .show(getSupportFragmentManager(), "ModalBottomSheet");
                 }
             });
         } else {

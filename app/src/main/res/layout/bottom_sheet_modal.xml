@@ -25,15 +25,14 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:fontFamily="@font/montserrat_semibold"
-        android:textAppearance="?attr/textAppearanceTitleLarge" />
+        android:textAppearance="?attr/textAppearanceTitleMedium" />
 
     <TextView
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:fontFamily="@font/montserrat_medium"
-        android:textAppearance="?attr/textAppearanceBodyLarge" />
+        android:fontFamily="@font/montserrat_regular" />
 
     <Button
         android:id="@+id/button"

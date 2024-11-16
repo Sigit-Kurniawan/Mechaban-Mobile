@@ -29,8 +29,6 @@ public class OnboardingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboarding);
 
-        getWindow().setStatusBarColor(Color.TRANSPARENT);
-
         if (new SessionManager(this).isLoggedIn()) {
             startActivity(new Intent(this, DashboardActivity.class));
             finish();

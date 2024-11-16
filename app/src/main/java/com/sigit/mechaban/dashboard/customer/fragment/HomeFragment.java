@@ -95,16 +95,13 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
         nopolTextView = view.findViewById(R.id.nopol_text);
         setCarSelected();
 
-        view.findViewById(R.id.consul_button).setOnClickListener(v -> {
-            MotionToast.Companion.darkToast(requireActivity(),
-                    "Hurray success 😍",
-                    "Upload Completed successfully!",
-                    MotionToastStyle.SUCCESS,
-                    MotionToast.GRAVITY_TOP,
-                    MotionToast.SHORT_DURATION,
-                    ResourcesCompat.getFont(requireActivity(),R.font.montserrat_semibold));
-
-        });
+        view.findViewById(R.id.consul_button).setOnClickListener(v -> MotionToast.Companion.darkToast(requireActivity(),
+                "Hurray success 😍",
+                "Upload Completed successfully!",
+                MotionToastStyle.SUCCESS,
+                MotionToast.GRAVITY_TOP,
+                MotionToast.SHORT_DURATION,
+                ResourcesCompat.getFont(requireActivity(),R.font.montserrat_semibold)));
         return view;
     }
 
