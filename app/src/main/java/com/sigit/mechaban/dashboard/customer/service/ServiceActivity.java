@@ -2,12 +2,16 @@ package com.sigit.mechaban.dashboard.customer.service;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -25,11 +29,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.Task;
 import com.shuhart.stepview.StepView;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
@@ -75,7 +83,6 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1, REQUEST_CHECK_SETTINGS = 1001;
     private FusedLocationProviderClient fusedLocationClient;
     private Marker userMarker;
-    private boolean isLocationSettingsEnabled = false;
     private String addressDecode;
     // Variabel konfirmasi
     private TextView nameTextView, emailTextView, noHPTextView, addressConfirmationTextView, merkTextView, nopolTextView, typeTextView, transmitionTextView;
@@ -163,6 +170,10 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
 
         // View pilih lokasi
         checkLocationSettings();
+
+        if (currentStep == 1) { // Asumsi langkah 1 adalah halaman lokasi
+            getDeviceLocation(); // Mulai mendapatkan lokasi perangkat
+        }
 
         mapView = findViewById(R.id.map);
         addressTextView = findViewById(R.id.address);
@@ -301,45 +312,32 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (isLocationSettingsEnabled) {
-            mapView.onResume();
-            getDeviceLocation(); // Mendapatkan lokasi terkini dan menampilkan di peta
-            isLocationSettingsEnabled = false; // Reset agar tidak terus-menerus reload map
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mapView.onPause();
-    }
-
     private void getDeviceLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(location -> {
-                    if (location != null) {
-                        // Set posisi awal peta ke lokasi perangkat
-                        GeoPoint userLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
-                        mapView.getController().setZoom(15.0);
-                        mapView.getController().animateTo(userLocation);
+        try {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                fusedLocationClient.getLastLocation().addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        Location location = task.getResult();
+                        GeoPoint currentLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
 
-                        // Tambahkan marker di lokasi perangkat
-                        addMarkerAtLocation(userLocation);
+                        // Tambahkan marker pada lokasi perangkat
+                        addMarkerAtLocation(currentLocation);
+
+                        // Pusatkan peta pada lokasi perangkat
+                        mapView.getController().setCenter(currentLocation);
+                        mapView.getController().setZoom(15.0); // Atur zoom
+                    } else {
+                        Log.e("ServiceActivity", "Lokasi perangkat tidak ditemukan.");
                     }
                 });
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+            }
+
+            requestCurrentLocation();
+        } catch (SecurityException e) {
+            Log.e("ServiceActivity", "Izin lokasi tidak diberikan.", e);
+        }
     }
 
     @Override
@@ -363,6 +361,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         userMarker.setTitle("Lokasi Pilihan");
         userMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM); // Mengatur posisi anchor
         mapView.getOverlays().add(userMarker);
+        mapView.invalidate();
 
         // Konversi koordinat ke alamat menggunakan Geocoder
         Geocoder geocoder = new Geocoder(this);
@@ -389,7 +388,6 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CHECK_SETTINGS) {
             if (resultCode == RESULT_OK) {
-                isLocationSettingsEnabled = true;
                 getDeviceLocation();
             } else {
                 Toast.makeText(this, "Layanan lokasi tidak diaktifkan", Toast.LENGTH_SHORT).show();
@@ -407,21 +405,75 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
                 .addLocationRequest(locationRequest);
 
         SettingsClient client = LocationServices.getSettingsClient(this);
+        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
+
+        task.addOnSuccessListener(locationSettingsResponse -> {
+            getDeviceLocation(); // Mulai mendapatkan lokasi
+        });
 
         // Periksa pengaturan lokasi
-        client.checkLocationSettings(builder.build())
-                .addOnFailureListener(e -> {
-                    if (e instanceof ResolvableApiException) {
-                        // Pengaturan lokasi tidak sesuai, tampilkan dialog bawaan untuk mengaktifkannya
-                        try {
-                            ResolvableApiException resolvable = (ResolvableApiException) e;
-                            resolvable.startResolutionForResult(ServiceActivity.this, REQUEST_CHECK_SETTINGS);
-                        } catch (IntentSender.SendIntentException sendEx) {
-                            Log.e("ServiceActivity", sendEx.toString(), sendEx);
+        task.addOnFailureListener(e -> {
+            if (e instanceof ResolvableApiException) {
+                try {
+                    ResolvableApiException resolvable = (ResolvableApiException) e;
+                    resolvable.startResolutionForResult(this, REQUEST_CHECK_SETTINGS);
+                } catch (IntentSender.SendIntentException sendEx) {
+                    Log.e("ServiceActivity", "Tidak dapat menyelesaikan pengaturan lokasi.", sendEx);
+                }
+            } else {
+                showLocationDisabledDialog();
+            }
+        });
+    }
+
+    private void requestCurrentLocation() {
+        try {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                LocationRequest locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000L)
+                        .setWaitForAccurateLocation(true) // Tunggu lokasi yang akurat
+                        .setMaxUpdates(1) // Batasi hanya satu pembaruan lokasi
+                        .setMinUpdateIntervalMillis(5000L) // Interval pembaruan minimum
+                        .build();
+
+                LocationCallback locationCallback = new LocationCallback() {
+                    @Override
+                    public void onLocationResult(@NonNull LocationResult locationResult) {
+                        if (locationResult.getLastLocation() != null) {
+                            Location location = locationResult.getLastLocation();
+                            GeoPoint currentLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
+
+                            // Tambahkan marker pada lokasi terkini
+                            addMarkerAtLocation(currentLocation);
+
+                            // Pusatkan peta pada lokasi terkini
+                            mapView.getController().setCenter(currentLocation);
+                            Log.i("ServiceActivity", "Lokasi terkini diperbarui.");
                         }
-                    } else {
-                        Toast.makeText(ServiceActivity.this, "Tidak bisa mengaktifkan lokasi", Toast.LENGTH_SHORT).show();
                     }
-                });
+                };
+
+                fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+            }
+        } catch (SecurityException e) {
+            Log.e("ServiceActivity", "Izin lokasi tidak diberikan.", e);
+        }
+    }
+
+    private void showLocationDisabledDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Lokasi Tidak Aktif")
+                .setMessage("Aplikasi membutuhkan akses lokasi untuk melanjutkan. Aktifkan lokasi pada pengaturan.")
+                .setCancelable(false)
+                .setPositiveButton("Aktifkan", (dialog, which) -> {
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intent);
+                })
+                .setNegativeButton("Batal", (dialog, which) -> {
+                    dialog.dismiss();
+                    Toast.makeText(this, "Lokasi diperlukan untuk melanjutkan.", Toast.LENGTH_SHORT).show();
+                })
+                .show();
     }
 }
