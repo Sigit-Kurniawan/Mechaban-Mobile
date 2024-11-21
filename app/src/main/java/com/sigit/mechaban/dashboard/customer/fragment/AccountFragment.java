@@ -1,6 +1,7 @@
 package com.sigit.mechaban.dashboard.customer.fragment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
 import com.sigit.mechaban.api.model.account.AccountAPI;
 import com.sigit.mechaban.auth.LoginActivity;
+import com.sigit.mechaban.dashboard.customer.account.AboutUsActivity;
 import com.sigit.mechaban.dashboard.customer.account.EditAccountActivity;
 import com.sigit.mechaban.object.Account;
 import com.sigit.mechaban.sessionmanager.SessionManager;
@@ -53,6 +55,19 @@ public class AccountFragment extends Fragment {
         setDataAccount();
 
         view.findViewById(R.id.edit_button).setOnClickListener(v -> startActivity(new Intent(getActivity(), EditAccountActivity.class)));
+
+        view.findViewById(R.id.contact_button).setOnClickListener(v -> {
+            try {
+                String phoneNumber = "+6283832566069";
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://wa.me/" + phoneNumber.replace("+", "").replace(" ", "")));
+                startActivity(intent);
+            } catch (Exception e) {
+                Log.e("ContactUs", e.toString(), e);
+            }
+        });
+
+        view.findViewById(R.id.info_button).setOnClickListener(v -> startActivity(new Intent(getActivity(), AboutUsActivity.class)));
 
         view.findViewById(R.id.logout_button).setOnClickListener(v -> {
             sessionManager.logoutSession();

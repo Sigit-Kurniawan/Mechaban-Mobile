@@ -246,7 +246,7 @@ public class RegisterActivity extends AppCompatActivity implements ModalBottomSh
     }
 
     @Override
-    public void buttonBottomSheetFirst() {
+    public void buttonBottomSheet() {
         registerEvent();
     }
 

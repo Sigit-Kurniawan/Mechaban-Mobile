@@ -10,10 +10,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sigit.mechaban.R;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class DetailComponentAdapter extends RecyclerView.Adapter<DetailComponentAdapter.DetailComponentViewHolder>{
     private final List<ServiceAdapter.ServiceItem> itemList;
+    private final NumberFormat formatter = NumberFormat.getInstance(new Locale("id", "ID"));
 
     public DetailComponentAdapter(List<ServiceAdapter.ServiceItem> itemList) {
         this.itemList = itemList;
@@ -31,7 +34,7 @@ public class DetailComponentAdapter extends RecyclerView.Adapter<DetailComponent
     public void onBindViewHolder(@NonNull DetailComponentViewHolder holder, int position) {
         ServiceAdapter.ServiceItem item = itemList.get(position);
         holder.serviceView.setText(item.getService());
-        holder.priceVIew.setText(String.valueOf(item.getPrice()));
+        holder.priceVIew.setText(formatter.format(item.getPrice()));
     }
 
     @Override
@@ -48,28 +51,4 @@ public class DetailComponentAdapter extends RecyclerView.Adapter<DetailComponent
             priceVIew = itemView.findViewById(R.id.price_text);
         }
     }
-
-//    public static class DetailComponentItem {
-//        private final String component;
-//        private final int subtotal;
-////        private final List<DetailServiceAdapter.DetailServiceItem> item;
-//
-//        public DetailComponentItem(String component, int price) {
-//            this.component = component;
-//            this.subtotal = price;
-////            this.item = item;
-//        }
-//
-//        public String getComponent() {
-//            return component;
-//        }
-//
-//        public int getSubtotal() {
-//            return subtotal;
-//        }
-//
-////        public List<DetailServiceAdapter.DetailServiceItem> getItem() {
-////            return item;
-////        }
-//    }
 }

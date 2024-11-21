@@ -62,4 +62,5 @@
     <string name="ganti_password">Ganti Password</string>
     <string name="ganti">Ganti</string>
     <string name="masukkan_email_yang_terdaftar_lalu_kami_akan_mengirimkan_kode_otp_untuk_mereset_password">Masukkan email yang terdaftar lalu kami akan mengirimkan kode OTP untuk mereset password</string>
+    <string name="pesan">Pesan</string>
 </resources>

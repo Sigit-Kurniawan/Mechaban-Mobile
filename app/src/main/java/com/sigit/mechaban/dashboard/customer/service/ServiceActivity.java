@@ -2,7 +2,6 @@ package com.sigit.mechaban.dashboard.customer.service;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -11,9 +10,9 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -43,16 +42,21 @@ import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
 import com.sigit.mechaban.api.model.account.AccountAPI;
+import com.sigit.mechaban.api.model.booking.BookingAPI;
 import com.sigit.mechaban.api.model.car.CarAPI;
 import com.sigit.mechaban.api.model.service.ServiceAPI;
 import com.sigit.mechaban.api.model.service.ServiceData;
 import com.sigit.mechaban.components.DetailBottomSheet;
+import com.sigit.mechaban.components.ModalBottomSheetTwoButton;
 import com.sigit.mechaban.object.Account;
+import com.sigit.mechaban.object.Booking;
 import com.sigit.mechaban.object.Car;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -67,7 +71,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
-public class ServiceActivity extends AppCompatActivity implements ServiceAdapter.OnItemSelectedListener {
+public class ServiceActivity extends AppCompatActivity implements ServiceAdapter.OnItemSelectedListener, ModalBottomSheetTwoButton.ModalBottomSheetListener {
     // Variabel di service activity
     private StepView stepView;
     private ViewFlipper viewFlipper;
@@ -78,6 +82,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     private AccordionAdapter accordionAdapter;
     private final List<ServiceAdapter.ServiceItem> selectedServices = new ArrayList<>();
     private int totalPrice = 0;
+    private final NumberFormat formatter = NumberFormat.getInstance(new Locale("id", "ID"));
     // Variabel pilih lokasi
     private MapView mapView;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1, REQUEST_CHECK_SETTINGS = 1001;
@@ -85,10 +90,14 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     private Marker userMarker;
     private String addressDecode;
     // Variabel konfirmasi
-    private TextView nameTextView, emailTextView, noHPTextView, addressConfirmationTextView, merkTextView, nopolTextView, typeTextView, transmitionTextView;
+    private TextView nameTextView, emailTextView, noHPTextView, addressConfirmationTextView, merkTextView, nopolTextView, typeTextView, transmitionTextView, confirmPriceTextView;
     private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
     private final Account account = new Account();
     private final Car car = new Car();
+    private double latitude, longitude;
+    private final List<Booking.BookingService> services = new ArrayList<>();
+    private SessionManager sessionManager;
+    private final Booking booking = new Booking();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +149,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
                         List<ServiceAdapter.ServiceItem> serviceItems = new ArrayList<>();
                         for (ServiceData serviceData : Objects.requireNonNull(serviceMap.get(key))) {
                             serviceItems.add(new ServiceAdapter.ServiceItem(
+                                    serviceData.getIdService(),
                                     serviceData.getService(),
                                     serviceData.getPriceService()
                             ));
@@ -153,6 +163,10 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
                     }
 
                     accordionAdapter.notifyDataSetChanged();
+
+                    if (response.body().getMessage() != null) {
+                        Log.e("ServiceActivity", response.body().getMessage());
+                    }
                 }
             }
 
@@ -205,13 +219,13 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         mapView.getOverlays().add(mapEventsOverlay);
 
         GeoPoint startPoint = new GeoPoint(-8.366329401119295, 114.15234630990764);
-        mapView.getController().setZoom(15.0); // Setel tingkat zoom awal
+        mapView.getController().setZoom(17.5); // Setel tingkat zoom awal
         mapView.getController().setCenter(startPoint);
 
         findViewById(R.id.to_confirmation).setOnClickListener(v -> onNextClicked());
 
         // View konfirmasi
-        SessionManager sessionManager = new SessionManager(this);
+        sessionManager = new SessionManager(this);
 
         nameTextView = findViewById(R.id.tv_name);
         emailTextView = findViewById(R.id.tv_email);
@@ -261,6 +275,31 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
                 Log.e("Confirmation", t.toString(), t);
             }
         });
+
+        confirmPriceTextView = findViewById(R.id.price_text);
+
+        findViewById(R.id.booking_button).setOnClickListener(v -> {
+            booking.setAction("create");
+            booking.setNopol(sessionManager.getUserDetail().get("nopol"));
+            booking.setLatitude(latitude);
+            booking.setLongitude(longitude);
+            booking.setServices(services);
+            Call<BookingAPI> createBooking = apiInterface.bookingResponse(booking);
+            createBooking.enqueue(new Callback<BookingAPI>() {
+                @Override
+                public void onResponse(@NonNull Call<BookingAPI> call, @NonNull Response<BookingAPI> response) {
+                    if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
+                        startActivity(new Intent(ServiceActivity.this, ConfirmationActivity.class));
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<BookingAPI> call, @NonNull Throwable t) {
+                    Log.e("Booking", t.toString(), t);
+                }
+            });
+        });
     }
 
     private void onNextClicked() {
@@ -291,15 +330,20 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     }
 
     @Override
-    public void onItemSelected(String service, int price, boolean isSelected) {
+    public void onItemSelected(String id, String service, int price, boolean isSelected) {
         if (isSelected) {
             totalPrice += price;
-            selectedServices.add(new ServiceAdapter.ServiceItem(service, price));
+            selectedServices.add(new ServiceAdapter.ServiceItem(id, service, price));
+            services.add(new Booking.BookingService(id));
+            if (totalPrice != 0) findViewById(R.id.keterangan).setVisibility(View.VISIBLE);
         } else {
             totalPrice -= price;
             selectedServices.removeIf(item -> item.getService().equals(service));
+            services.removeIf(item -> item.getId_data_servis().equals(id));
+            if (totalPrice == 0) findViewById(R.id.keterangan).setVisibility(View.INVISIBLE);
         }
-        priceTextView.setText(String.valueOf(totalPrice));
+        priceTextView.setText(formatter.format(totalPrice));
+        confirmPriceTextView.setText(formatter.format(totalPrice));
     }
 
     private void backPressed() {
@@ -325,7 +369,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
 
                         // Pusatkan peta pada lokasi perangkat
                         mapView.getController().setCenter(currentLocation);
-                        mapView.getController().setZoom(15.0); // Atur zoom
+                        mapView.getController().setZoom(17.5); // Atur zoom
                     } else {
                         Log.e("ServiceActivity", "Lokasi perangkat tidak ditemukan.");
                     }
@@ -370,13 +414,15 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
             if (addresses != null && !addresses.isEmpty()) {
                 Address address = addresses.get(0);
                 addressDecode = address.getAddressLine(0); // Mendapatkan baris alamat pertama
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
                 addressTextView.setText(addressDecode);
             } else {
                 Toast.makeText(this, "Alamat tidak ditemukan untuk lokasi ini", Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
             Log.e("ServiceActivity", e.toString(), e);
-            Toast.makeText(this, "Gagal mendapatkan alamat: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Tidak terhubung dengan internet", Toast.LENGTH_LONG).show();
         }
 
         // Pindahkan peta ke lokasi marker baru
@@ -389,8 +435,14 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         if (requestCode == REQUEST_CHECK_SETTINGS) {
             if (resultCode == RESULT_OK) {
                 getDeviceLocation();
-            } else {
-                Toast.makeText(this, "Layanan lokasi tidak diaktifkan", Toast.LENGTH_SHORT).show();
+            } else if (resultCode == RESULT_CANCELED) {
+                new ModalBottomSheetTwoButton(
+                        R.drawable.no_location,
+                        "Tidak Bisa Menemukanmu",
+                        "Aktifkan lokasimu",
+                        "Aktifkan",
+                        "Tidak jadi",
+                        ServiceActivity.this);
             }
         }
     }
@@ -421,7 +473,13 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
                     Log.e("ServiceActivity", "Tidak dapat menyelesaikan pengaturan lokasi.", sendEx);
                 }
             } else {
-                showLocationDisabledDialog();
+                new ModalBottomSheetTwoButton(
+                        R.drawable.no_location,
+                        "Tidak Bisa Menemukanmu",
+                        "Aktifkan lokasimu",
+                        "Aktifkan",
+                        "Tidak jadi",
+                        ServiceActivity.this);
             }
         });
     }
@@ -461,19 +519,13 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         }
     }
 
-    private void showLocationDisabledDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Lokasi Tidak Aktif")
-                .setMessage("Aplikasi membutuhkan akses lokasi untuk melanjutkan. Aktifkan lokasi pada pengaturan.")
-                .setCancelable(false)
-                .setPositiveButton("Aktifkan", (dialog, which) -> {
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(intent);
-                })
-                .setNegativeButton("Batal", (dialog, which) -> {
-                    dialog.dismiss();
-                    Toast.makeText(this, "Lokasi diperlukan untuk melanjutkan.", Toast.LENGTH_SHORT).show();
-                })
-                .show();
+    @Override
+    public void positiveButtonBottomSheet() {
+        checkLocationSettings();
+    }
+
+    @Override
+    public void negativeButtonBottomSheet() {
+        finish();
     }
 }

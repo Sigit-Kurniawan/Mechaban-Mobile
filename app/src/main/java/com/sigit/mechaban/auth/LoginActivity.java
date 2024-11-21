@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -173,12 +172,6 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
                         loadingDialog.dismissDialog();
                     } else if (response.body() != null && response.body().getCode() == 400) {
                         loadingDialog.dismissDialog();
-                        isValidateEmail = false;
-                        isValidatePassword = false;
-                        emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                        passwordLayout.setErrorIconDrawable(null);
-                        passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-                        passwordLayout.setEndIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
                         MotionToast.Companion.createColorToast(LoginActivity.this,
                                 "Email atau Password Salah!",
                                 "Periksa kembali hasil",
@@ -213,7 +206,7 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
     }
 
     @Override
-    public void buttonBottomSheetFirst() {
+    public void buttonBottomSheet() {
         loginEvent();
     }
 }

@@ -141,7 +141,7 @@ public class ForgetPasswordActivity extends AppCompatActivity implements ModalBo
     }
 
     @Override
-    public void buttonBottomSheetFirst() {
+    public void buttonBottomSheet() {
         sendOtpEvent();
     }
 }
