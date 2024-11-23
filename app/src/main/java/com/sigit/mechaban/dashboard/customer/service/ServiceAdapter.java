@@ -12,11 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sigit.mechaban.R;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>{
     private final List<ServiceItem> itemList;
     private final OnItemSelectedListener itemSelectedListener;
+    private final NumberFormat formatter = NumberFormat.getNumberInstance(new Locale("id", "ID"));
 
     public ServiceAdapter(List<ServiceItem> itemList, OnItemSelectedListener listener) {
         this.itemList = itemList;
@@ -24,7 +27,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
     }
 
     public interface OnItemSelectedListener {
-        void onItemSelected(String service, int price, boolean isSelected);
+        void onItemSelected(String id, String service, int price, boolean isSelected);
     }
 
     @NonNull
@@ -40,7 +43,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
         ServiceItem item = itemList.get(position);
         holder.serviceLayout.setOnClickListener(v -> selectedItem(item, holder));
         holder.serviceTextView.setText(item.getService());
-        holder.priceTextView.setText(String.valueOf(item.getPrice()));
+        holder.priceTextView.setText(formatter.format(item.getPrice()));
         holder.checkBox.setChecked(item.isChoosen());
         holder.checkBox.setOnClickListener(v -> selectedItem(item, holder));
     }
@@ -49,11 +52,11 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
         if (!item.isChoosen()) {
             item.setChoosen(true);
             holder.checkBox.setChecked(true);
-            itemSelectedListener.onItemSelected(item.getService(), item.getPrice(), true);
+            itemSelectedListener.onItemSelected(item.getId(), item.getService(), item.getPrice(), true);
         } else {
             item.setChoosen(false);
             holder.checkBox.setChecked(false);
-            itemSelectedListener.onItemSelected(item.getService(), item.getPrice(), false);
+            itemSelectedListener.onItemSelected(item.getId(), item.getService(), item.getPrice(), false);
         }
     }
 
@@ -77,14 +80,20 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
     }
 
     public static class ServiceItem {
+        private final String id;
         private final String service;
         private final int price;
         private boolean isChoosen;
 
-        public ServiceItem(String service, int price) {
+        public ServiceItem(String id, String service, int price) {
+            this.id = id;
             this.service = service;
             this.price = price;
             this.isChoosen = false;
+        }
+
+        public String getId() {
+            return id;
         }
 
         public String getService() {

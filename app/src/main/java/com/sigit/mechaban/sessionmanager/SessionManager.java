@@ -34,7 +34,9 @@ public class SessionManager {
     }
 
     public void logoutSession() {
-        editor.clear();
+        editor.putBoolean("isLoggedIn", false);
+        editor.putString("email", null);
+        editor.putString("nopol", null);
         editor.commit();
     }
 
@@ -53,7 +55,7 @@ public class SessionManager {
     }
 
     public void deleteCar() {
-        editor.remove("nopol");
+        editor.putString("nopol", null);
         editor.commit();
     }
 }

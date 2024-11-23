@@ -13,14 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.sigit.mechaban.R;
-import com.sigit.mechaban.dashboard.customer.service.DetailComponentAdapter;
+import com.sigit.mechaban.dashboard.customer.service.DetailServiceAdapter;
 import com.sigit.mechaban.dashboard.customer.service.ServiceAdapter;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class DetailBottomSheet extends BottomSheetDialogFragment {
     private final int price;
     private final List<ServiceAdapter.ServiceItem> selectedServices;
+    private final NumberFormat formatter = NumberFormat.getInstance(new Locale("id", "ID"));
 
     public DetailBottomSheet(int price, List<ServiceAdapter.ServiceItem> selectedServices) {
         this.price = price;
@@ -34,11 +37,11 @@ public class DetailBottomSheet extends BottomSheetDialogFragment {
 
         RecyclerView detailRecycler = view.findViewById(R.id.detail_recycler);
         detailRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        DetailComponentAdapter adapter = new DetailComponentAdapter(selectedServices);
+        DetailServiceAdapter adapter = new DetailServiceAdapter(selectedServices);
         detailRecycler.setAdapter(adapter);
 
         TextView priceTextView = view.findViewById(R.id.price_text);
-        priceTextView.setText(String.valueOf(price));
+        priceTextView.setText(formatter.format(price));
         view.findViewById(R.id.button).setOnClickListener(v -> dismiss());
 
         return view;

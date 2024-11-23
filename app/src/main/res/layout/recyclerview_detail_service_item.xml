@@ -3,30 +3,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingVertical="4dp">
+    android:paddingVertical="2dp">
 
     <TextView
-        android:id="@+id/service"
+        android:id="@+id/title_service"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/montserrat_medium"
-        android:textAppearance="?attr/textAppearanceCaption" />
+        android:fontFamily="@font/montserrat_medium"/>
 
     <TextView
         android:id="@+id/price_symbol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toStartOf="@+id/price"
-        android:fontFamily="@font/montserrat_medium"
+        android:layout_toStartOf="@+id/price_text"
+        android:fontFamily="@font/montserrat_semibold"
         android:text="@string/rp"
-        android:textAppearance="?attr/textAppearanceCaption"
         tools:ignore="RelativeOverlap" />
 
     <TextView
-        android:id="@+id/price"
+        android:id="@+id/price_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:fontFamily="@font/montserrat_medium"
-        android:textAppearance="?attr/textAppearanceCaption" />
+        android:fontFamily="@font/montserrat_semibold" />
+
 </RelativeLayout>

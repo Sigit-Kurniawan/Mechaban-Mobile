@@ -64,7 +64,9 @@ public class VerifyOtpActivity extends AppCompatActivity {
         setUpNextButtonNavigation(code3, code4);
 
         findViewById(R.id.send_otp_btn).setOnClickListener(v -> {
+            loadingDialog.startLoadingDialog();
             Intent intent = getIntent();
+            boolean isForgetPassword = intent.getBooleanExtra("isForgetPassword", false);
             String name = intent.getStringExtra("name");
             String email = intent.getStringExtra("email");
             String noHP = intent.getStringExtra("noHP");
@@ -75,7 +77,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
                     Objects.requireNonNull(code3.getText()).toString(),
                     Objects.requireNonNull(code4.getText()).toString());
 
-            if (Objects.requireNonNull(name).isEmpty() && Objects.requireNonNull(noHP).isEmpty() && Objects.requireNonNull(password).isEmpty()) {
+            if (isForgetPassword) {
                 account.setAction("forget_password");
                 account.setEmail(email);
                 account.setOtp(otp);
@@ -86,10 +88,11 @@ public class VerifyOtpActivity extends AppCompatActivity {
                     public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
                         if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
                             Toast.makeText(VerifyOtpActivity.this, "Ganti password berhasil", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(), VerifyOtpActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), ChangePasswordActivity.class);
                             intent.putExtra("email", email);
                             startActivity(intent);
                             finish();
+                            loadingDialog.dismissDialog();
                         }
                     }
 
@@ -132,54 +135,6 @@ public class VerifyOtpActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void registerEvent() {
-        loadingDialog.startLoadingDialog();
-
-        Intent intent = getIntent();
-        account.setAction("register");
-        account.setName(intent.getStringExtra("name"));
-        account.setEmail(intent.getStringExtra("email"));
-        account.setNo_hp(intent.getStringExtra("noHP"));
-        account.setPassword(intent.getStringExtra("password"));
-//        if (new Connection(this).isNetworkAvailable()) {
-            ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
-            Call<AccountAPI> registerCall = apiInterface.accountResponse(account);
-            registerCall.enqueue(new Callback<AccountAPI>() {
-                @Override
-                public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
-                    if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                        Toast.makeText(VerifyOtpActivity.this, "Registrasi Berhasil", Toast.LENGTH_SHORT).show();
-                        finish();
-                        loadingDialog.dismissDialog();
-                    }
-//                    else {
-//                        loadingDialog.dismissDialog();
-//                        if (response.body().getMessage().equals("Email telah terdaftar")) {
-//                            isValidateEmail = false;
-//                            emailLayout.setError(response.body().getMessage());
-//                            emailLayout.setStartIconTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.md_theme_error));
-//                        } else {
-//                            Toast.makeText(RegisterActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
-                    Log.e("RegisterActivity", t.toString(), t);
-                }
-            });
-//        } else {
-//            loadingDialog.dismissDialog();
-//            new ModalBottomSheet(R.drawable.no_internet,
-//                    "Tidak Terhubung dengan Internet",
-//                    "Periksa kembali koneksi internet Anda.",
-//                    "Coba Lagi",
-//                    this)
-//                    .show(getSupportFragmentManager(), "ModalBottomSheet");
-//        }
     }
 
     private void setUpEditTextNavigation(EditText currentEditText, EditText nextEditText) {
