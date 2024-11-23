@@ -2,10 +2,12 @@ package com.sigit.mechaban.dashboard.customer.account;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -34,5 +36,13 @@ public class AboutUsActivity extends AppCompatActivity {
         view.setWebChromeClient(new WebChromeClient());
 
         view.loadUrl("https://www.dicoding.com");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -14,27 +14,27 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class DetailComponentAdapter extends RecyclerView.Adapter<DetailComponentAdapter.DetailComponentViewHolder>{
+public class DetailServiceAdapter extends RecyclerView.Adapter<DetailServiceAdapter.DetailServiceViewHolder>{
     private final List<ServiceAdapter.ServiceItem> itemList;
     private final NumberFormat formatter = NumberFormat.getInstance(new Locale("id", "ID"));
 
-    public DetailComponentAdapter(List<ServiceAdapter.ServiceItem> itemList) {
+    public DetailServiceAdapter(List<ServiceAdapter.ServiceItem> itemList) {
         this.itemList = itemList;
     }
 
     @NonNull
     @Override
-    public DetailComponentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new DetailComponentViewHolder(LayoutInflater
+    public DetailServiceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new DetailServiceViewHolder(LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.recyclerview_detail_component_item, parent, false));
+                .inflate(R.layout.recyclerview_detail_service_item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DetailComponentViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DetailServiceViewHolder holder, int position) {
         ServiceAdapter.ServiceItem item = itemList.get(position);
         holder.serviceView.setText(item.getService());
-        holder.priceVIew.setText(formatter.format(item.getPrice()));
+        holder.priceView.setText(formatter.format(item.getPrice()));
     }
 
     @Override
@@ -42,13 +42,13 @@ public class DetailComponentAdapter extends RecyclerView.Adapter<DetailComponent
         return itemList.size();
     }
 
-    public static class DetailComponentViewHolder extends RecyclerView.ViewHolder {
-        TextView serviceView, priceVIew;
+    public static class DetailServiceViewHolder extends RecyclerView.ViewHolder {
+        TextView serviceView, priceView;
 
-        public DetailComponentViewHolder(@NonNull View itemView) {
+        public DetailServiceViewHolder(@NonNull View itemView) {
             super(itemView);
             serviceView = itemView.findViewById(R.id.title_service);
-            priceVIew = itemView.findViewById(R.id.price_text);
+            priceView = itemView.findViewById(R.id.price_text);
         }
     }
 }

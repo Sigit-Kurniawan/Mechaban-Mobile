@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.widget.ViewFlipper;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -54,6 +56,9 @@ import com.sigit.mechaban.object.Car;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -99,6 +104,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     private SessionManager sessionManager;
     private final Booking booking = new Booking();
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -226,6 +232,11 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
 
         // View konfirmasi
         sessionManager = new SessionManager(this);
+        String nopol = sessionManager.getUserDetail().get("nopol");
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Jakarta"));
+
+        DateTimeFormatter formatterId = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         nameTextView = findViewById(R.id.tv_name);
         emailTextView = findViewById(R.id.tv_email);
@@ -257,7 +268,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         transmitionTextView = findViewById(R.id.tv_transmition);
 
         car.setAction("detail");
-        car.setNopol(sessionManager.getUserDetail().get("nopol"));
+        car.setNopol(nopol);
         Call<CarAPI> readDetailCar = apiInterface.carResponse(car);
         readDetailCar.enqueue(new Callback<CarAPI>() {
             @Override
@@ -280,7 +291,9 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
 
         findViewById(R.id.booking_button).setOnClickListener(v -> {
             booking.setAction("create");
-            booking.setNopol(sessionManager.getUserDetail().get("nopol"));
+            booking.setId_booking(now.format(formatterId) + sessionManager.getUserDetail().get("nopol"));
+            booking.setTgl_booking(now.format(formatterDate));
+            booking.setNopol(nopol);
             booking.setLatitude(latitude);
             booking.setLongitude(longitude);
             booking.setServices(services);
@@ -289,7 +302,9 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
                 @Override
                 public void onResponse(@NonNull Call<BookingAPI> call, @NonNull Response<BookingAPI> response) {
                     if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
-                        startActivity(new Intent(ServiceActivity.this, ConfirmationActivity.class));
+                        Intent intent = new Intent(ServiceActivity.this, ConfirmationActivity.class);
+                        intent.putExtra("id_booking", booking.getId_booking());
+                        startActivity(intent);
                         finish();
                     }
                 }
@@ -310,10 +325,10 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
 
             addressConfirmationTextView.setText(addressDecode);
 
-            DetailComponentAdapter detailComponentAdapter = new DetailComponentAdapter(selectedServices);
+            DetailServiceAdapter detailServiceAdapter = new DetailServiceAdapter(selectedServices);
             RecyclerView serviceSelected = findViewById(R.id.service_confirmation);
             serviceSelected.setLayoutManager(new LinearLayoutManager(this));
-            serviceSelected.setAdapter(detailComponentAdapter);
+            serviceSelected.setAdapter(detailServiceAdapter);
         } else if (currentStep < stepView.getStepCount() - 1) {
             currentStep++;
             stepView.go(currentStep, true);

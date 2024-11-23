@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat_semibold"
-            android:text="@string/servis"
+            android:text="Tentang Kami"
             android:textAppearance="?attr/textAppearanceTitleLarge" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -27,7 +27,8 @@
     <WebView
         android:id="@+id/web_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

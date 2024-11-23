@@ -2,6 +2,7 @@ package com.sigit.mechaban.dashboard.customer.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,18 +12,26 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sigit.mechaban.R;
+import com.sigit.mechaban.api.ApiClient;
+import com.sigit.mechaban.api.ApiInterface;
+import com.sigit.mechaban.api.model.booking.BookingAPI;
+import com.sigit.mechaban.api.model.booking.BookingData;
 import com.sigit.mechaban.dashboard.customer.activity.recyclerview.ActivityAdapter;
-import com.sigit.mechaban.dashboard.customer.activity.recyclerview.ActivityItem;
+import com.sigit.mechaban.object.Booking;
+import com.sigit.mechaban.sessionmanager.SessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class ActivityFragment extends Fragment {
-
-    public ActivityFragment() {
-        // Required empty public constructor
-    }
+    private final Booking booking = new Booking();
+    private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
+    private final List<ActivityAdapter.ActivityItem> activityItems = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,12 +44,30 @@ public class ActivityFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_activity, container, false);
 
         RecyclerView recyclerView = view.findViewById(R.id.activity_recyclerview);
+        SessionManager sessionManager = new SessionManager(requireContext());
 
-        List<ActivityItem> activityItemList = new ArrayList<>();
-        activityItemList.add(new ActivityItem("1 Okt 2023", "Perbaikan Mesin", "Rp100.000"));
+        booking.setAction("list");
+        booking.setEmail(sessionManager.getUserDetail().get("email"));
+        Call<BookingAPI> readListBooking = apiInterface.bookingResponse(booking);
+        readListBooking.enqueue(new Callback<BookingAPI>() {
+            @Override
+            public void onResponse(@NonNull Call<BookingAPI> call, @NonNull Response<BookingAPI> response) {
+                if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
+                    for (BookingData bookingData : response.body().getBookingDataList()) {
+                        activityItems.add(new ActivityAdapter.ActivityItem(bookingData.getId_booking(), bookingData.getTgl_booking(), bookingData.getMerk(), bookingData.getType(), bookingData.getStatus_pengerjaan(), bookingData.getTotal_biaya()));
+                    }
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+                    layoutManager.setOrientation(RecyclerView.VERTICAL);
+                    recyclerView.setLayoutManager(layoutManager);
+                    recyclerView.setAdapter(new ActivityAdapter(requireActivity().getApplicationContext(), activityItems));
+                }
+            }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new ActivityAdapter(requireActivity().getApplicationContext(), activityItemList));
+            @Override
+            public void onFailure(@NonNull Call<BookingAPI> call, @NonNull Throwable t) {
+
+            }
+        });
 
         return view;
     }

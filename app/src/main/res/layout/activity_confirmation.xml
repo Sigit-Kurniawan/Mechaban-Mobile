@@ -76,13 +76,11 @@
                             android:text="ID Booking" />
 
                         <TextView
-                            android:id="@+id/id"
+                            android:id="@+id/id_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:fontFamily="@font/montserrat_semibold"
-                            android:text="XC001"
-                            android:textAppearance="?attr/textAppearanceBodyLarge" />
+                            android:fontFamily="@font/montserrat_semibold" />
 
                     </LinearLayout>
 
@@ -94,7 +92,7 @@
 
                         <TextView
                             android:id="@+id/title_date"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat_medium"
                             android:text="Tanggal" />
@@ -104,9 +102,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:fontFamily="@font/montserrat_semibold"
-                            android:text="13-12-2024 09:30:25"
-                            android:textAppearance="?attr/textAppearanceBodyLarge" />
+                            android:fontFamily="@font/montserrat_semibold" />
 
                     </LinearLayout>
 
@@ -123,9 +119,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="Albani"
-                    android:textAppearance="?attr/textAppearanceBodyLarge" />
+                    android:fontFamily="@font/montserrat_semibold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -138,9 +132,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="Jl. Mastrip, Krajan Timur, Sumbersari, Kec. Sumbersari, Kabupaten Jember, Jawa Timur 68121"
-                    android:textAppearance="?attr/textAppearanceBodyLarge" />
+                    android:fontFamily="@font/montserrat_semibold" />
             </LinearLayout>
 
             <LinearLayout
@@ -149,80 +141,96 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:background="@drawable/background_component"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="8dp"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:fontFamily="@font/montserrat_medium"
+                    android:text="@string/nomor_polisi_mobil" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_medium"
-                        android:text="Merek" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:fontFamily="@font/montserrat_semibold"
-                        android:text="Honda"
-                        android:textAppearance="?attr/textAppearanceBodyLarge" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_medium"
-                        android:text="Tipe" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:fontFamily="@font/montserrat_semibold"
-                        android:text="Civic"
-                        android:textAppearance="?attr/textAppearanceBodyLarge" />
-
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/nopol_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/montserrat_semibold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_medium"
-                        android:text="Transmis" />
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:fontFamily="@font/montserrat_semibold"
-                        android:text="Auto"
-                        android:textAppearance="?attr/textAppearanceBodyLarge" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:text="@string/merek" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_medium"
-                        android:text="Tahun" />
+                        <TextView
+                            android:id="@+id/merk_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:fontFamily="@font/montserrat_semibold" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:text="@string/tipe_model" />
+
+                        <TextView
+                            android:id="@+id/type_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:fontFamily="@font/montserrat_semibold" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:fontFamily="@font/montserrat_semibold"
-                        android:text="2009"
-                        android:textAppearance="?attr/textAppearanceBodyLarge" />
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:text="@string/transmisi" />
+
+                        <TextView
+                            android:id="@+id/transmition_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:fontFamily="@font/montserrat_semibold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:text="@string/tahun_produksi" />
+
+                        <TextView
+                            android:id="@+id/year_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:fontFamily="@font/montserrat_semibold" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -238,7 +246,14 @@
                 android:paddingVertical="8dp"
                 app:layout_constraintTop_toBottomOf="@+id/rincian_service">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rincian Servis"
+                    android:fontFamily="@font/montserrat_medium"/>
+
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/service_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
