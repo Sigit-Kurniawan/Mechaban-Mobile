@@ -1,5 +1,6 @@
 package com.sigit.mechaban.dashboard.customer.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,13 +40,18 @@ public class ActivityFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_activity, container, false);
+        SessionManager sessionManager = new SessionManager(requireContext());
 
         RecyclerView recyclerView = view.findViewById(R.id.activity_recyclerview);
-        SessionManager sessionManager = new SessionManager(requireContext());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        ActivityAdapter activityAdapter = new ActivityAdapter(requireActivity().getApplicationContext(), activityItems);
+        recyclerView.setAdapter(activityAdapter);
 
         booking.setAction("list");
         booking.setEmail(sessionManager.getUserDetail().get("email"));
@@ -56,16 +63,13 @@ public class ActivityFragment extends Fragment {
                     for (BookingData bookingData : response.body().getBookingDataList()) {
                         activityItems.add(new ActivityAdapter.ActivityItem(bookingData.getId_booking(), bookingData.getTgl_booking(), bookingData.getMerk(), bookingData.getType(), bookingData.getStatus_pengerjaan(), bookingData.getTotal_biaya()));
                     }
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-                    layoutManager.setOrientation(RecyclerView.VERTICAL);
-                    recyclerView.setLayoutManager(layoutManager);
-                    recyclerView.setAdapter(new ActivityAdapter(requireActivity().getApplicationContext(), activityItems));
+                    activityAdapter.notifyDataSetChanged();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<BookingAPI> call, @NonNull Throwable t) {
-
+                Log.e("ActivityFragment", t.toString(), t);
             }
         });
 

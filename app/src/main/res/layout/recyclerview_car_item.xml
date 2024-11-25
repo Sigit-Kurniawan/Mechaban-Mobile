@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -9,7 +10,7 @@
     android:paddingVertical="4dp"
     android:layout_marginHorizontal="16dp"
     android:layout_marginBottom="4dp"
-    android:background="@drawable/background_component"
+    android:background="@drawable/background_component_disabled"
     tools:ignore="RtlSymmetry">
 
     <RelativeLayout

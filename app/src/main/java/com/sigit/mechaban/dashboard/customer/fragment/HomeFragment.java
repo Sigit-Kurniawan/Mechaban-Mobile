@@ -169,7 +169,7 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
                     if (response.body().isExist()) {
                         List<CarAdapter.CarItem> carItemList = new ArrayList<>();
                         for (CarData carData : response.body().getListCarData()) {
-                            carItemList.add(new CarAdapter.CarItem(carData.getNopol(), carData.getMerk(), carData.getType(), carData.getYear()));
+                            carItemList.add(new CarAdapter.CarItem(carData.getNopol(), carData.getMerk(), carData.getType(), carData.getYear(), carData.getStatus()));
                         }
 
                         String savedNopol = sessionManager.getUserDetail().get("nopol");

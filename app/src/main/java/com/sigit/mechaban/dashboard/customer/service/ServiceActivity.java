@@ -302,10 +302,13 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
                 @Override
                 public void onResponse(@NonNull Call<BookingAPI> call, @NonNull Response<BookingAPI> response) {
                     if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
+                        sessionManager.deleteCar();
                         Intent intent = new Intent(ServiceActivity.this, ConfirmationActivity.class);
                         intent.putExtra("id_booking", booking.getId_booking());
                         startActivity(intent);
                         finish();
+                    } else {
+                        Toast.makeText(ServiceActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
 
