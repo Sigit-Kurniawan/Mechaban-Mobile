@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +24,7 @@ import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
 import com.sigit.mechaban.api.model.car.CarAPI;
 import com.sigit.mechaban.api.model.car.CarData;
+import com.sigit.mechaban.dashboard.customer.consultation.ConsultationActivity;
 import com.sigit.mechaban.dashboard.customer.garage.CarAdapter;
 import com.sigit.mechaban.dashboard.customer.service.ServiceActivity;
 import com.sigit.mechaban.object.Car;
@@ -37,8 +37,6 @@ import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import www.sanju.motiontoast.MotionToast;
-import www.sanju.motiontoast.MotionToastStyle;
 
 public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedListener {
     private TextView merkTextView, nopolTextView;
@@ -89,19 +87,15 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
 
         view.findViewById(R.id.service_button).setOnClickListener(v -> startActivity(new Intent(getActivity(), ServiceActivity.class)));
 
+        view.findViewById(R.id.consultation_button).setOnClickListener(v -> startActivity(new Intent(getActivity(), ConsultationActivity.class)));
+
         view.findViewById(R.id.car_service_card).setBackgroundResource(R.drawable.background_component);
 
         merkTextView = view.findViewById(R.id.merk_text);
         nopolTextView = view.findViewById(R.id.nopol_text);
         setCarSelected();
 
-        view.findViewById(R.id.consul_button).setOnClickListener(v -> MotionToast.Companion.darkToast(requireActivity(),
-                "Hurray success 😍",
-                "Upload Completed successfully!",
-                MotionToastStyle.SUCCESS,
-                MotionToast.GRAVITY_TOP,
-                MotionToast.SHORT_DURATION,
-                ResourcesCompat.getFont(requireActivity(),R.font.montserrat_semibold)));
+        view.findViewById(R.id.consul_button).setOnClickListener(v -> startActivity(new Intent(requireActivity(), ConsultationActivity.class)));
         return view;
     }
 

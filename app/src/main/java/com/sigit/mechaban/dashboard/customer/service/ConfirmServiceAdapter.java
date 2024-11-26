@@ -28,7 +28,7 @@ public class ConfirmServiceAdapter extends RecyclerView.Adapter<ConfirmServiceAd
     public ConfirmServiceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ConfirmServiceViewHolder(LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.recyclerview_confirm_service, parent, false));
+                .inflate(R.layout.recyclerview_detail_service_item, parent, false));
     }
 
     @Override
