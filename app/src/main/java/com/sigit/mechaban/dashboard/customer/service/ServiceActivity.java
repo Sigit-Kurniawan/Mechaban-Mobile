@@ -25,9 +25,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -68,7 +73,12 @@ import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import www.sanju.motiontoast.MotionToast;
+import www.sanju.motiontoast.MotionToastStyle;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.util.GeoPoint;
@@ -94,6 +104,8 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     private FusedLocationProviderClient fusedLocationClient;
     private Marker userMarker;
     private String addressDecode;
+    private RequestQueue requestQueue;
+    private final GeoPoint centerPoint = new GeoPoint(-8.159934162579518, 113.72307806355391);
     // Variabel konfirmasi
     private TextView nameTextView, emailTextView, noHPTextView, addressConfirmationTextView, merkTextView, nopolTextView, typeTextView, transmitionTextView, confirmPriceTextView;
     private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
@@ -190,6 +202,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
 
         // View pilih lokasi
         checkLocationSettings();
+        requestQueue = Volley.newRequestQueue(this);
 
         if (currentStep == 1) { // Asumsi langkah 1 adalah halaman lokasi
             getDeviceLocation(); // Mulai mendapatkan lokasi perangkat
@@ -222,13 +235,12 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
                 return false;
             }
         });
+
         mapView.getOverlays().add(mapEventsOverlay);
-
-        GeoPoint startPoint = new GeoPoint(-8.366329401119295, 114.15234630990764);
         mapView.getController().setZoom(17.5); // Setel tingkat zoom awal
-        mapView.getController().setCenter(startPoint);
+        mapView.getController().setCenter(centerPoint);
 
-        findViewById(R.id.to_confirmation).setOnClickListener(v -> onNextClicked());
+        findViewById(R.id.to_confirmation).setOnClickListener(v -> validateAndAddMarker(new GeoPoint(latitude, longitude)));
 
         // View konfirmasi
         sessionManager = new SessionManager(this);
@@ -545,5 +557,42 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     @Override
     public void negativeButtonBottomSheet() {
         finish();
+    }
+
+    private void validateAndAddMarker(GeoPoint destination) {
+        String osrmUrl = "https://router.project-osrm.org/route/v1/driving/"
+                + centerPoint.getLongitude() + "," + centerPoint.getLatitude() + ";"
+                + destination.getLongitude() + "," + destination.getLatitude()
+                + "?overview=false&geometries=geojson";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, osrmUrl, null,
+                response -> {
+                    try {
+                        JSONArray routes = response.getJSONArray("routes");
+                        if (routes.length() > 0) {
+                            JSONObject route = routes.getJSONObject(0);
+                            double distanceInMeters = route.getDouble("distance");
+                            if (distanceInMeters > 50000) {
+                                MotionToast.Companion.createColorToast(this,
+                                        "Ups, kelewatan batas",
+                                        "Lokasimu sudah melebihi jangkauan sejauh 50 km",
+                                        MotionToastStyle.ERROR,
+                                        MotionToast.GRAVITY_BOTTOM,
+                                        MotionToast.LONG_DURATION,
+                                        ResourcesCompat.getFont(this,R.font.montserrat_semibold));
+                            } else {
+                                onNextClicked();
+                            }
+                        }
+                    } catch (JSONException e) {
+                        Log.e("Error OSRM", e.toString(), e);
+                        Toast.makeText(this, "Gagal memproses data OSRM", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> Toast.makeText(this, "Gagal menghubungi OSRM: " + error.getMessage(), Toast.LENGTH_SHORT).show()
+        );
+
+        requestQueue.add(jsonObjectRequest);
     }
 }

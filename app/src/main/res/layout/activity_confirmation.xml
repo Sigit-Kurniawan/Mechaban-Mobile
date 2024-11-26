@@ -295,10 +295,26 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:background="@color/md_theme_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            style="?attr/materialButtonOutlinedStyle"
+            android:id="@+id/cancel_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:textColor="@color/md_theme_error"
+            android:text="Batal"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            app:strokeColor="@color/md_theme_error"
+            app:strokeWidth="2dp"
+            app:rippleColor="@color/md_theme_errorContainer"/>
 
         <Button
             android:id="@+id/close_button"

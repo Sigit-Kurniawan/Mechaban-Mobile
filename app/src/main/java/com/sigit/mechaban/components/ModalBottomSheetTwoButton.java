@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.button.MaterialButton;
 import com.sigit.mechaban.R;
 
 public class ModalBottomSheetTwoButton extends BottomSheetDialogFragment {
@@ -47,14 +48,14 @@ public class ModalBottomSheetTwoButton extends BottomSheetDialogFragment {
         TextView descText = view.findViewById(R.id.description);
         descText.setText(description);
 
-        Button positiveButton = view.findViewById(R.id.positive_button);
+        MaterialButton positiveButton = view.findViewById(R.id.positive_button);
         positiveButton.setText(positiveButtonText);
         positiveButton.setOnClickListener(v -> {
             listener.positiveButtonBottomSheet();
             dismiss();
         });
 
-        Button negativeButton = view.findViewById(R.id.negative_button);
+        MaterialButton negativeButton = view.findViewById(R.id.negative_button);
         negativeButton.setText(negativeButtonText);
         negativeButton.setOnClickListener(v -> {
             listener.negativeButtonBottomSheet();

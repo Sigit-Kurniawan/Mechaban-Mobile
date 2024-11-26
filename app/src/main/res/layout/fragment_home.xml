@@ -126,22 +126,12 @@
                 android:text="Servis" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/inspection_button"
-                style="@style/Widget.MaterialComponents.Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableTop="@drawable/baseline_engineering_24"
-                android:fontFamily="@font/montserrat_semibold"
-                android:text="inspeksi" />
-
-            <com.google.android.material.button.MaterialButton
                 android:id="@+id/consultation_button"
                 style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableTop="@drawable/baseline_engineering_24"
                 android:fontFamily="@font/montserrat_semibold"
-                android:gravity="center"
                 android:text="Konsultasi" />
 
         </GridLayout>
@@ -295,7 +285,20 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="raya" />
+                            android:text="Pusat Bantuan"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:layout_marginHorizontal="8dp"
+                            android:layout_marginBottom="4dp"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Informasi bantuan dirangkum dalam satu halaman"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:layout_marginHorizontal="8dp"
+                            android:layout_marginBottom="4dp"
+                            android:textAppearance="?attr/textAppearanceBodySmall"/>
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -320,7 +323,20 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="raya" />
+                            android:text="Hubungi Kami"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:layout_marginHorizontal="8dp"
+                            android:layout_marginBottom="4dp"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Menghubungi kontak untuk masalah aplikasi"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:layout_marginHorizontal="8dp"
+                            android:layout_marginBottom="4dp"
+                            android:textAppearance="?attr/textAppearanceBodySmall"/>
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -344,7 +360,20 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="raya" />
+                            android:text="Tentang Kami"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:layout_marginHorizontal="8dp"
+                            android:layout_marginBottom="4dp"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Penjelasan singkat tentang Mechaban"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:layout_marginHorizontal="8dp"
+                            android:layout_marginBottom="4dp"
+                            android:textAppearance="?attr/textAppearanceBodySmall"/>
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -369,7 +398,20 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="raya" />
+                            android:text="Laporkan Bug"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:layout_marginHorizontal="8dp"
+                            android:layout_marginBottom="4dp"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Melaporkan bug aplikasi"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:layout_marginHorizontal="8dp"
+                            android:layout_marginBottom="4dp"
+                            android:textAppearance="?attr/textAppearanceBodySmall"/>
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>

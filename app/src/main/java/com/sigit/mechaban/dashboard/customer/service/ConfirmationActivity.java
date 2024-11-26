@@ -5,6 +5,7 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import com.sigit.mechaban.object.Booking;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,6 +35,7 @@ public class ConfirmationActivity extends AppCompatActivity {
     private RecyclerView serviceConfirmList;
     private final NumberFormat formatter = NumberFormat.getInstance(new Locale("id", "ID"));
     private ConfirmServiceAdapter confirmServiceAdapter;
+    private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +57,6 @@ public class ConfirmationActivity extends AppCompatActivity {
 
         booking.setAction("read");
         booking.setId_booking(getIntent().getStringExtra("id_booking"));
-        ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
         Call<BookingAPI> readBooking = apiInterface.bookingResponse(booking);
         readBooking.enqueue(new Callback<BookingAPI>() {
             @Override
@@ -94,6 +96,27 @@ public class ConfirmationActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<BookingAPI> call, @NonNull Throwable t) {
                 Log.w("ConfirmationActivity", t.toString(), t);
             }
+        });
+
+        findViewById(R.id.cancel_button).setOnClickListener(v -> {
+            booking.setAction("cancel");
+            booking.setId_booking(idBookingText.getText().toString());
+            Call<BookingAPI> cancelBooking = apiInterface.bookingResponse(booking);
+            cancelBooking.enqueue(new Callback<BookingAPI>() {
+                @Override
+                public void onResponse(@NonNull Call<BookingAPI> call, @NonNull Response<BookingAPI> response) {
+                    if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
+                        finish();
+                    } else {
+                        Toast.makeText(ConfirmationActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<BookingAPI> call, @NonNull Throwable t) {
+                    Log.e("ConfirmationActivity", t.toString(), t);
+                }
+            });
         });
 
         findViewById(R.id.close_button).setOnClickListener(v -> finish());

@@ -63,4 +63,8 @@
     <string name="ganti">Ganti</string>
     <string name="masukkan_email_yang_terdaftar_lalu_kami_akan_mengirimkan_kode_otp_untuk_mereset_password">Masukkan email yang terdaftar lalu kami akan mengirimkan kode OTP untuk mereset password</string>
     <string name="pesan">Pesan</string>
+    <string name="yuk_booking_sekarang">Yuk, Booking Sekarang!</string>
+    <string name="montir_kami_akan_dengan_senang_hati_membantumu">Montir kami akan dengan senang hati membantumu</string>
+    <string name="detail">Detail</string>
+    <string name="batal">Batal</string>
 </resources>
