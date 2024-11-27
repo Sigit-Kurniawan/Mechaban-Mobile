@@ -1,71 +1,61 @@
 package com.sigit.mechaban.dashboard.montir;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.sigit.mechaban.R;
-import com.sigit.mechaban.dashboard.montir.fragment.AccountMontirFragment;
+import com.sigit.mechaban.dashboard.customer.fragment.AccountFragment;
 import com.sigit.mechaban.dashboard.montir.fragment.BookingMontirFragment;
 import com.sigit.mechaban.dashboard.montir.fragment.HomeMontirFragment;
-import com.sigit.mechaban.dashboard.montir.fragment.InspeksiMontirFragment;
 
 import java.util.Objects;
 
 public class DashboardMontirActivity extends AppCompatActivity {
-    private Fragment bookingmontirFragment, accountmontirFragment, inspeksiactiveFragment,homemontirFragment, activeFragment;
-//    private FloatingActionButton floatingActionButton;
+    private TextView toolbarTitle;
+    private Fragment homeMontirFragment, bookingMontirFragment, accountMontirFragment, activeFragment;
     private int id;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard_montir);
 
-        // Initializing Fragments
-        homemontirFragment = new HomeMontirFragment();
-        bookingmontirFragment = new BookingMontirFragment(); // Ensure GarageFragment does not need arguments
-        inspeksiactiveFragment = new InspeksiMontirFragment();
-        accountmontirFragment = new AccountMontirFragment();
+        homeMontirFragment = new HomeMontirFragment();
+        bookingMontirFragment = new BookingMontirFragment();
+        accountMontirFragment = new AccountFragment();
 
-
-//        floatingActionButton = findViewById(R.id.fab_button);
-//        floatingActionButton.setOnClickListener(v -> startActivity(new Intent(this, AddCarActivity.class)));
-//        floatingActionButton.hide();
-
-        activeFragment = homemontirFragment;
+        activeFragment = homeMontirFragment;
 
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.frame_layout, accountmontirFragment, "Account").hide(accountmontirFragment)
-                .add(R.id.frame_layout, inspeksiactiveFragment, "Inspeksi").hide(inspeksiactiveFragment)
-                .add(R.id.frame_layout, bookingmontirFragment, "Booking").hide(bookingmontirFragment)
-                .add(R.id.frame_layout, homemontirFragment, "Home")
+                .add(R.id.frame_layout, accountMontirFragment, "Account").hide(accountMontirFragment)
+                .add(R.id.frame_layout, bookingMontirFragment, "Booking").hide(bookingMontirFragment)
+                .add(R.id.frame_layout, homeMontirFragment, "Home")
                 .commit();
 
         setSupportActionBar(findViewById(R.id.action_bar));
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        toolbarTitle = findViewById(R.id.toolbar_title);
 
-        // Initialize BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             id = item.getItemId();
             if (id == R.id.home) {
-                switchFragment(homemontirFragment);
+                switchFragment(homeMontirFragment);
                 Objects.requireNonNull(getSupportActionBar()).hide();
                 return true;
-            } else if (id == R.id.Booking) {
-                switchFragment(bookingmontirFragment);
-                Objects.requireNonNull(getSupportActionBar()).setTitle("Garasi");
-                getSupportActionBar().show();
-                return true;
-            } else if (id == R.id.activity) {
-                switchFragment(inspeksiactiveFragment);
-                Objects.requireNonNull(getSupportActionBar()).setTitle("Aktivitas");
+            } else if (id == R.id.booking) {
+                switchFragment(bookingMontirFragment);
+                toolbarTitle.setText("Booking");
                 getSupportActionBar().show();
                 return true;
             } else if (id == R.id.account) {
-                switchFragment(accountmontirFragment);
+                switchFragment(accountMontirFragment);
                 Objects.requireNonNull(getSupportActionBar()).hide();
                 return true;
             }
@@ -82,12 +72,5 @@ public class DashboardMontirActivity extends AppCompatActivity {
                     .commit();
             activeFragment = fragment;
         }
-
-        // Show FloatingActionButton only on GarageFragment
-//        if (fragment == bookingmontirFragment) {
-//            floatingActionButton.show();
-//        } else {
-//            floatingActionButton.hide();
-//        }
     }
 }

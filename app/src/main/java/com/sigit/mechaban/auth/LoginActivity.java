@@ -29,6 +29,7 @@ import com.sigit.mechaban.components.EditTextBehavior;
 import com.sigit.mechaban.connection.Connection;
 import com.sigit.mechaban.dashboard.customer.dashboard.DashboardActivity;
 import com.sigit.mechaban.R;
+import com.sigit.mechaban.dashboard.montir.DashboardMontirActivity;
 import com.sigit.mechaban.object.Account;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 
@@ -167,7 +168,11 @@ public class LoginActivity extends AppCompatActivity implements ModalBottomSheet
                     if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
                         AccountData loginData = response.body().getAccountData();
                         sessionManager.createLoginSession(loginData);
-                        startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
+                        if (loginData.getRole().equals("customer")) {
+                            startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
+                        } else {
+                            startActivity(new Intent(getApplicationContext(), DashboardMontirActivity.class));
+                        }
                         finish();
                         loadingDialog.dismissDialog();
                     } else if (response.body() != null && response.body().getCode() == 400) {

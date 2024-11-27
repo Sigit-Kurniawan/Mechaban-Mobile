@@ -1,7 +1,6 @@
 package com.sigit.mechaban.onboarding;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,11 +11,13 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.auth.LoginActivity;
 import com.sigit.mechaban.dashboard.customer.dashboard.DashboardActivity;
+import com.sigit.mechaban.dashboard.montir.DashboardMontirActivity;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class OnboardingActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
@@ -29,8 +30,13 @@ public class OnboardingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboarding);
 
-        if (new SessionManager(this).isLoggedIn()) {
-            startActivity(new Intent(this, DashboardActivity.class));
+        SessionManager sessionManager = new SessionManager(this);
+        if (sessionManager.isLoggedIn()) {
+            if (Objects.requireNonNull(sessionManager.getUserDetail().get("role")).equals("customer")) {
+                startActivity(new Intent(this, DashboardActivity.class));
+            } else if (Objects.requireNonNull(sessionManager.getUserDetail().get("role")).equals("montir")) {
+                startActivity(new Intent(this, DashboardMontirActivity.class));
+            }
             finish();
         }
 

@@ -23,13 +23,15 @@ public class SessionManager {
     public void createLoginSession(AccountData accountData) {
         editor.putBoolean("isLoggedIn", true);
         editor.putString("email", accountData.getEmail());
+        editor.putString("role", accountData.getRole());
         editor.commit();
     }
 
     public HashMap<String, String> getUserDetail() {
         HashMap<String, String> user = new HashMap<>();
-        user.put("email", preferences.getString("email", null));
-        user.put("nopol", preferences.getString("nopol", null));
+        user.put("email", getPreferences().getString("email", null));
+        user.put("nopol", getPreferences().getString("nopol", null));
+        user.put("role", getPreferences().getString("role", null));
         return user;
     }
 

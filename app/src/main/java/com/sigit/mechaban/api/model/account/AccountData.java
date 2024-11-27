@@ -15,14 +15,18 @@ public class AccountData {
     @SerializedName("password")
     private final String password;
 
+    @SerializedName("role")
+    private final String role;
+
     @SerializedName("photo")
     private final String photo;
 
-    public AccountData(String email, String name, String noHp, String password, String photo) {
+    public AccountData(String email, String name, String noHp, String password, String role, String photo) {
         this.email = email;
         this.name = name;
         this.noHp = noHp;
         this.password = password;
+        this.role = role;
         this.photo = photo;
     }
 
@@ -40,6 +44,10 @@ public class AccountData {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getRole() {
+        return role;
     }
 
     public String getPhoto() {
