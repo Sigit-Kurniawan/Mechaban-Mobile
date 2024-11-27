@@ -57,6 +57,8 @@ dependencies {
     implementation(libs.firebase.auth)
     //noinspection GradlePath
     implementation(files("D:/Library Java/osmbonuspack_6.9.0.aar"))
+    implementation(libs.firebase.database)
+    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
