@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.auth)
+    //noinspection GradlePath
+    implementation(files("D:/Library Java/osmbonuspack_6.9.0.aar"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -69,4 +71,5 @@ dependencies {
     implementation(libs.osmdroid.android)
     implementation(libs.play.services.location)
     implementation(libs.motiontoast)
+    implementation(libs.volley)
 }

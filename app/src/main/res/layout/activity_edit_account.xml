@@ -181,7 +181,8 @@
                 android:textColor="@color/md_theme_error"
                 android:fontFamily="@font/montserrat_semibold"
                 app:strokeColor="@color/md_theme_error"
-                app:rippleColor="@color/md_theme_errorContainer"/>
+                app:rippleColor="@color/md_theme_errorContainer"
+                app:strokeWidth="2dp"/>
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

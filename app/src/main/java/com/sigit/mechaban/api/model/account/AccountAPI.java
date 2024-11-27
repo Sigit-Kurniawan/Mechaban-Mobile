@@ -2,6 +2,8 @@ package com.sigit.mechaban.api.model.account;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class AccountAPI {
     @SerializedName("data")
     private final AccountData AccountData;
@@ -15,11 +17,15 @@ public class AccountAPI {
     @SerializedName("code")
     private final int code;
 
-    public AccountAPI(AccountData accountData, String message, boolean status, int code) {
+    @SerializedName("list")
+    private final List<AccountData> accountDataList;
+
+    public AccountAPI(AccountData accountData, String message, boolean status, int code, List<AccountData> accountDataList) {
         this.AccountData = accountData;
         this.message = message;
         this.status = status;
         this.code = code;
+        this.accountDataList = accountDataList;
     }
 
     public AccountData getAccountData() {
@@ -36,5 +42,9 @@ public class AccountAPI {
 
     public int getCode() {
         return code;
+    }
+
+    public List<AccountData> getAccountDataList() {
+        return accountDataList;
     }
 }

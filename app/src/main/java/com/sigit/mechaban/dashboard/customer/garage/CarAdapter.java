@@ -11,6 +11,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sigit.mechaban.R;
@@ -56,21 +58,37 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     public void onBindViewHolder(@NonNull CarViewHolder holder, int position) {
         holder.getRadioButton().setChecked(position == selectedPosition);
 
-        View.OnClickListener selectionListener = v -> {
-            int previousPosition = selectedPosition;
-            selectedPosition = holder.getBindingAdapterPosition();
-            notifyItemChanged(previousPosition);
-            notifyItemChanged(selectedPosition);
+        boolean isEnabled = carItems.get(position).getStatus() == 0;
+        if (isEnabled) {
+            holder.getBackground().setBackground(ContextCompat.getDrawable(context, R.drawable.background_component));
+        } else {
+            holder.getBackground().setBackground(ContextCompat.getDrawable(context, R.drawable.background_component_disabled));
+        }
 
-            sessionManager.updateCar(carItems.get(position).getNopol());
+        holder.getItem().setEnabled(isEnabled);
+        holder.getRadioButton().setEnabled(isEnabled);
+        holder.getEditButton().setEnabled(isEnabled);
 
-            if (listener != null) {
-                listener.onCarSelected(carItems.get(position).getNopol(), carItems.get(position).getMerk());
-            }
-        };
+        if (isEnabled) {
+            View.OnClickListener selectionListener = v -> {
+                int previousPosition = selectedPosition;
+                selectedPosition = holder.getBindingAdapterPosition();
+                notifyItemChanged(previousPosition);
+                notifyItemChanged(selectedPosition);
 
-        holder.getItem().setOnClickListener(selectionListener);
-        holder.getRadioButton().setOnClickListener(selectionListener);
+                sessionManager.updateCar(carItems.get(position).getNopol());
+
+                if (listener != null) {
+                    listener.onCarSelected(carItems.get(position).getNopol(), carItems.get(position).getMerk());
+                }
+            };
+
+            holder.getItem().setOnClickListener(selectionListener);
+            holder.getRadioButton().setOnClickListener(selectionListener);
+        } else {
+            holder.getItem().setOnClickListener(null);
+            holder.getRadioButton().setOnClickListener(null);
+        }
 
         holder.getMerkTextView().setText(carItems.get(position).getMerk());
         holder.getTypeTextView().setText(carItems.get(position).getType());
@@ -90,6 +108,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     }
 
     public static class CarViewHolder extends RecyclerView.ViewHolder {
+        private final ConstraintLayout background;
         private final RelativeLayout item;
         private final RadioButton radioButton;
         private final TextView merkTextView, typeTextView, yearTextView;
@@ -97,12 +116,17 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
 
         public CarViewHolder(@NonNull View itemView) {
             super(itemView);
+            background = itemView.findViewById(R.id.background);
             item = itemView.findViewById(R.id.item);
             radioButton = itemView.findViewById(R.id.enabled_selected);
             merkTextView = itemView.findViewById(R.id.merk_text);
             typeTextView = itemView.findViewById(R.id.type_text);
             yearTextView = itemView.findViewById(R.id.year_text);
             editButton = itemView.findViewById(R.id.edit_button);
+        }
+
+        public ConstraintLayout getBackground() {
+            return background;
         }
 
         public RelativeLayout getItem() {
@@ -132,12 +156,14 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
 
     public static class CarItem {
         private final String nopol, merk, type, year;
+        private final int status;
 
-        public CarItem(String nopol, String merk, String type, String year) {
+        public CarItem(String nopol, String merk, String type, String year, int status) {
             this.nopol = nopol;
             this.merk = merk;
             this.type = type;
             this.year = year;
+            this.status = status;
         }
 
         public String getNopol() {
@@ -154,6 +180,10 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
 
         public String getYear() {
             return year;
+        }
+
+        public int getStatus() {
+            return status;
         }
     }
 }

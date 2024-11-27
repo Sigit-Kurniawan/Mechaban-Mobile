@@ -19,12 +19,16 @@ public class CarData {
     @SerializedName("year")
     private final String year;
 
-    public CarData(String nopol, String merk, String type, String transmition, String year) {
+    @SerializedName("status")
+    private final int status;
+
+    public CarData(String nopol, String merk, String type, String transmition, String year, int status) {
         this.nopol = nopol;
         this.merk = merk;
         this.type = type;
         this.transmition = transmition;
         this.year = year;
+        this.status = status;
     }
 
     public String getNopol() {
@@ -45,5 +49,9 @@ public class CarData {
 
     public String getYear() {
         return year;
+    }
+
+    public int getStatus() {
+        return status;
     }
 }
