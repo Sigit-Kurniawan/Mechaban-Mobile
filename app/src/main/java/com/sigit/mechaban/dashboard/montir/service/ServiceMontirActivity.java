@@ -197,7 +197,7 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
                         "Aktifkan lokasimu",
                         "Aktifkan",
                         "Tidak jadi",
-                        ServiceMontirActivity.this);
+                        ServiceMontirActivity.this).show(getSupportFragmentManager(), "ModalBottomSheet");
             }
         });
     }

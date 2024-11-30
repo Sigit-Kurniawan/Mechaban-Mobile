@@ -56,9 +56,10 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull CarViewHolder holder, int position) {
+        CarItem carItem = carItems.get(position);
         holder.getRadioButton().setChecked(position == selectedPosition);
 
-        boolean isEnabled = carItems.get(position).getStatus() == 0;
+        boolean isEnabled = carItem.getStatus() == 0;
         if (isEnabled) {
             holder.getBackground().setBackground(ContextCompat.getDrawable(context, R.drawable.background_component));
         } else {
@@ -76,10 +77,10 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
                 notifyItemChanged(previousPosition);
                 notifyItemChanged(selectedPosition);
 
-                sessionManager.updateCar(carItems.get(position).getNopol());
+                sessionManager.updateCar(carItem.getNopol());
 
                 if (listener != null) {
-                    listener.onCarSelected(carItems.get(position).getNopol(), carItems.get(position).getMerk());
+                    listener.onCarSelected(carItem.getNopol(), carItem.getMerk());
                 }
             };
 
@@ -90,14 +91,14 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
             holder.getRadioButton().setOnClickListener(null);
         }
 
-        holder.getMerkTextView().setText(carItems.get(position).getMerk());
-        holder.getTypeTextView().setText(carItems.get(position).getType());
-        holder.getYearTextView().setText(carItems.get(position).getYear());
+        holder.getMerkTextView().setText(carItem.getMerk());
+        holder.getTypeTextView().setText(carItem.getType());
+        holder.getYearTextView().setText(carItem.getYear());
 
         holder.getEditButton().setOnClickListener(v -> {
             Intent intent = new Intent(context, CarActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("nopol", carItems.get(position).getNopol());
+            intent.putExtra("nopol", carItem.getNopol());
             context.startActivity(intent);
         });
     }

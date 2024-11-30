@@ -472,7 +472,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
                         "Aktifkan lokasimu",
                         "Aktifkan",
                         "Tidak jadi",
-                        ServiceActivity.this);
+                        ServiceActivity.this).show(getSupportFragmentManager(), "ModalBottomSheet");
             }
         }
     }
@@ -509,7 +509,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
                         "Aktifkan lokasimu",
                         "Aktifkan",
                         "Tidak jadi",
-                        ServiceActivity.this);
+                        ServiceActivity.this).show(getSupportFragmentManager(), "ModalBottomSheet");
             }
         });
     }

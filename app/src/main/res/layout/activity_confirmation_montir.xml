@@ -153,6 +153,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="Rincian Mobil"
+                    android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_medium"
                     android:text="@string/nomor_polisi_mobil" />
 
@@ -256,8 +264,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:text="Rincian Servis" />
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="Rincian Servis"
+                    android:textAppearance="?attr/textAppearanceBodyLarge" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/service_list"
@@ -308,8 +318,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:text="Rincian Montir" />
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="Rincian Montir"
+                    android:textAppearance="?attr/textAppearanceBodyLarge" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -326,6 +338,7 @@
                         android:id="@+id/leader_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_semibold"
                         android:layout_alignParentEnd="true"
                         tools:ignore="RelativeOverlap" />
 
@@ -334,7 +347,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Anggota Monitr: "
+                    android:text="Anggota Montir: "
                     android:fontFamily="@font/montserrat_medium" />
 
                 <androidx.recyclerview.widget.RecyclerView

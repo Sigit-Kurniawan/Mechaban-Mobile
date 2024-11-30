@@ -45,16 +45,17 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
 
     @Override
     public void onBindViewHolder(@NonNull ActivityViewHolder holder, int position) {
-        holder.getDateTextView().setText(activityItemList.get(position).getDate());
-        holder.getMerkTextView().setText(activityItemList.get(position).getMerk());
-        holder.getTypeTextView().setText(activityItemList.get(position).getType());
-        holder.getStatusTextView().setText(activityItemList.get(position).getStatus());
-        holder.getTotalTextView().setText(formatter.format(activityItemList.get(position).getTotal()));
+        ActivityItem activityItem = activityItemList.get(position);
+        holder.getDateTextView().setText(activityItem.getDate());
+        holder.getMerkTextView().setText(activityItem.getMerk());
+        holder.getTypeTextView().setText(activityItem.getType());
+        holder.getStatusTextView().setText(activityItem.getStatus());
+        holder.getTotalTextView().setText(formatter.format(activityItem.getTotal()));
         holder.getCancelButton().setOnClickListener(v -> showBottomSheetDialog(position));
         holder.getDetailButton().setOnClickListener(v -> {
             Intent intent = new Intent(context, ConfirmationActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("id_booking", activityItemList.get(position).getId());
+            intent.putExtra("id_booking", activityItem.getId());
             context.startActivity(intent);
         });
     }
@@ -166,7 +167,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
         MaterialButton confirmButton = dialogView.findViewById(R.id.positive_button);
         Button cancelButton = dialogView.findViewById(R.id.negative_button);
 
-        imageView.setImageResource(R.drawable.no_location);
+        imageView.setImageResource(R.drawable.cancel);
 
         title.setText("Batalkan Booking?");
 
