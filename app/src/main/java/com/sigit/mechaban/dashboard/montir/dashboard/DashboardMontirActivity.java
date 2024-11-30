@@ -1,4 +1,4 @@
-package com.sigit.mechaban.dashboard.montir;
+package com.sigit.mechaban.dashboard.montir.dashboard;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

@@ -11,7 +11,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.auth.LoginActivity;
 import com.sigit.mechaban.dashboard.customer.dashboard.DashboardActivity;
-import com.sigit.mechaban.dashboard.montir.DashboardMontirActivity;
+import com.sigit.mechaban.dashboard.montir.dashboard.DashboardMontirActivity;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 

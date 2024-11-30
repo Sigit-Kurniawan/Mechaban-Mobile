@@ -92,7 +92,7 @@ public class ActivityFragment extends Fragment {
                         recyclerView.setVisibility(View.VISIBLE);
                         activityItems.clear();
                         for (BookingData bookingData : response.body().getBookingDataList()) {
-                            activityItems.add(new ActivityAdapter.ActivityItem(bookingData.getId_booking(), bookingData.getTgl_booking(), bookingData.getMerk(), bookingData.getType(), bookingData.getStatus_pengerjaan(), bookingData.getTotal_biaya()));
+                            activityItems.add(new ActivityAdapter.ActivityItem(bookingData.getId_booking(), bookingData.getTgl_booking(), bookingData.getMerk(), bookingData.getType(), bookingData.getStatus(), bookingData.getTotal_biaya()));
                         }
                         activityAdapter.notifyDataSetChanged();
                     } else {

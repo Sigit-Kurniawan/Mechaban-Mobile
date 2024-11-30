@@ -29,7 +29,7 @@ import com.sigit.mechaban.components.EditTextBehavior;
 import com.sigit.mechaban.connection.Connection;
 import com.sigit.mechaban.dashboard.customer.dashboard.DashboardActivity;
 import com.sigit.mechaban.R;
-import com.sigit.mechaban.dashboard.montir.DashboardMontirActivity;
+import com.sigit.mechaban.dashboard.montir.dashboard.DashboardMontirActivity;
 import com.sigit.mechaban.object.Account;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 

@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/md_theme_primaryContainer"
-
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".dashboard.montir.fragment.HomeMontirFragment">
 
@@ -49,18 +48,18 @@
                 android:layout_marginEnd="8dp"
                 android:fontFamily="@font/montserrat_semibold"
                 android:text="@string/servis"
-                app:icon="@drawable/baseline_engineering_24"/>
+                app:icon="@drawable/baseline_location_on_24"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/consultation_button"
+                android:id="@+id/booking_button"
                 style="@style/Widget.Material3.Button.ElevatedButton.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_marginStart="8dp"
                 android:fontFamily="@font/montserrat_semibold"
-                android:text="@string/konsultasi"
-                app:icon="@drawable/baseline_headset_mic_24"/>
+                android:text="@string/booking"
+                app:icon="@drawable/baseline_library_books_24"/>
 
         </GridLayout>
 

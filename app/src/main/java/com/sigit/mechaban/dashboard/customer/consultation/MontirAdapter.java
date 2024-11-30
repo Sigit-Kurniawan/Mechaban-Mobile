@@ -1,6 +1,5 @@
 package com.sigit.mechaban.dashboard.customer.consultation;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +14,9 @@ import com.sigit.mechaban.R;
 import java.util.List;
 
 public class MontirAdapter extends RecyclerView.Adapter<MontirAdapter.MontirViewHolder>{
-    private final Context context;
     private final List<MontirItem> montirItems;
 
-    public MontirAdapter(Context context, List<MontirItem> montirItems) {
-        this.context = context;
+    public MontirAdapter(List<MontirItem> montirItems) {
         this.montirItems = montirItems;
     }
 
@@ -27,7 +24,7 @@ public class MontirAdapter extends RecyclerView.Adapter<MontirAdapter.MontirView
     @Override
     public MontirViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new MontirViewHolder(LayoutInflater
-                .from(context)
+                .from(parent.getContext())
                 .inflate(R.layout.recyclerview_montir, parent, false));
     }
 

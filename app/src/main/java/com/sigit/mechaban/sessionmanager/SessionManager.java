@@ -39,6 +39,7 @@ public class SessionManager {
         editor.putBoolean("isLoggedIn", false);
         editor.putString("email", null);
         editor.putString("nopol", null);
+        editor.putString("role", null);
         editor.commit();
     }
 

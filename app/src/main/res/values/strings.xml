@@ -70,4 +70,6 @@
     <string name="konsultasi">Konsultasi</string>
     <string name="whatsapp">WhatsApp</string>
     <string name="booking">Booking</string>
+    <string name="km">km</string>
+    <string name="ambil">Ambil</string>
 </resources>

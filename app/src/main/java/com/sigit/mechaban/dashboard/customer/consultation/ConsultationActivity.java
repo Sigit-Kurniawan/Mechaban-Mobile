@@ -45,7 +45,7 @@ public class ConsultationActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.montir_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        MontirAdapter montirAdapter = new MontirAdapter(this, montirItems);
+        MontirAdapter montirAdapter = new MontirAdapter(montirItems);
         recyclerView.setAdapter(montirAdapter);
 
         account.setAction("read_montir");
