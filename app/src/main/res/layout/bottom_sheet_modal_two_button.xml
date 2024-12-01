@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingHorizontal="16dp"
     android:paddingBottom="16dp">
 
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
@@ -16,6 +15,7 @@
         android:id="@+id/photo"
         android:layout_width="match_parent"
         android:layout_height="150dp"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="16dp"
         tools:ignore="ContentDescription" />
 
@@ -24,6 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:layout_marginHorizontal="16dp"
         android:fontFamily="@font/montserrat_semibold"
         android:textAppearance="?attr/textAppearanceTitleMedium" />
 
@@ -32,11 +33,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:layout_marginHorizontal="16dp"
         android:fontFamily="@font/montserrat_regular" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/negative_button"

@@ -25,7 +25,7 @@ public class MontirAdapter extends RecyclerView.Adapter<MontirAdapter.MontirView
     public MontirViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new MontirViewHolder(LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.recyclerview_montir, parent, false));
+                .inflate(R.layout.recyclerview_consultation, parent, false));
     }
 
     @Override

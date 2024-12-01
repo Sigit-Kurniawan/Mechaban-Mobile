@@ -3,6 +3,7 @@ package com.sigit.mechaban.api;
 import com.sigit.mechaban.api.model.booking.BookingAPI;
 import com.sigit.mechaban.api.model.car.CarAPI;
 import com.sigit.mechaban.api.model.account.AccountAPI;
+import com.sigit.mechaban.api.model.montir.MontirAPI;
 import com.sigit.mechaban.api.model.service.ServiceAPI;
 import com.sigit.mechaban.object.Account;
 import com.sigit.mechaban.object.Booking;
@@ -25,4 +26,7 @@ public interface ApiInterface {
 
     @POST("booking.php")
     Call<BookingAPI> bookingResponse(@Body Booking booking);
+
+    @GET("montir.php")
+    Call<MontirAPI> montirResponse();
 }

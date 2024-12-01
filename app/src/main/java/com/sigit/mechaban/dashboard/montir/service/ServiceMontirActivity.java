@@ -267,6 +267,7 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
                         Intent intent = new Intent(ServiceMontirActivity.this, ConfirmationMontirActivity.class);
                         intent.putExtra("id_booking", item.getId());
                         startActivity(intent);
+                        finish();
                     } else {
                         Toast.makeText(ServiceMontirActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
