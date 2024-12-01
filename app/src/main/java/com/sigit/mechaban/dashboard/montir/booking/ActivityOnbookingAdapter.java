@@ -16,13 +16,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.sigit.mechaban.R;
-import com.sigit.mechaban.components.ModalSeachMontir;
 import com.sigit.mechaban.dashboard.montir.service.ConfirmationMontirActivity;
 
 import java.util.List;
@@ -73,11 +71,6 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
                 showInstallGoogleMapsDialog();
             }
         });
-        holder.getAddMontirButton().setOnClickListener(v -> {
-            if (context instanceof AppCompatActivity) {
-                new ModalSeachMontir(context).show(((AppCompatActivity) context).getSupportFragmentManager(), "ModalBottomSheet");
-            }
-        });
     }
 
     @Override
@@ -87,7 +80,7 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
 
     public static class ActivityOnbookingViewHolder extends RecyclerView.ViewHolder {
         private final TextView dateTextView, nopolTextView, merkTextView, typeTextView, statusTextView;
-        private final Button detailButton, doneButton, locationButton, addMontirButton;
+        private final Button detailButton, doneButton, locationButton;
 
         public ActivityOnbookingViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -99,7 +92,6 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
             doneButton = itemView.findViewById(R.id.done_button);
             detailButton = itemView.findViewById(R.id.detail_button);
             locationButton = itemView.findViewById(R.id.location_button);
-            addMontirButton = itemView.findViewById(R.id.add_montir_button);
         }
 
         public TextView getDateTextView() {
@@ -132,10 +124,6 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
 
         public Button getLocationButton() {
             return locationButton;
-        }
-
-        public Button getAddMontirButton() {
-            return addMontirButton;
         }
     }
     public static class ActivityOnbookingItem {

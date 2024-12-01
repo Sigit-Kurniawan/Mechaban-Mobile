@@ -6,6 +6,7 @@ public class Booking {
     private String action, id_booking, tgl_booking, nopol, email;
     private double latitude, longitude;
     private List<BookingService> services;
+    private List<String> emails;
 
     public void setAction(String action) {
         this.action = action;
@@ -41,6 +42,10 @@ public class Booking {
 
     public void setServices(List<BookingService> services) {
         this.services = services;
+    }
+
+    public void setEmails(List<String> emails) {
+        this.emails = emails;
     }
 
     public static class BookingService {

@@ -64,16 +64,6 @@
 
         <Button
             style="?attr/materialIconButtonFilledStyle"
-            android:id="@+id/add_montir_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/location_button"
-            android:layout_below="@+id/nopol_text"
-            android:layout_marginEnd="8dp"
-            app:icon="@drawable/baseline_person_add_alt_1_24"/>
-
-        <Button
-            style="?attr/materialIconButtonFilledStyle"
             android:id="@+id/location_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

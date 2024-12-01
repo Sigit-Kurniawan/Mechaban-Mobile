@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -30,15 +32,19 @@ import com.google.android.gms.location.Priority;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.textfield.TextInputEditText;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
 import com.sigit.mechaban.api.model.booking.BookingAPI;
 import com.sigit.mechaban.api.model.booking.BookingData;
+import com.sigit.mechaban.api.model.montir.MontirAPI;
+import com.sigit.mechaban.api.model.montir.MontirData;
 import com.sigit.mechaban.api.model.service.ServiceData;
 import com.sigit.mechaban.components.ModalBottomSheetTwoButton;
 import com.sigit.mechaban.dashboard.customer.service.DetailServiceAdapter;
 import com.sigit.mechaban.dashboard.customer.service.ServiceAdapter;
+import com.sigit.mechaban.dashboard.montir.listmontir.MontirAdapter;
 import com.sigit.mechaban.object.Booking;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 
@@ -63,13 +69,17 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
     private final Booking booking = new Booking();
     private final List<BookingAdapter.BookingItem> bookingItemList = new ArrayList<>();
     private final List<ServiceAdapter.ServiceItem> serviceItems = new ArrayList<>();
+    private final List<MontirAdapter.MontirItem> montirItems = new ArrayList<>();
     private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
     private Marker selectedMarker;
-    private LinearLayout bookingLayout, navigation;
-    private ConstraintLayout confirmLayout;
-    private TextView nameText, emailText, noHpText, merkText, nopolText, typeText, transmitionText, yearText, priceText;
+    private LinearLayout bookingLayout, navigation, navigationMontir;
+    private ConstraintLayout confirmLayout, montirLayout;
+    private TextView nameText, emailText, noHpText, merkText, nopolText, typeText, transmitionText, yearText, priceText, emptyText, emptyMontir;
     private final NumberFormat formatter = NumberFormat.getInstance(new Locale("id", "ID"));
-    private Button takeButton;
+    private BookingAdapter bookingAdapter;
+    private MontirAdapter montirAdapter;
+    private String idBooking;
+    List<String> selectedMontir = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,9 +107,13 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
         bookingLayout = findViewById(R.id.booking_layout);
         confirmLayout = findViewById(R.id.confirm_layout);
         navigation = findViewById(R.id.navigation);
+
+        montirLayout = findViewById(R.id.add_montir_layout);
+        navigationMontir = findViewById(R.id.navigation_montir);
+
         RecyclerView recyclerView = findViewById(R.id.booking_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        BookingAdapter bookingAdapter = new BookingAdapter(this, bookingItemList);
+        bookingAdapter = new BookingAdapter(this, bookingItemList);
         recyclerView.setAdapter(bookingAdapter);
 
         bookingAdapter.setOnItemClickListener(this::showConfirmLayout);
@@ -163,7 +177,103 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
             }
         });
 
-        takeButton = findViewById(R.id.take_button);
+        Button takeButton = findViewById(R.id.take_button);
+        takeButton.setOnClickListener(v -> {
+            confirmLayout.setVisibility(View.GONE);
+            navigation.setVisibility(View.GONE);
+
+            montirLayout.setVisibility(View.VISIBLE);
+            navigationMontir.setVisibility(View.VISIBLE);
+        });
+
+        emptyText = findViewById(R.id.empty_text);
+        emptyMontir = findViewById(R.id.empty_montir);
+
+        RecyclerView montirList = findViewById(R.id.montir_list);
+        montirList.setLayoutManager(new LinearLayoutManager(this));
+
+        TextInputEditText searchInput = findViewById(R.id.search_input);
+        searchInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (montirAdapter.filter(s.toString())) {
+                    emptyMontir.setVisibility(View.VISIBLE);
+                } else {
+                    emptyMontir.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        Call<MontirAPI> readMontir = apiInterface.montirResponse();
+        readMontir.enqueue(new Callback<MontirAPI>() {
+            @Override
+            public void onResponse(@NonNull Call<MontirAPI> call, @NonNull Response<MontirAPI> response) {
+                if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
+                    if (response.body().getMontirDataList() != null) {
+                        emptyText.setVisibility(View.GONE);
+                        for (MontirData montirData : response.body().getMontirDataList()) {
+                            montirItems.add(new MontirAdapter.MontirItem(montirData.getEmail(), montirData.getName()));
+                        }
+                        montirAdapter = new MontirAdapter(ServiceMontirActivity.this, montirItems, selectedMontir -> ServiceMontirActivity.this.selectedMontir = selectedMontir);
+                        montirList.setAdapter(montirAdapter);
+                    } else {
+                        emptyText.setVisibility(View.VISIBLE);
+                        montirLayout.setVisibility(View.GONE);
+                    }
+                } else {
+                    Toast.makeText(ServiceMontirActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MontirAPI> call, @NonNull Throwable t) {
+                Log.e("ModalSearchMontir", t.toString(), t);
+            }
+        });
+
+        Button cancelButton = findViewById(R.id.cancel_button);
+        cancelButton.setOnClickListener(v -> {
+            montirLayout.setVisibility(View.GONE);
+            navigationMontir.setVisibility(View.GONE);
+
+            confirmLayout.setVisibility(View.VISIBLE);
+            navigation.setVisibility(View.VISIBLE);
+        });
+
+        findViewById(R.id.add_button).setOnClickListener(v -> {
+            SessionManager sessionManager = new SessionManager(this);
+            booking.setAction("diterima");
+            booking.setId_booking(idBooking);
+            booking.setEmail(sessionManager.getUserDetail().get("email"));
+            booking.setEmails(selectedMontir);
+            Call<BookingAPI> setOnBooking = apiInterface.bookingResponse(booking);
+            setOnBooking.enqueue(new Callback<BookingAPI>() {
+                @Override
+                public void onResponse(@NonNull Call<BookingAPI> call, @NonNull Response<BookingAPI> response) {
+                    if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
+                        Intent intent = new Intent(ServiceMontirActivity.this, ConfirmationMontirActivity.class);
+                        intent.putExtra("id_booking", booking.getId_booking());
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(ServiceMontirActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<BookingAPI> call, @NonNull Throwable t) {
+                    Log.e("ServiceMontirActivity", t.toString(), t);
+                }
+            });
+        });
     }
 
     private void checkLocationSettings() {
@@ -213,6 +323,7 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
     }
 
     private void showConfirmLayout(BookingAdapter.BookingItem item) {
+        idBooking = item.getId();
         bookingLayout.setVisibility(View.GONE);
         confirmLayout.setVisibility(View.VISIBLE);
         navigation.setVisibility(View.VISIBLE);
@@ -242,6 +353,7 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
 
         RecyclerView view = findViewById(R.id.service_confirmation);
         view.setLayoutManager(new LinearLayoutManager(this));
+        serviceItems.clear();
         for (ServiceData service : item.getBookingItemServices()) {
             ServiceAdapter.ServiceItem serviceItem = new ServiceAdapter.ServiceItem(
                     service.getIdService(),
@@ -253,31 +365,5 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
         DetailServiceAdapter detailServiceAdapter = new DetailServiceAdapter(serviceItems);
         view.setAdapter(detailServiceAdapter);
         priceText.setText(formatter.format(item.getPrice()));
-
-        takeButton.setOnClickListener(v -> {
-            SessionManager sessionManager = new SessionManager(this);
-            booking.setAction("diterima");
-            booking.setId_booking(item.getId());
-            booking.setEmail(sessionManager.getUserDetail().get("email"));
-            Call<BookingAPI> takeBooking = apiInterface.bookingResponse(booking);
-            takeBooking.enqueue(new Callback<BookingAPI>() {
-                @Override
-                public void onResponse(@NonNull Call<BookingAPI> call, @NonNull Response<BookingAPI> response) {
-                    if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
-                        Intent intent = new Intent(ServiceMontirActivity.this, ConfirmationMontirActivity.class);
-                        intent.putExtra("id_booking", item.getId());
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(ServiceMontirActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<BookingAPI> call, @NonNull Throwable t) {
-                    Log.e("ServiceMontirActivity", t.toString(), t);
-                }
-            });
-        });
     }
 }

@@ -79,7 +79,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/drag_handle"
-                android:orientation="horizontal"
                 android:visibility="gone">
 
                 <TextView
@@ -276,6 +275,77 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </ScrollView>
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/add_montir_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:layout_below="@+id/drag_handle">
+
+                <TextView
+                    android:id="@+id/title_montir"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="Pilih Anggota Montir"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:paddingBottom="8dp"
+                    app:hintEnabled="false"
+                    app:layout_constraintTop_toBottomOf="@id/title_montir">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/search_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:inputType="textCapWords"
+                        android:hint="@string/montir_siapa_yang_kamu_tambahkan" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/empty_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tidak_ada_montir_yang_kosong"
+                    android:textAlignment="center"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:layout_marginVertical="16dp"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    app:layout_constraintTop_toBottomOf="@id/search"/>
+
+                <TextView
+                    android:id="@+id/empty_montir"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tidak_ada_montir_tersebut"
+                    android:textAlignment="center"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:layout_marginVertical="16dp"
+                    android:visibility="gone"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    app:layout_constraintTop_toBottomOf="@id/search" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/montir_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    app:layout_constraintTop_toBottomOf="@id/search"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </RelativeLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -299,10 +369,10 @@
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
             android:text="@string/batal"
-            android:textColor="@color/md_theme_error"
+            android:textColor="@color/md_theme_primary"
             android:fontFamily="@font/montserrat_semibold"
-            app:strokeColor="@color/md_theme_error"
-            app:rippleColor="@color/md_theme_errorContainer"
+            app:strokeColor="@color/md_theme_primary"
+            app:rippleColor="@color/md_theme_primaryContainer"
             app:strokeWidth="2dp" />
 
         <com.google.android.material.button.MaterialButton
@@ -312,6 +382,43 @@
             android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:text="@string/ambil"
+            android:fontFamily="@font/montserrat_semibold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/navigation_montir"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:background="@color/md_theme_background"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancel_button"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="@string/batal"
+            android:textColor="@color/md_theme_primary"
+            android:fontFamily="@font/montserrat_semibold"
+            app:strokeColor="@color/md_theme_primary"
+            app:rippleColor="@color/md_theme_primaryContainer"
+            app:strokeWidth="2dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/add_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="@string/tambahkan"
             android:fontFamily="@font/montserrat_semibold" />
 
     </LinearLayout>
