@@ -77,4 +77,6 @@
     <string name="tambahkan">Tambahkan</string>
     <string name="tidak_ada_montir_tersebut">Tidak ada montir tersebut.</string>
     <string name="montir_siapa_yang_kamu_tambahkan">Montir siapa yang kamu tambahkan?</string>
+    <string name="pilih_booking">Pilih Booking</string>
+    <string name="tidak_ada_booking_hari_ini">Tidak ada booking hari ini.</string>
 </resources>

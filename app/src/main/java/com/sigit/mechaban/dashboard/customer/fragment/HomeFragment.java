@@ -15,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -56,7 +58,7 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
         super.onCreate(savedInstanceState);
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -85,7 +87,29 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
 
         carButton.setOnClickListener(v -> openCarList());
 
-        view.findViewById(R.id.service_button).setOnClickListener(v -> startActivity(new Intent(getActivity(), ServiceActivity.class)));
+        view.findViewById(R.id.service_button).setOnClickListener(v -> {
+            if (sessionManager.getPreferences().contains("nopol")) {
+                startActivity(new Intent(getActivity(), ServiceActivity.class));
+            } else {
+                bottomSheetDialog = new BottomSheetDialog(requireActivity());
+                @SuppressLint("InflateParams") View view1 = getLayoutInflater().inflate(R.layout.bottom_sheet_modal, null, false);
+                ImageView imageView = view1.findViewById(R.id.photo);
+                imageView.setImageResource(R.drawable.choose);
+
+                TextView title = view1.findViewById(R.id.title);
+                title.setText("Pilih Dulu Mobilnya");
+
+                TextView desc = view1.findViewById(R.id.description);
+                desc.setText("Kalau tidak ada mobil yang dipilih, kami servis apa?");
+
+                Button close = view1.findViewById(R.id.button);
+                close.setText("Tutup");
+                close.setOnClickListener(v1 -> bottomSheetDialog.dismiss());
+
+                bottomSheetDialog.setContentView(view1);
+                bottomSheetDialog.show();
+            }
+        });
 
         view.findViewById(R.id.consultation_button).setOnClickListener(v -> startActivity(new Intent(getActivity(), ConsultationActivity.class)));
 
@@ -109,6 +133,7 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
     @Override
     public void onPause() {
         super.onPause();
+        setCarSelected();
         sessionManager.getPreferences().unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
     }
 
@@ -119,7 +144,7 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
         readDetailCall.enqueue(new Callback<CarAPI>() {
             @Override
             public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isStatus()) {
+                if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
                     merkTextView.setText(response.body().getCarData().getMerk());
                     String[] parts = response.body().getCarData().getNopol().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
                     nopolTextView.setText(String.join(" ", parts));

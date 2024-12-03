@@ -33,6 +33,7 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
@@ -48,6 +49,7 @@ import com.sigit.mechaban.dashboard.montir.listmontir.MontirAdapter;
 import com.sigit.mechaban.object.Booking;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 
+import org.osmdroid.config.Configuration;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
@@ -74,11 +76,14 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
     private Marker selectedMarker;
     private LinearLayout bookingLayout, navigation, navigationMontir;
     private ConstraintLayout confirmLayout, montirLayout;
-    private TextView nameText, emailText, noHpText, merkText, nopolText, typeText, transmitionText, yearText, priceText, emptyText, emptyMontir;
+    private TextView nameText, emailText, noHpText, merkText, nopolText, typeText, transmitionText, yearText, priceText, emptyText, emptyMontir, emptyBooking, titleBooking;
     private final NumberFormat formatter = NumberFormat.getInstance(new Locale("id", "ID"));
     private BookingAdapter bookingAdapter;
     private MontirAdapter montirAdapter;
     private String idBooking;
+    private TextInputLayout search;
+    private SessionManager sessionManager;
+    private RecyclerView recyclerView;
     List<String> selectedMontir = new ArrayList<>();
 
     @Override
@@ -86,6 +91,9 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_montir);
 
+        Configuration.getInstance().setUserAgentValue(getPackageName());
+
+        sessionManager = new SessionManager(this);
         findViewById(R.id.iconButton).setOnClickListener(v -> finish());
 
         mapView = findViewById(R.id.mapview);
@@ -104,6 +112,7 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
         BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
         bottomSheetBehavior.setMaxHeight(900);
 
+        titleBooking = findViewById(R.id.title);
         bookingLayout = findViewById(R.id.booking_layout);
         confirmLayout = findViewById(R.id.confirm_layout);
         navigation = findViewById(R.id.navigation);
@@ -111,10 +120,11 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
         montirLayout = findViewById(R.id.add_montir_layout);
         navigationMontir = findViewById(R.id.navigation_montir);
 
-        RecyclerView recyclerView = findViewById(R.id.booking_list);
+        recyclerView = findViewById(R.id.booking_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         bookingAdapter = new BookingAdapter(this, bookingItemList);
         recyclerView.setAdapter(bookingAdapter);
+        emptyBooking = findViewById(R.id.empty_booking);
 
         bookingAdapter.setOnItemClickListener(this::showConfirmLayout);
 
@@ -168,6 +178,12 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
                                 bookingData.getServiceData()));
                     }
                     bookingAdapter.notifyDataSetChanged();
+                } else if (response.body() != null && response.body().getCode() == 404) {
+                    recyclerView.setVisibility(View.GONE);
+                    emptyBooking.setVisibility(View.VISIBLE);
+                    titleBooking.setVisibility(View.GONE);
+                } else {
+                    Toast.makeText(ServiceMontirActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -192,6 +208,7 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
         RecyclerView montirList = findViewById(R.id.montir_list);
         montirList.setLayoutManager(new LinearLayoutManager(this));
 
+        search = findViewById(R.id.search);
         TextInputEditText searchInput = findViewById(R.id.search_input);
         searchInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -217,17 +234,18 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
             @Override
             public void onResponse(@NonNull Call<MontirAPI> call, @NonNull Response<MontirAPI> response) {
                 if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
-                    if (response.body().getMontirDataList() != null) {
-                        emptyText.setVisibility(View.GONE);
-                        for (MontirData montirData : response.body().getMontirDataList()) {
+                    emptyText.setVisibility(View.GONE);
+                    for (MontirData montirData : response.body().getMontirDataList()) {
+                        if (!Objects.requireNonNull(sessionManager.getUserDetail().get("email")).equals(montirData.getEmail())) {
                             montirItems.add(new MontirAdapter.MontirItem(montirData.getEmail(), montirData.getName()));
                         }
-                        montirAdapter = new MontirAdapter(ServiceMontirActivity.this, montirItems, selectedMontir -> ServiceMontirActivity.this.selectedMontir = selectedMontir);
-                        montirList.setAdapter(montirAdapter);
-                    } else {
-                        emptyText.setVisibility(View.VISIBLE);
-                        montirLayout.setVisibility(View.GONE);
                     }
+                    montirAdapter = new MontirAdapter(ServiceMontirActivity.this, montirItems, selectedMontir -> ServiceMontirActivity.this.selectedMontir = selectedMontir);
+                    montirList.setAdapter(montirAdapter);
+                } else if (response.body() != null && response.body().getCode() == 404) {
+                    search.setVisibility(View.GONE);
+                    emptyText.setVisibility(View.VISIBLE);
+                    montirLayout.setVisibility(View.GONE);
                 } else {
                     Toast.makeText(ServiceMontirActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
@@ -249,7 +267,6 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
         });
 
         findViewById(R.id.add_button).setOnClickListener(v -> {
-            SessionManager sessionManager = new SessionManager(this);
             booking.setAction("diterima");
             booking.setId_booking(idBooking);
             booking.setEmail(sessionManager.getUserDetail().get("email"));
@@ -261,6 +278,7 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
                     if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
                         Intent intent = new Intent(ServiceMontirActivity.this, ConfirmationMontirActivity.class);
                         intent.putExtra("id_booking", booking.getId_booking());
+                        intent.putExtra("latest", true);
                         startActivity(intent);
                         finish();
                     } else {

@@ -345,6 +345,7 @@
                 </RelativeLayout>
 
                 <TextView
+                    android:id="@+id/title_anggota"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Anggota Montir: "
@@ -368,6 +369,35 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/process_button"
+            style="@style/Widget.Material3.Button.Icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="Sudah Diterima"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            app:icon="@drawable/baseline_check_circle_outline_24"
+            app:iconGravity="textStart"
+            app:iconSize="28dp" />
+
+        <Button
+            android:id="@+id/done_button"
+            style="@style/Widget.Material3.Button.Icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="Booking Telah Selesai"
+            android:visibility="gone"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            app:icon="@drawable/baseline_check_circle_outline_24"
+            app:iconGravity="textStart"
+            app:iconSize="28dp" />
 
         <Button
             android:id="@+id/location_button"

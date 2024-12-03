@@ -128,7 +128,7 @@ public class CarActivity extends AppCompatActivity {
             readCarCall.enqueue(new Callback<CarAPI>() {
                 @Override
                 public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
-                    if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
+                    if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
                         String[] parts = response.body().getCarData().getNopol().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
                         if (parts.length == 3) {
                             kodeWilayahEditText.setText(parts[0]);

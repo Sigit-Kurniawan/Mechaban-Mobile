@@ -285,7 +285,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         readDetailCar.enqueue(new Callback<CarAPI>() {
             @Override
             public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isStatus()) {
+                if (response.isSuccessful() && response.body() != null && response.body().getCode() == 200) {
                     merkTextView.setText(response.body().getCarData().getMerk());
                     nopolTextView.setText(response.body().getCarData().getNopol());
                     typeTextView.setText(response.body().getCarData().getType());

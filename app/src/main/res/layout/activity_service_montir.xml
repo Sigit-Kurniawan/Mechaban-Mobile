@@ -64,13 +64,22 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginBottom="8dp"
                     android:fontFamily="@font/montserrat_semibold"
-                    android:text="Pilih Booking"
+                    android:text="@string/pilih_booking"
                     android:textAppearance="?attr/textAppearanceTitleMedium" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/booking_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:id="@+id/empty_booking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tidak_ada_booking_hari_ini"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    android:layout_gravity="center"/>
 
             </LinearLayout>
 

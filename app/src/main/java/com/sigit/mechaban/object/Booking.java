@@ -3,7 +3,7 @@ package com.sigit.mechaban.object;
 import java.util.List;
 
 public class Booking {
-    private String action, id_booking, tgl_booking, nopol, email;
+    private String action, id_booking, tgl_booking, nopol, email, status;
     private double latitude, longitude;
     private List<BookingService> services;
     private List<String> emails;
@@ -30,6 +30,10 @@ public class Booking {
 
     public void setNopol(String nopol) {
         this.nopol = nopol;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public void setLatitude(double latitude) {

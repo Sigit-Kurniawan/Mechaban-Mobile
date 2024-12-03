@@ -82,28 +82,26 @@ public class HomeMontirFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<BookingAPI> call, @NonNull Response<BookingAPI> response) {
                 if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
-                    if (response.body().getBookingDataList() != null) {
-                        titleText.setVisibility(View.VISIBLE);
-                        emptyView.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
-                        activityItems.clear();
-                        for (BookingData bookingData : response.body().getBookingDataList()) {
-                            activityItems.add(new ActivityOnbookingAdapter.ActivityOnbookingItem(
-                                    bookingData.getId_booking(),
-                                    bookingData.getTgl_booking(),
-                                    bookingData.getNopol(),
-                                    bookingData.getMerk(),
-                                    bookingData.getType(),
-                                    bookingData.getStatus(),
-                                    bookingData.getLatitude(),
-                                    bookingData.getLongitude()));
-                        }
-                        activityOnbookingAdapter.notifyDataSetChanged();
-                    } else {
-                        titleText.setVisibility(View.GONE);
-                        emptyView.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
+                    titleText.setVisibility(View.VISIBLE);
+                    emptyView.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    activityItems.clear();
+                    for (BookingData bookingData : response.body().getBookingDataList()) {
+                        activityItems.add(new ActivityOnbookingAdapter.ActivityOnbookingItem(
+                                bookingData.getId_booking(),
+                                bookingData.getTgl_booking(),
+                                bookingData.getNopol(),
+                                bookingData.getMerk(),
+                                bookingData.getType(),
+                                bookingData.getStatus(),
+                                bookingData.getLatitude(),
+                                bookingData.getLongitude()));
                     }
+                    activityOnbookingAdapter.notifyDataSetChanged();
+                } else if (response.body() != null && response.body().getCode() == 404){
+                    titleText.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
                 } else {
                     Toast.makeText(requireActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }

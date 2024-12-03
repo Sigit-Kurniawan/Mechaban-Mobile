@@ -12,22 +12,37 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.sigit.mechaban.R;
+import com.sigit.mechaban.api.ApiClient;
+import com.sigit.mechaban.api.ApiInterface;
+import com.sigit.mechaban.api.model.booking.BookingAPI;
 import com.sigit.mechaban.dashboard.montir.service.ConfirmationMontirActivity;
+import com.sigit.mechaban.object.Booking;
 
 import java.util.List;
+import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import www.sanju.motiontoast.MotionToast;
+import www.sanju.motiontoast.MotionToastStyle;
 
 public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnbookingAdapter.ActivityOnbookingViewHolder>{
     private final Context context;
     private final List<ActivityOnbookingItem> activityOnbookingItems;
+    private final Booking booking = new Booking();
+    private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
 
     public ActivityOnbookingAdapter(Context context, List<ActivityOnbookingItem> activityOnbookingItems) {
         this.context = context;
@@ -51,7 +66,7 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
         holder.getMerkTextView().setText(activityOnbookingItem.getMerk());
         holder.getTypeTextView().setText(activityOnbookingItem.getType());
         holder.getStatusTextView().setText(activityOnbookingItem.getStatus());
-        holder.getDoneButton().setOnClickListener(v -> showBottomSheetDialog(position));
+        holder.getDoneButton().setOnClickListener(v -> showBottomSheetDialog(activityOnbookingItems.get(position), position));
         holder.getDetailButton().setOnClickListener(v -> {
             Intent intent = new Intent(context, ConfirmationMontirActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -59,17 +74,11 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
             context.startActivity(intent);
         });
         holder.getLocationButton().setOnClickListener(v -> {
-            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + activityOnbookingItem.getLatitude() + "," + activityOnbookingItem.getLongitude());
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-            mapIntent.setPackage("com.google.android.apps.maps");
+            String mapsUrl = "https://www.google.com/maps/dir/?api=1&destination="
+                    + activityOnbookingItem.getLatitude() + "," + activityOnbookingItem.getLongitude();
 
-            // Cek apakah Google Maps tersedia di perangkat
-            if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
-                context.startActivity(mapIntent);
-            } else {
-                Log.e("ActivityOnbookingAdapter", "Google Maps tidak tersedia di perangkat ini.");
-                showInstallGoogleMapsDialog();
-            }
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mapsUrl));
+            context.startActivity(browserIntent);
         });
     }
 
@@ -126,6 +135,7 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
             return locationButton;
         }
     }
+
     public static class ActivityOnbookingItem {
         private final String id, date, nopol, merk, type, status;
         private final double latitude, longitude;
@@ -175,7 +185,7 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
     }
 
     @SuppressLint("SetTextI18n")
-    private void showBottomSheetDialog(int position) {
+    private void showBottomSheetDialog(ActivityOnbookingItem activityOnbookingItem, int position) {
         AppCompatActivity activity = (AppCompatActivity) context;
 
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(activity);
@@ -190,20 +200,64 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
 
         imageView.setImageResource(R.drawable.done);
 
-        title.setText("Selesaikan Booking?");
+        String titleBottom = "", descBottom = "", buttonBottom = "";
+        if (activityOnbookingItem.getStatus().equals("diterima")) {
+            titleBottom = "Booking Sudah Diterima?";
+            descBottom = "Booking yang sudah diterima tidak bisa dikembalikan.";
+            buttonBottom = "Terima";
+        } else if (activityOnbookingItem.getStatus().equals("dikerjakan")) {
+            titleBottom = "Booking Sudah Selesai?";
+            descBottom = "Booking yang sudah selesai tidak bisa dikembalikan.";
+            buttonBottom = "Selesai";
+        }
 
-        description.setText("Ini akan menyelesaikan booking secara permanen tidak bisa diubah kembali.");
+        title.setText(titleBottom);
 
-        confirmButton.setText("Selesaikan");
+        description.setText(descBottom);
+
+        confirmButton.setText(buttonBottom);
         confirmButton.setOnClickListener(v -> {
-            activityOnbookingItems.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, activityOnbookingItems.size());
-            bottomSheetDialog.dismiss();
+            booking.setAction("status");
+            booking.setId_booking(activityOnbookingItem.getId());
+            booking.setStatus(activityOnbookingItem.getStatus());
+            Call<BookingAPI> setStatus = apiInterface.bookingResponse(booking);
+            setStatus.enqueue(new Callback<BookingAPI>() {
+                @SuppressLint("NotifyDataSetChanged")
+                @Override
+                public void onResponse(@NonNull Call<BookingAPI> call, @NonNull Response<BookingAPI> response) {
+                    if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
+                        String title = "", message = "";
+                        if (activityOnbookingItem.getStatus().equals("diterima")) {
+                            title = "Booking Telah Dijemput";
+                            message = "Selamat Mengerjakan";
+                        } else if (activityOnbookingItem.getStatus().equals("dikerjakan")) {
+                            title = "Booking Telah Selesai";
+                            message = "Selamat Telah Dikerjakan";
+                        }
+                        MotionToast.Companion.createColorToast(activity,
+                                title,
+                                message,
+                                MotionToastStyle.SUCCESS,
+                                MotionToast.GRAVITY_TOP,
+                                MotionToast.LONG_DURATION,
+                                ResourcesCompat.getFont(context, R.font.montserrat_semibold));
+                        notifyItemRangeChanged(position, activityOnbookingItems.size());
+                        bottomSheetDialog.dismiss();
+                    } else {
+                        Toast.makeText(context, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<BookingAPI> call, @NonNull Throwable t) {
+                    Log.e("ConfirmationMontirActivity", t.toString(), t);
+                }
+            });
+
         });
         confirmButton.setTextColor(ContextCompat.getColorStateList(context, R.color.md_theme_background));
 
-        cancelButton.setText("Gak jadi deh");
+        cancelButton.setText("Batal");
         cancelButton.setOnClickListener(v -> bottomSheetDialog.dismiss());
         cancelButton.setBackgroundColor(Color.TRANSPARENT);
         cancelButton.setStrokeWidth(4);
@@ -213,24 +267,5 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
         cancelButton.setTextColor(ContextCompat.getColorStateList(context, R.color.md_theme_primary));
 
         bottomSheetDialog.show();
-    }
-
-    @SuppressLint("QueryPermissionsNeeded")
-    private void showInstallGoogleMapsDialog() {
-        new android.app.AlertDialog.Builder(context)
-                .setTitle("Google Maps Tidak Tersedia")
-                .setMessage("Aplikasi Google Maps tidak terinstal di perangkat Anda. Silakan unduh dari Play Store.")
-                .setPositiveButton("Unduh", (dialog, which) -> {
-                    // Arahkan pengguna ke Play Store
-                    Uri uri = Uri.parse("market://details?id=com.google.android.apps.maps");
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    if (intent.resolveActivity(context.getPackageManager()) != null) {
-                        context.startActivity(intent);
-                    } else {
-                        Log.e("ActivityOnbookingAdapter", "Tidak dapat membuka Play Store.");
-                    }
-                })
-                .setNegativeButton("Batal", (dialog, which) -> dialog.dismiss())
-                .show();
     }
 }

@@ -5,6 +5,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class CarAPI {
+    @SerializedName("code")
+    private final int code;
+
     @SerializedName("data")
     private final CarData carData;
 
@@ -20,12 +23,17 @@ public class CarAPI {
     @SerializedName("exist")
     private final boolean exist;
 
-    public CarAPI(CarData carData, List<CarData> listCarData, String message, boolean status, boolean exist) {
+    public CarAPI(int code, CarData carData, List<CarData> listCarData, String message, boolean status, boolean exist) {
+        this.code = code;
         this.carData = carData;
         this.listCarData = listCarData;
         this.message = message;
         this.status = status;
         this.exist = exist;
+    }
+
+    public int getCode() {
+        return code;
     }
 
     public CarData getCarData() {
