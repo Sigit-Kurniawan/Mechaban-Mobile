@@ -29,9 +29,6 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".dashboard.montir.booking.BookingActivity"
-            android:exported="false" />
-        <activity
             android:name=".dashboard.montir.service.ServiceMontirActivity"
             android:exported="false" />
         <activity

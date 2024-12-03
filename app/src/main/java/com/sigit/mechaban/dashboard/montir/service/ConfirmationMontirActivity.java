@@ -1,22 +1,29 @@
 package com.sigit.mechaban.dashboard.montir.service;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
@@ -170,40 +177,83 @@ public class ConfirmationMontirActivity extends AppCompatActivity {
         findViewById(R.id.close_button).setOnClickListener(v -> finish());
     }
 
+    @SuppressLint("SetTextI18n")
     private void setStatus() {
-        booking.setAction("status");
-        booking.setId_booking(id);
-        booking.setStatus(status);
-        Call<BookingAPI> setStatus = apiInterface.bookingResponse(booking);
-        setStatus.enqueue(new Callback<BookingAPI>() {
-            @Override
-            public void onResponse(@NonNull Call<BookingAPI> call, @NonNull Response<BookingAPI> response) {
-                if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
-                    String title = "", message = "";
-                    if (status.equals("diterima")) {
-                        title = "Booking Telah Dijemput";
-                        message = "Selamat Mengerjakan";
-                    } else if (status.equals("dikerjakan")) {
-                        title = "Booking Telah Selesai";
-                        message = "Selamat Telah Dikerjakan";
-                    }
-                    MotionToast.Companion.createColorToast(ConfirmationMontirActivity.this,
-                            title,
-                            message,
-                            MotionToastStyle.SUCCESS,
-                            MotionToast.GRAVITY_TOP,
-                            MotionToast.LONG_DURATION,
-                            ResourcesCompat.getFont(ConfirmationMontirActivity.this, R.font.montserrat_semibold));
-                    finish();
-                } else {
-                    Toast.makeText(ConfirmationMontirActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        @SuppressLint("InflateParams") View dialogView = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_modal_two_button, null);
+        bottomSheetDialog.setContentView(dialogView);
 
-            @Override
-            public void onFailure(@NonNull Call<BookingAPI> call, @NonNull Throwable t) {
-                Log.e("ConfirmationMontirActivity", t.toString(), t);
-            }
+        ImageView imageView = dialogView.findViewById(R.id.photo);
+        TextView title = dialogView.findViewById(R.id.title);
+        TextView description = dialogView.findViewById(R.id.description);
+        MaterialButton confirmButton = dialogView.findViewById(R.id.positive_button);
+        MaterialButton cancelButton = dialogView.findViewById(R.id.negative_button);
+
+        imageView.setImageResource(R.drawable.done);
+
+        String titleBottom = "", descBottom = "", buttonBottom = "";
+        if (status.equals("diterima")) {
+            titleBottom = "Booking Sudah Diterima?";
+            descBottom = "Booking yang sudah diterima tidak bisa dikembalikan.";
+            buttonBottom = "Terima";
+        } else if (status.equals("dikerjakan")) {
+            titleBottom = "Booking Sudah Selesai?";
+            descBottom = "Booking yang sudah selesai tidak bisa dikembalikan.";
+            buttonBottom = "Selesai";
+        }
+
+        title.setText(titleBottom);
+
+        description.setText(descBottom);
+
+        confirmButton.setText(buttonBottom);
+        confirmButton.setOnClickListener(v -> {
+            booking.setAction("status");
+            booking.setId_booking(id);
+            booking.setStatus(status);
+            Call<BookingAPI> setStatus = apiInterface.bookingResponse(booking);
+            setStatus.enqueue(new Callback<BookingAPI>() {
+                @Override
+                public void onResponse(@NonNull Call<BookingAPI> call, @NonNull Response<BookingAPI> response) {
+                    if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
+                        String title = "", message = "";
+                        if (status.equals("diterima")) {
+                            title = "Booking Telah Dijemput";
+                            message = "Selamat Mengerjakan";
+                        } else if (status.equals("dikerjakan")) {
+                            title = "Booking Telah Selesai";
+                            message = "Selamat Telah Dikerjakan";
+                        }
+                        MotionToast.Companion.createColorToast(ConfirmationMontirActivity.this,
+                                title,
+                                message,
+                                MotionToastStyle.SUCCESS,
+                                MotionToast.GRAVITY_TOP,
+                                MotionToast.LONG_DURATION,
+                                ResourcesCompat.getFont(ConfirmationMontirActivity.this, R.font.montserrat_semibold));
+                        finish();
+                    } else {
+                        Toast.makeText(ConfirmationMontirActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<BookingAPI> call, @NonNull Throwable t) {
+                    Log.e("ConfirmationMontirActivity", t.toString(), t);
+                }
+            });
         });
+        confirmButton.setTextColor(ContextCompat.getColorStateList(this, R.color.md_theme_background));
+
+        cancelButton.setText("Batal");
+        cancelButton.setOnClickListener(v -> bottomSheetDialog.dismiss());
+        cancelButton.setBackgroundColor(Color.TRANSPARENT);
+        cancelButton.setStrokeWidth(4);
+        cancelButton.setTextColor(ContextCompat.getColorStateList(this, R.color.md_theme_primary));
+        cancelButton.setStrokeColor(ContextCompat.getColorStateList(this, R.color.md_theme_primary));
+        cancelButton.setRippleColor(ContextCompat.getColorStateList(this, R.color.md_theme_primaryContainer));
+        cancelButton.setTextColor(ContextCompat.getColorStateList(this, R.color.md_theme_primary));
+
+        bottomSheetDialog.show();
     }
 }

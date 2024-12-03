@@ -40,7 +40,7 @@ import www.sanju.motiontoast.MotionToastStyle;
 
 public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnbookingAdapter.ActivityOnbookingViewHolder>{
     private final Context context;
-    private final List<ActivityOnbookingItem> activityOnbookingItems;
+    private List<ActivityOnbookingItem> activityOnbookingItems;
     private final Booking booking = new Booking();
     private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
 
@@ -66,6 +66,10 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
         holder.getMerkTextView().setText(activityOnbookingItem.getMerk());
         holder.getTypeTextView().setText(activityOnbookingItem.getType());
         holder.getStatusTextView().setText(activityOnbookingItem.getStatus());
+        if (activityOnbookingItem.getStatus().equals("selesai") || activityOnbookingItem.getStatus().equals("batal")) {
+            holder.getLocationButton().setVisibility(View.GONE);
+            holder.getDoneButton().setVisibility(View.GONE);
+        }
         holder.getDoneButton().setOnClickListener(v -> showBottomSheetDialog(activityOnbookingItems.get(position), position));
         holder.getDetailButton().setOnClickListener(v -> {
             Intent intent = new Intent(context, ConfirmationMontirActivity.class);
@@ -267,5 +271,11 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
         cancelButton.setTextColor(ContextCompat.getColorStateList(context, R.color.md_theme_primary));
 
         bottomSheetDialog.show();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setFilteredList(List<ActivityOnbookingItem> filteredList) {
+        this.activityOnbookingItems = filteredList;
+        notifyDataSetChanged();
     }
 }

@@ -79,4 +79,6 @@
     <string name="montir_siapa_yang_kamu_tambahkan">Montir siapa yang kamu tambahkan?</string>
     <string name="pilih_booking">Pilih Booking</string>
     <string name="tidak_ada_booking_hari_ini">Tidak ada booking hari ini.</string>
+    <string name="yuk_ambil_booking_sekarang">Yuk, Ambil Booking Sekarang!</string>
+    <string name="pelanggan_sedang_menunggumu_di_sana">Pelanggan sedang menunggumu di sana.</string>
 </resources>
