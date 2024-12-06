@@ -43,15 +43,6 @@ public class BookingData {
     @SerializedName("year")
     private final String year;
 
-    @SerializedName("metode_bayar")
-    private final String metode_bayar;
-
-    @SerializedName("status_bayar")
-    private final String status_bayar;
-
-    @SerializedName("status_pengerjaan")
-    private final String status_pengerjaan;
-
     @SerializedName("status")
     private final String status;
 
@@ -67,7 +58,7 @@ public class BookingData {
     @SerializedName("anggota_montir")
     private final List<MontirData> montirData;
 
-    public BookingData(String id_booking, String tgl_booking, double latitude, double longitude, String name, String email, String noHp, String nopol, String merk, String type, String transmition, String year, String metode_bayar, String status_bayar, String status_pengerjaan, String status, String ketuaMontir, double total_biaya, List<ServiceData> serviceData, List<MontirData> montirData) {
+    public BookingData(String id_booking, String tgl_booking, double latitude, double longitude, String name, String email, String noHp, String nopol, String merk, String type, String transmition, String year, String status, String ketuaMontir, double total_biaya, List<ServiceData> serviceData, List<MontirData> montirData) {
         this.id_booking = id_booking;
         this.tgl_booking = tgl_booking;
         this.latitude = latitude;
@@ -80,9 +71,6 @@ public class BookingData {
         this.type = type;
         this.transmition = transmition;
         this.year = year;
-        this.metode_bayar = metode_bayar;
-        this.status_bayar = status_bayar;
-        this.status_pengerjaan = status_pengerjaan;
         this.status = status;
         this.ketua_montir = ketuaMontir;
         this.total_biaya = total_biaya;
@@ -136,18 +124,6 @@ public class BookingData {
 
     public String getYear() {
         return year;
-    }
-
-    public String getMetode_bayar() {
-        return metode_bayar;
-    }
-
-    public String getStatus_bayar() {
-        return status_bayar;
-    }
-
-    public String getStatus_pengerjaan() {
-        return status_pengerjaan;
     }
 
     public String getStatus() {

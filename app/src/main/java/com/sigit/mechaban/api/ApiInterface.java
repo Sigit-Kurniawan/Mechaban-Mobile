@@ -5,6 +5,7 @@ import com.sigit.mechaban.api.model.car.CarAPI;
 import com.sigit.mechaban.api.model.account.AccountAPI;
 import com.sigit.mechaban.api.model.montir.MontirAPI;
 import com.sigit.mechaban.api.model.service.ServiceAPI;
+import com.sigit.mechaban.api.model.status.StatusAPI;
 import com.sigit.mechaban.object.Account;
 import com.sigit.mechaban.object.Booking;
 import com.sigit.mechaban.object.Car;
@@ -29,4 +30,7 @@ public interface ApiInterface {
 
     @GET("montir.php")
     Call<MontirAPI> montirResponse();
+
+    @GET("status.php")
+    Call<StatusAPI> statusResponse();
 }

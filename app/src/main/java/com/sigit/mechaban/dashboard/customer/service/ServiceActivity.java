@@ -174,7 +174,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
                         }
 
                         itemList.add(new AccordionAdapter.AccordionItem(
-                                R.drawable.oil,
+                                R.drawable.baseline_construction_24,
                                 key,
                                 serviceItems
                         ));

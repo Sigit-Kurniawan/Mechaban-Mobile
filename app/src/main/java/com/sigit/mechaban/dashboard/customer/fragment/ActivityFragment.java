@@ -2,16 +2,15 @@ package com.sigit.mechaban.dashboard.customer.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -25,14 +24,11 @@ import com.sigit.mechaban.object.Booking;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 
 public class ActivityFragment extends Fragment {
     private final Booking booking = new Booking();
@@ -42,11 +38,6 @@ public class ActivityFragment extends Fragment {
     private ActivityAdapter activityAdapter;
     private RecyclerView recyclerView;
     private ChipGroup chipGroup;
-    private final Map<String, String> categoryFilterMap = new HashMap<String, String>() {{
-        put("Menunggu Konfirmasi", "pending");
-        put("Booking Dikerjakan", "dikerjakan");
-        put("Booking Selesai", "selesai");
-    }};
     private int activeChipIndex = -1;
     private final List<ChipItem> chipItems = new ArrayList<>();
 
@@ -110,9 +101,11 @@ public class ActivityFragment extends Fragment {
     }
 
     private void setupChips() {
-        chipItems.add(new ChipItem("Menunggu Konfirmasi", categoryFilterMap.get("Menunggu Konfirmasi")));
-        chipItems.add(new ChipItem("Booking Dikerjakan", categoryFilterMap.get("Booking Dikerjakan")));
-        chipItems.add(new ChipItem("Booking Selesai", categoryFilterMap.get("Booking Selesai")));
+        chipItems.add(new ActivityFragment.ChipItem("Menunggu Konfirmasi", "pending"));
+        chipItems.add(new ActivityFragment.ChipItem("Booking Sedang Dijemput", "diterima"));
+        chipItems.add(new ActivityFragment.ChipItem("Booking Dikerjakan", "dikerjakan"));
+        chipItems.add(new ActivityFragment.ChipItem("Booking Selesai", "selesai"));
+        chipItems.add(new ActivityFragment.ChipItem("Booking Batal", "batal"));
 
         chipGroup.removeAllViews();
         for (int i = 0; i < chipItems.size(); i++) {

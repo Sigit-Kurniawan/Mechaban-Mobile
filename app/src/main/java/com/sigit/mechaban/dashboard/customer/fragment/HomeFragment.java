@@ -3,6 +3,7 @@ package com.sigit.mechaban.dashboard.customer.fragment;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,13 +20,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.sigit.mechaban.BuildConfig;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
 import com.sigit.mechaban.api.model.car.CarAPI;
 import com.sigit.mechaban.api.model.car.CarData;
+import com.sigit.mechaban.api.model.status.StatusAPI;
 import com.sigit.mechaban.dashboard.customer.consultation.ConsultationActivity;
 import com.sigit.mechaban.dashboard.customer.garage.CarAdapter;
 import com.sigit.mechaban.dashboard.customer.service.ServiceActivity;
@@ -41,7 +45,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedListener {
-    private TextView merkTextView, nopolTextView;
+    private TextView merkTextView, nopolTextView, statusTextView;
     private final Car car = new Car();
     private SessionManager sessionManager;
     private RecyclerView carList;
@@ -62,6 +66,32 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        statusTextView = view.findViewById(R.id.status_text);
+        Call<StatusAPI> statusAPICall = apiInterface.statusResponse();
+        statusAPICall.enqueue(new Callback<StatusAPI>() {
+            @Override
+            public void onResponse(@NonNull Call<StatusAPI> call, @NonNull Response<StatusAPI> response) {
+                if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
+                    switch (response.body().getData()) {
+                        case 0:
+                            statusTextView.setText("Tutup");
+                            break;
+                        case 1:
+                            statusTextView.setText("Buka");
+                            break;
+                    }
+                } else {
+                    Toast.makeText(requireActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<StatusAPI> call, @NonNull Throwable t) {
+                Log.e("Status", t.toString(), t);
+            }
+        });
+
         LinearLayout carButton = view.findViewById(R.id.car_button);
 
         sessionManager = new SessionManager(requireActivity());
@@ -120,6 +150,19 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
         setCarSelected();
 
         view.findViewById(R.id.consul_button).setOnClickListener(v -> startActivity(new Intent(requireActivity(), ConsultationActivity.class)));
+
+        view.findViewById(R.id.contact_us_button).setOnClickListener(v -> {
+            try {
+                String phoneNumber = "+6283832566069";
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://wa.me/" + phoneNumber.replace("+", "").replace(" ", "")));
+                startActivity(intent);
+            } catch (Exception e) {
+                Log.e("ContactUs", e.toString(), e);
+            }
+        });
+
+        view.findViewById(R.id.about_us_button).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + BuildConfig.ip + "/Mechaban-Web"))));
         return view;
     }
 

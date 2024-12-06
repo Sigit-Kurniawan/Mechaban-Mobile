@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
@@ -29,17 +30,18 @@ import com.sigit.mechaban.api.model.car.CarAPI;
 import com.sigit.mechaban.object.Car;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 
-import java.lang.reflect.Field;
 import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import www.sanju.motiontoast.MotionToast;
+import www.sanju.motiontoast.MotionToastStyle;
 
 public class CarActivity extends AppCompatActivity {
     private TextInputEditText kodeWilayahEditText, angkaEditText, hurufEditText, merkEditText, typeEditText, transmitionEditText, yearEditText;
     private String nopol, merk, type, transmition, year, email;
-    private int transmitionOption;
+    private int transmitionOption, yearDetail;
     private Button saveButton;
     private final Car car = new Car();
     private SessionManager sessionManager;
@@ -139,13 +141,13 @@ public class CarActivity extends AppCompatActivity {
                         typeEditText.setText(response.body().getCarData().getType());
                         String transmitionResponse = response.body().getCarData().getTransmition();
                         transmitionEditText.setText(transmitionResponse.substring(0, 1).toUpperCase() + transmitionResponse.substring(1));
-                        if (transmitionResponse.equals("Auto")) {
+                        if (response.body().getCarData().getTransmition().equals("auto")) {
                             transmitionOption = 1;
                         } else {
                             transmitionOption = 2;
                         }
                         yearEditText.setText(response.body().getCarData().getYear());
-//                        yearPicker.setValue(Integer.parseInt(response.body().getCarData().getYear()));
+                        yearDetail = Integer.parseInt(response.body().getCarData().getYear());
                     }
                 }
 
@@ -176,7 +178,13 @@ public class CarActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
                         if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                            Toast.makeText(CarActivity.this, "Berhasil update mobil", Toast.LENGTH_SHORT).show();
+                            MotionToast.Companion.createColorToast(CarActivity.this,
+                                    "Mobil Berhasil Diubah",
+                                    "Dapat Diperiksa di Dalam Garasi",
+                                    MotionToastStyle.SUCCESS,
+                                    MotionToast.GRAVITY_TOP,
+                                    MotionToast.LONG_DURATION,
+                                    ResourcesCompat.getFont(CarActivity.this, R.font.montserrat_semibold));
                             finish();
                         } else {
                             Toast.makeText(CarActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
@@ -199,7 +207,13 @@ public class CarActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
                         if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                            Toast.makeText(CarActivity.this, "Berhasil hapus mobil", Toast.LENGTH_SHORT).show();
+                            MotionToast.Companion.createColorToast(CarActivity.this,
+                                    "Mobil Berhasil Dihapus",
+                                    "Dapat Diperiksa di Dalam Garasi",
+                                    MotionToastStyle.SUCCESS,
+                                    MotionToast.GRAVITY_TOP,
+                                    MotionToast.LONG_DURATION,
+                                    ResourcesCompat.getFont(CarActivity.this, R.font.montserrat_semibold));
                             if (Objects.requireNonNull(intent.getStringExtra("nopol")).equals(sessionManager.getUserDetail().get("nopol"))) {
                                 sessionManager.deleteCar();
                             }
@@ -237,7 +251,13 @@ public class CarActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
                         if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                            Toast.makeText(CarActivity.this, "Berhasil menambahkan mobil", Toast.LENGTH_SHORT).show();
+                            MotionToast.Companion.createColorToast(CarActivity.this,
+                                    "Mobil Berhasil Ditambahkan",
+                                    "Dapat Diperiksa di Dalam Garasi",
+                                    MotionToastStyle.SUCCESS,
+                                    MotionToast.GRAVITY_TOP,
+                                    MotionToast.LONG_DURATION,
+                                    ResourcesCompat.getFont(CarActivity.this, R.font.montserrat_semibold));
                             finish();
                         } else {
                             Toast.makeText(CarActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
@@ -353,9 +373,12 @@ public class CarActivity extends AppCompatActivity {
         int currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
         yearPicker.setMinValue(1900);
         yearPicker.setMaxValue(currentYear);
-        yearPicker.setValue(currentYear);
+        if (yearDetail != 0) {
+            yearPicker.setValue(yearDetail);
+        } else {
+            yearPicker.setValue(currentYear);
+        }
         yearPicker.setWrapSelectorWheel(false);
-//        setNumberPickerTextSize(yearPicker, 24f);
 
         Button btnConfirm = bottomSheetView.findViewById(R.id.btn_confirm);
         btnConfirm.setOnClickListener(v -> {
@@ -366,29 +389,5 @@ public class CarActivity extends AppCompatActivity {
 
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
-    }
-
-    private void setNumberPickerTextSize(NumberPicker numberPicker, float textSize) {
-        try {
-            Field[] pickerFields = NumberPicker.class.getDeclaredFields();
-            for (Field field : pickerFields) {
-                if (field.getName().equals("mSelectorWheelPaint")) {
-                    field.setAccessible(true);
-                    ((android.graphics.Paint) field.get(numberPicker)).setTextSize(textSize);
-                    numberPicker.invalidate();
-                    break;
-                }
-            }
-
-            // Cari dan ubah semua TextView di dalam NumberPicker
-            for (int i = 0; i < numberPicker.getChildCount(); i++) {
-                View child = numberPicker.getChildAt(i);
-                if (child instanceof TextView) {
-                    ((TextView) child).setTextSize(textSize);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

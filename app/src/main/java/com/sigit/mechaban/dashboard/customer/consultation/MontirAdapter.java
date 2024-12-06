@@ -1,22 +1,31 @@
 package com.sigit.mechaban.dashboard.customer.consultation;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.sigit.mechaban.BuildConfig;
 import com.sigit.mechaban.R;
 
 import java.util.List;
 
 public class MontirAdapter extends RecyclerView.Adapter<MontirAdapter.MontirViewHolder>{
+    private final Context context;
     private final List<MontirItem> montirItems;
 
-    public MontirAdapter(List<MontirItem> montirItems) {
+    public MontirAdapter(Context context, List<MontirItem> montirItems) {
+        this.context = context;
         this.montirItems = montirItems;
     }
 
@@ -24,7 +33,7 @@ public class MontirAdapter extends RecyclerView.Adapter<MontirAdapter.MontirView
     @Override
     public MontirViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new MontirViewHolder(LayoutInflater
-                .from(parent.getContext())
+                .from(context)
                 .inflate(R.layout.recyclerview_consultation, parent, false));
     }
 
@@ -34,6 +43,31 @@ public class MontirAdapter extends RecyclerView.Adapter<MontirAdapter.MontirView
         holder.getNameText().setText(montirItem.getName());
         holder.getEmailText().setText(montirItem.getEmail());
         holder.getNoHpText().setText(montirItem.getNoHp());
+        Glide.with(holder.itemView.getContext())
+                .load("http://" + BuildConfig.ip + "/api/src/" + montirItem.getPhoto())
+                .placeholder(R.drawable.baseline_account_circle_24)
+                .error(R.drawable.baseline_account_circle_24)
+                .into(holder.getPhotoView());
+        holder.getWaButton().setOnClickListener(v -> {
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://wa.me/62" + montirItem.getNoHp()));
+                context.startActivity(intent);
+            } catch (Exception e) {
+                Log.e("ContactUs", e.toString(), e);
+            }
+        });
+        holder.getEmailButton().setOnClickListener(v -> {
+            String subject = "Konsultasi Mechaban";
+            String message = "Konsultasi saya: ";
+
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{montirItem.getEmail()});
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            intent.putExtra(Intent.EXTRA_TEXT, message);
+            context.startActivity(intent);
+        });
     }
 
     @Override
@@ -42,8 +76,9 @@ public class MontirAdapter extends RecyclerView.Adapter<MontirAdapter.MontirView
     }
 
     public static class MontirViewHolder extends RecyclerView.ViewHolder {
-        ShapeableImageView photoView;
-        TextView nameText, emailText, noHpText;
+        private final ShapeableImageView photoView;
+        private final TextView nameText, emailText, noHpText;
+        private final Button waButton, emailButton;
 
         public MontirViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -51,6 +86,8 @@ public class MontirAdapter extends RecyclerView.Adapter<MontirAdapter.MontirView
             nameText = itemView.findViewById(R.id.tv_name);
             emailText = itemView.findViewById(R.id.tv_email);
             noHpText = itemView.findViewById(R.id.tv_no_hp);
+            waButton = itemView.findViewById(R.id.wa_button);
+            emailButton = itemView.findViewById(R.id.email_button);
         }
 
         public ShapeableImageView getPhotoView() {
@@ -68,20 +105,27 @@ public class MontirAdapter extends RecyclerView.Adapter<MontirAdapter.MontirView
         public TextView getNoHpText() {
             return noHpText;
         }
+
+        public Button getWaButton() {
+            return waButton;
+        }
+
+        public Button getEmailButton() {
+            return emailButton;
+        }
     }
 
     public static class MontirItem {
-        private final int photo;
-        private final String name, email, noHp;
+        private final String name, email, noHp, photo;
 
-        public MontirItem(int photo, String name, String email, String noHp) {
+        public MontirItem(String photo, String name, String email, String noHp) {
             this.photo = photo;
             this.name = name;
             this.email = email;
             this.noHp = noHp;
         }
 
-        public int getPhoto() {
+        public String getPhoto() {
             return photo;
         }
 

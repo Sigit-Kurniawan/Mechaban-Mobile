@@ -81,4 +81,16 @@
     <string name="tidak_ada_booking_hari_ini">Tidak ada booking hari ini.</string>
     <string name="yuk_ambil_booking_sekarang">Yuk, Ambil Booking Sekarang!</string>
     <string name="pelanggan_sedang_menunggumu_di_sana">Pelanggan sedang menunggumu di sana.</string>
+    <string name="montir_segera_menuju_ke_lokasimu">Montir segera menuju ke lokasimu</string>
+    <string name="detail_pesanan">Detail Pesanan</string>
+    <string name="id_booking">ID Booking</string>
+    <string name="tanggal">Tanggal</string>
+    <string name="nama_pelanggan">Nama Pelanggan</string>
+    <string name="alamat">Alamat</string>
+    <string name="hubungi_montir">Hubungi Montir</string>
+    <string name="rating">Rating</string>
+    <string name="status">Status</string>
+    <string name="tentang_kami">Tentang Kami</string>
+    <string name="hubungi_kami">Hubungi Kami</string>
+    <string name="anda_menyukai_booking_ini">Anda menyukai booking ini?</string>
 </resources>

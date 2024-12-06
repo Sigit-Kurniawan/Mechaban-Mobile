@@ -18,6 +18,7 @@ retrofit = "2.6.1"
 stepviewVersion = "1.5.1"
 googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.0.0"
+swiperefreshlayout = "1.1.0"
 ucrop = "2.2.8"
 volley = "1.2.1"
 firebaseDatabase = "21.0.0"
@@ -43,6 +44,7 @@ play-services-location = { module = "com.google.android.gms:play-services-locati
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 shuhart-stepview = { module = "com.github.shuhart:stepview", version.ref = "stepviewVersion" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 ucrop = { module = "com.github.yalantis:ucrop", version.ref = "ucrop" }
 volley = { module = "com.android.volley:volley", version.ref = "volley" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }

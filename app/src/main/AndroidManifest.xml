@@ -35,9 +35,6 @@
             android:name=".dashboard.customer.consultation.ConsultationActivity"
             android:exported="false" />
         <activity
-            android:name=".dashboard.customer.account.AboutUsActivity"
-            android:exported="false" />
-        <activity
             android:name=".dashboard.customer.account.ServiceCenterActivity"
             android:exported="false" />
         <activity

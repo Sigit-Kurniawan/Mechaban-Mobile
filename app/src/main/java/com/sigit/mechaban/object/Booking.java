@@ -3,8 +3,9 @@ package com.sigit.mechaban.object;
 import java.util.List;
 
 public class Booking {
-    private String action, id_booking, tgl_booking, nopol, email, status;
+    private String action, id_booking, tgl_booking, nopol, email, status, review;
     private double latitude, longitude;
+    private int rating;
     private List<BookingService> services;
     private List<String> emails;
 
@@ -36,12 +37,20 @@ public class Booking {
         this.status = status;
     }
 
+    public void setReview(String review) {
+        this.review = review;
+    }
+
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 
     public void setServices(List<BookingService> services) {

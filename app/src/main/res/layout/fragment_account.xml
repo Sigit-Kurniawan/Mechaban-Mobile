@@ -97,19 +97,6 @@
                 android:layout_marginStart="8dp"/>
 
             <Button
-                android:id="@+id/help_button"
-                style="@style/Widget.Material3.Button.TextButton.Icon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Pusat Bantuan"
-                android:fontFamily="@font/montserrat_medium"
-                android:textAlignment="textStart"
-                android:textAppearance="?attr/textAppearanceBodyLarge"
-                app:icon="@drawable/baseline_help_outline_24"
-                app:iconPadding="16dp"
-                app:iconSize="32dp" />
-
-            <Button
                 android:id="@+id/contact_button"
                 style="@style/Widget.Material3.Button.TextButton.Icon"
                 android:layout_width="match_parent"

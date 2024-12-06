@@ -45,7 +45,7 @@ public class ConsultationActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.montir_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        MontirAdapter montirAdapter = new MontirAdapter(montirItems);
+        MontirAdapter montirAdapter = new MontirAdapter(this, montirItems);
         recyclerView.setAdapter(montirAdapter);
 
         account.setAction("read_montir");
@@ -56,7 +56,7 @@ public class ConsultationActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
                 if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
                     for (AccountData accountData : response.body().getAccountDataList()) {
-                        montirItems.add(new MontirAdapter.MontirItem(0, accountData.getName(), accountData.getEmail(), accountData.getNoHp()));
+                        montirItems.add(new MontirAdapter.MontirItem(accountData.getPhoto(), accountData.getName(), accountData.getEmail(), accountData.getNoHp()));
                     }
                     montirAdapter.notifyDataSetChanged();
                 } else {

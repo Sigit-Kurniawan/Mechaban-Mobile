@@ -4,31 +4,47 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.sigit.mechaban.R;
+import com.sigit.mechaban.api.ApiClient;
+import com.sigit.mechaban.api.ApiInterface;
+import com.sigit.mechaban.api.model.booking.BookingAPI;
 import com.sigit.mechaban.dashboard.customer.service.ConfirmationActivity;
+import com.sigit.mechaban.object.Booking;
 
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import www.sanju.motiontoast.MotionToast;
+import www.sanju.motiontoast.MotionToastStyle;
 
 public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.ActivityViewHolder> {
     private final Context context;
     private List<ActivityItem> activityItemList;
     private final NumberFormat formatter = NumberFormat.getInstance(new Locale("id", "ID"));
+    private final Booking booking = new Booking();
+    private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
 
     public ActivityAdapter(Context context, List<ActivityItem> activityItemList) {
         this.context = context;
@@ -51,7 +67,12 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
         holder.getTypeTextView().setText(activityItem.getType());
         holder.getStatusTextView().setText(activityItem.getStatus());
         holder.getTotalTextView().setText(formatter.format(activityItem.getTotal()));
-        holder.getCancelButton().setOnClickListener(v -> showBottomSheetDialog(position));
+        if (!activityItem.getStatus().equals("pending")) {
+            holder.getCancelButton().setVisibility(View.GONE);
+        } else {
+            holder.getCancelButton().setVisibility(View.VISIBLE);
+        }
+        holder.getCancelButton().setOnClickListener(v -> showBottomSheetDialog(activityItemList.get(position), position));
         holder.getDetailButton().setOnClickListener(v -> {
             Intent intent = new Intent(context, ConfirmationActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -154,7 +175,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
     }
 
     @SuppressLint("SetTextI18n")
-    private void showBottomSheetDialog(int position) {
+    private void showBottomSheetDialog(ActivityItem activityItem, int position) {
         AppCompatActivity activity = (AppCompatActivity) context;
 
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(activity);
@@ -171,14 +192,38 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
 
         title.setText("Batalkan Booking?");
 
-        description.setText("Ini akan menghilangkan bookingmu untuk selamanya");
+        description.setText("Ini akan membatalkan bookingmu untuk selamanya");
 
         confirmButton.setText("Batalkan");
         confirmButton.setOnClickListener(v -> {
-            activityItemList.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, activityItemList.size());
-            bottomSheetDialog.dismiss();
+            booking.setAction("cancel");
+            booking.setId_booking(activityItem.getId());
+            Call<BookingAPI> cancelBooking = apiInterface.bookingResponse(booking);
+            cancelBooking.enqueue(new Callback<BookingAPI>() {
+                @Override
+                public void onResponse(@NonNull Call<BookingAPI> call, @NonNull Response<BookingAPI> response) {
+                    if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
+                        MotionToast.Companion.createColorToast(activity,
+                                "Booking Berhasil Dibatalkan",
+                                "Booking Dibatalkan",
+                                MotionToastStyle.SUCCESS,
+                                MotionToast.GRAVITY_TOP,
+                                MotionToast.LONG_DURATION,
+                                ResourcesCompat.getFont(context, R.font.montserrat_semibold));
+                        activityItemList.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, activityItemList.size());
+                        bottomSheetDialog.dismiss();
+                    } else {
+                        Toast.makeText(context, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<BookingAPI> call, @NonNull Throwable t) {
+                    Log.e("ConfirmationActivity", t.toString(), t);
+                }
+            });
         });
         confirmButton.setBackgroundColor(Color.TRANSPARENT);
         confirmButton.setStrokeColor(ContextCompat.getColorStateList(context, R.color.md_theme_error));

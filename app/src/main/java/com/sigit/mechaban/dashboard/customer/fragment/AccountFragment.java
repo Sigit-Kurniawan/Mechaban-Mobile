@@ -23,7 +23,6 @@ import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
 import com.sigit.mechaban.api.model.account.AccountAPI;
 import com.sigit.mechaban.auth.LoginActivity;
-import com.sigit.mechaban.dashboard.customer.account.AboutUsActivity;
 import com.sigit.mechaban.dashboard.customer.account.EditAccountActivity;
 import com.sigit.mechaban.object.Account;
 import com.sigit.mechaban.sessionmanager.SessionManager;
@@ -67,7 +66,7 @@ public class AccountFragment extends Fragment {
             }
         });
 
-        view.findViewById(R.id.info_button).setOnClickListener(v -> startActivity(new Intent(getActivity(), AboutUsActivity.class)));
+        view.findViewById(R.id.info_button).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + BuildConfig.ip + "/Mechaban-Web"))));
 
         view.findViewById(R.id.logout_button).setOnClickListener(v -> {
             sessionManager.logoutSession();
