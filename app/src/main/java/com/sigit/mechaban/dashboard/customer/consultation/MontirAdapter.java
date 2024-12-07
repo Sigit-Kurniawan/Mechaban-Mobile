@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.sigit.mechaban.BuildConfig;
 import com.sigit.mechaban.R;
@@ -43,11 +44,14 @@ public class MontirAdapter extends RecyclerView.Adapter<MontirAdapter.MontirView
         holder.getNameText().setText(montirItem.getName());
         holder.getEmailText().setText(montirItem.getEmail());
         holder.getNoHpText().setText(montirItem.getNoHp());
-        Glide.with(holder.itemView.getContext())
-                .load("http://" + BuildConfig.ip + "/api/src/" + montirItem.getPhoto())
-                .placeholder(R.drawable.baseline_account_circle_24)
-                .error(R.drawable.baseline_account_circle_24)
-                .into(holder.getPhotoView());
+        if (montirItem.getPhoto() != null) {
+            Glide.with(holder.itemView.getContext())
+                    .load("http://" + BuildConfig.ip + "/api/src/" + montirItem.getPhoto())
+                    .placeholder(R.drawable.baseline_account_circle_24)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(holder.getPhotoView());
+        }
         holder.getWaButton().setOnClickListener(v -> {
             try {
                 Intent intent = new Intent(Intent.ACTION_VIEW);

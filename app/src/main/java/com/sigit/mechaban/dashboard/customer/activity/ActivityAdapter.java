@@ -72,7 +72,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
         } else {
             holder.getCancelButton().setVisibility(View.VISIBLE);
         }
-        holder.getCancelButton().setOnClickListener(v -> showBottomSheetDialog(activityItemList.get(position), position));
+        holder.getCancelButton().setOnClickListener(v -> showBottomSheetDialog(activityItemList.get(position)));
         holder.getDetailButton().setOnClickListener(v -> {
             Intent intent = new Intent(context, ConfirmationActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -175,7 +175,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
     }
 
     @SuppressLint("SetTextI18n")
-    private void showBottomSheetDialog(ActivityItem activityItem, int position) {
+    private void showBottomSheetDialog(ActivityItem activityItem) {
         AppCompatActivity activity = (AppCompatActivity) context;
 
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(activity);
@@ -210,9 +210,6 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
                                 MotionToast.GRAVITY_TOP,
                                 MotionToast.LONG_DURATION,
                                 ResourcesCompat.getFont(context, R.font.montserrat_semibold));
-                        activityItemList.remove(position);
-                        notifyItemRemoved(position);
-                        notifyItemRangeChanged(position, activityItemList.size());
                         bottomSheetDialog.dismiss();
                     } else {
                         Toast.makeText(context, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();

@@ -58,7 +58,13 @@ public class BookingData {
     @SerializedName("anggota_montir")
     private final List<MontirData> montirData;
 
-    public BookingData(String id_booking, String tgl_booking, double latitude, double longitude, String name, String email, String noHp, String nopol, String merk, String type, String transmition, String year, String status, String ketuaMontir, double total_biaya, List<ServiceData> serviceData, List<MontirData> montirData) {
+    @SerializedName("rating")
+    private final String rating;
+
+    @SerializedName("teks_review")
+    private final String teks_review;
+
+    public BookingData(String id_booking, String tgl_booking, double latitude, double longitude, String name, String email, String noHp, String nopol, String merk, String type, String transmition, String year, String status, String ketuaMontir, double total_biaya, List<ServiceData> serviceData, List<MontirData> montirData, String rating, String teksReview) {
         this.id_booking = id_booking;
         this.tgl_booking = tgl_booking;
         this.latitude = latitude;
@@ -76,6 +82,8 @@ public class BookingData {
         this.total_biaya = total_biaya;
         this.serviceData = serviceData;
         this.montirData = montirData;
+        this.rating = rating;
+        teks_review = teksReview;
     }
 
     public String getId_booking() {
@@ -144,5 +152,13 @@ public class BookingData {
 
     public List<MontirData> getMontirData() {
         return montirData;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public String getTeks_review() {
+        return teks_review;
     }
 }

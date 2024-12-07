@@ -61,7 +61,7 @@ public class ConfirmationActivity extends AppCompatActivity {
     private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
     private final List<MontirConfirmationAdapter.MontirConfirmationItem> montirConfirmationItems = new ArrayList<>();
     private Button cancelButton, ratingButton;
-    private LinearLayout rincianMontir;
+    private LinearLayout rincianMontir, ratingLayout;
     private BookingData bookingData;
     private RatingBar ratingBar;
 
@@ -91,6 +91,11 @@ public class ConfirmationActivity extends AppCompatActivity {
         titleAnggota = findViewById(R.id.title_anggota);
         anggotaMontirList = findViewById(R.id.montir_list);
         anggotaMontirList.setLayoutManager(new LinearLayoutManager(this));
+
+        ratingLayout = findViewById(R.id.review);
+        ratingBar = findViewById(R.id.rating);
+        reviewText = findViewById(R.id.comment_text);
+
         cancelButton = findViewById(R.id.cancel_button);
         ratingButton = findViewById(R.id.rating_button);
 
@@ -142,6 +147,14 @@ public class ConfirmationActivity extends AppCompatActivity {
                     }
                     MontirConfirmationAdapter montirConfirmationAdapter = new MontirConfirmationAdapter(montirConfirmationItems);
                     anggotaMontirList.setAdapter(montirConfirmationAdapter);
+
+                    if (bookingData.getRating() == null) {
+                        ratingLayout.setVisibility(View.GONE);
+                    } else if (bookingData.getRating() != null) {
+                        ratingButton.setVisibility(View.GONE);
+                        ratingBar.setRating(Integer.parseInt(bookingData.getRating()));
+                        reviewText.setText(bookingData.getTeks_review());
+                    }
 
                     if (!bookingData.getStatus().equals("pending")) {
                         cancelButton.setVisibility(View.GONE);
