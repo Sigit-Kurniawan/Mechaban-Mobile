@@ -23,7 +23,6 @@
             android:layout_height="60dp"
             android:layout_alignBaseline="@+id/detail_title"
             android:scaleType="centerCrop"
-            android:tint="@color/md_theme_onSurface"
             app:shapeAppearanceOverlay="@style/CircleImageShape"
             app:srcCompat="@drawable/baseline_account_circle_24" />
 

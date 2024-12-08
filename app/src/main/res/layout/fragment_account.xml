@@ -33,7 +33,6 @@
                     android:layout_height="48dp"
                     android:layout_centerVertical="true"
                     android:scaleType="centerCrop"
-                    android:tint="@color/md_theme_onSurface"
                     app:shapeAppearanceOverlay="@style/CircleImageShape"
                     app:srcCompat="@drawable/baseline_account_circle_24" />
 
