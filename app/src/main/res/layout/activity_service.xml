@@ -334,7 +334,15 @@
                         android:id="@+id/tv_transmition"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
                         android:text="@string/transmisi"
+                        android:fontFamily="@font/montserrat_medium"/>
+
+                    <TextView
+                        android:id="@+id/tv_year"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tahun_produksi"
                         android:fontFamily="@font/montserrat_medium"/>
                 </LinearLayout>
             </LinearLayout>

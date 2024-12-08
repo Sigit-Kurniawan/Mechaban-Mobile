@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ import com.google.android.gms.location.Priority;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.sigit.mechaban.R;
@@ -257,13 +259,19 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
             }
         });
 
-        Button cancelButton = findViewById(R.id.cancel_button);
+        MaterialButton cancelButton = findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(v -> {
             montirLayout.setVisibility(View.GONE);
             navigationMontir.setVisibility(View.GONE);
 
             confirmLayout.setVisibility(View.VISIBLE);
             navigation.setVisibility(View.VISIBLE);
+
+            searchInput.clearFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(searchInput.getWindowToken(), 0);
+            }
         });
 
         findViewById(R.id.add_button).setOnClickListener(v -> {
@@ -340,6 +348,7 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
         finish();
     }
 
+    @SuppressLint("SetTextI18n")
     private void showConfirmLayout(BookingAdapter.BookingItem item) {
         idBooking = item.getId();
         bookingLayout.setVisibility(View.GONE);
@@ -366,7 +375,8 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
         merkText.setText(item.getMerk());
         nopolText.setText(item.getNopol());
         typeText.setText(item.getType());
-        transmitionText.setText(item.getTransmition());
+        String transmition = item.getTransmition();
+        transmitionText.setText(transmition.substring(0, 1).toUpperCase() + transmition.substring(1));
         yearText.setText(item.getYear());
 
         RecyclerView view = findViewById(R.id.service_confirmation);

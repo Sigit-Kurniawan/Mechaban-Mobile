@@ -63,6 +63,7 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.glide)
+    annotationProcessor(libs.compiler)
     implementation(libs.gson)
     implementation(libs.dotsindicator)
     implementation(libs.retrofit)

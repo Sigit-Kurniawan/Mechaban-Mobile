@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -12,8 +13,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -44,6 +48,9 @@ import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
 import com.shuhart.stepview.StepView;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
@@ -91,6 +98,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     private StepView stepView;
     private ViewFlipper viewFlipper;
     private int currentStep = 0;
+    private final List<BottomSheetDialog> activeDialogs = new ArrayList<>();
     // Variabel pilih servis
     private TextView priceTextView, addressTextView;
     private final List<AccordionAdapter.AccordionItem> itemList = new ArrayList<>();
@@ -107,7 +115,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     private RequestQueue requestQueue;
     private final GeoPoint centerPoint = new GeoPoint(-8.159934162579518, 113.72307806355391);
     // Variabel konfirmasi
-    private TextView nameTextView, emailTextView, noHPTextView, addressConfirmationTextView, merkTextView, nopolTextView, typeTextView, transmitionTextView, confirmPriceTextView;
+    private TextView nameTextView, emailTextView, noHPTextView, addressConfirmationTextView, merkTextView, nopolTextView, typeTextView, transmitionTextView, yearTextView, confirmPriceTextView;
     private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
     private final Account account = new Account();
     private final Car car = new Car();
@@ -278,18 +286,22 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         nopolTextView = findViewById(R.id.tv_nopol);
         typeTextView = findViewById(R.id.tv_type);
         transmitionTextView = findViewById(R.id.tv_transmition);
+        yearTextView = findViewById(R.id.tv_year);
 
         car.setAction("detail");
         car.setNopol(nopol);
         Call<CarAPI> readDetailCar = apiInterface.carResponse(car);
         readDetailCar.enqueue(new Callback<CarAPI>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().getCode() == 200) {
                     merkTextView.setText(response.body().getCarData().getMerk());
                     nopolTextView.setText(response.body().getCarData().getNopol());
                     typeTextView.setText(response.body().getCarData().getType());
-                    transmitionTextView.setText(response.body().getCarData().getTransmition());
+                    String transmitionResponse = response.body().getCarData().getTransmition();
+                    transmitionTextView.setText(transmitionResponse.substring(0, 1).toUpperCase() + transmitionResponse.substring(1));
+                    yearTextView.setText(response.body().getCarData().getYear());
                 }
             }
 
@@ -465,14 +477,14 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         if (requestCode == REQUEST_CHECK_SETTINGS) {
             if (resultCode == RESULT_OK) {
                 getDeviceLocation();
+                for (BottomSheetDialog dialog : activeDialogs) {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                }
+                activeDialogs.clear();
             } else if (resultCode == RESULT_CANCELED) {
-                new ModalBottomSheetTwoButton(
-                        R.drawable.no_location,
-                        "Tidak Bisa Menemukanmu",
-                        "Aktifkan lokasimu",
-                        "Aktifkan",
-                        "Tidak jadi",
-                        ServiceActivity.this).show(getSupportFragmentManager(), "ModalBottomSheet");
+                showBottomSheetDialog();
             }
         }
     }
@@ -594,5 +606,52 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         );
 
         requestQueue.add(jsonObjectRequest);
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void showBottomSheetDialog() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        @SuppressLint("InflateParams") View dialogView = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_modal_two_button, null);
+        bottomSheetDialog.setContentView(dialogView);
+        activeDialogs.add(bottomSheetDialog);
+        bottomSheetDialog.setOnShowListener(dialog -> {
+            BottomSheetDialog d = (BottomSheetDialog) dialog;
+            FrameLayout bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            if (bottomSheet != null) {
+                BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
+                behavior.setDraggable(false);
+                behavior.setHideable(false);
+            }
+        });
+
+        ImageView imageView = dialogView.findViewById(R.id.photo);
+        TextView title = dialogView.findViewById(R.id.title);
+        TextView description = dialogView.findViewById(R.id.description);
+        MaterialButton confirmButton = dialogView.findViewById(R.id.positive_button);
+        MaterialButton cancelButton = dialogView.findViewById(R.id.negative_button);
+
+        imageView.setImageResource(R.drawable.cancel);
+
+        title.setText("Tidak Bisa Menemukanmu");
+
+        description.setText("Aktifkan lokasimu agar kami bisa menuju ke lokasimu dengan akurat");
+
+        confirmButton.setText("Aktifkan");
+        confirmButton.setOnClickListener(v -> checkLocationSettings());
+        confirmButton.setTextColor(ContextCompat.getColorStateList(this, R.color.md_theme_background));
+
+        cancelButton.setText("Gak Jadi Deh");
+        cancelButton.setOnClickListener(v -> {
+            bottomSheetDialog.dismiss();
+            finish();
+        });
+        cancelButton.setBackgroundColor(Color.TRANSPARENT);
+        cancelButton.setStrokeColor(ContextCompat.getColorStateList(this, R.color.md_theme_error));
+        cancelButton.setStrokeWidth(4);
+        cancelButton.setRippleColor(ContextCompat.getColorStateList(this, R.color.md_theme_errorContainer));
+        cancelButton.setTextColor(ContextCompat.getColorStateList(this, R.color.md_theme_error));
+
+        bottomSheetDialog.setDismissWithAnimation(true);
+        bottomSheetDialog.show();
     }
 }

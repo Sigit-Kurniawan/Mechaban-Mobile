@@ -180,6 +180,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Promo spesial akan hadir"
+                        android:textColor="@color/white"
                         android:textAppearance="?attr/textAppearanceTitleMedium"
                         android:fontFamily="@font/montserrat_semibold"
                         android:layout_marginBottom="16dp"

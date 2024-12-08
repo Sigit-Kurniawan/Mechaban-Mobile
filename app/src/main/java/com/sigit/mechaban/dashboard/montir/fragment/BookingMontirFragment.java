@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.material.chip.Chip;
@@ -42,6 +43,7 @@ public class BookingMontirFragment extends Fragment {
     private ActivityOnbookingAdapter activityOnbookingAdapter;
     private RecyclerView recyclerView;
     private SessionManager sessionManager;
+    private LinearLayout emptyView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class BookingMontirFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_booking_montir, container, false);
 
         sessionManager = new SessionManager(requireContext());
+        emptyView = view.findViewById(R.id.empty_view);
         chipGroup = view.findViewById(R.id.chipGroup);
         recyclerView = view.findViewById(R.id.activity_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -79,7 +82,7 @@ public class BookingMontirFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<BookingAPI> call, @NonNull Response<BookingAPI> response) {
                 if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
-                    requireView().findViewById(R.id.empty_view).setVisibility(View.GONE);
+                    emptyView.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
                     activityOnbookingItems.clear();
                     for (BookingData bookingData : response.body().getBookingDataList()) {
@@ -87,7 +90,7 @@ public class BookingMontirFragment extends Fragment {
                     }
                     activityOnbookingAdapter.notifyDataSetChanged();
                 } else if (response.body() != null && response.body().getCode() == 404) {
-                    requireView().findViewById(R.id.empty_view).setVisibility(View.VISIBLE);
+                    emptyView.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
                 } else {
                     Toast.makeText(requireActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();

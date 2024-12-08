@@ -20,6 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -45,6 +46,8 @@ import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import www.sanju.motiontoast.MotionToast;
+import www.sanju.motiontoast.MotionToastStyle;
 
 public class EditAccountActivity extends AppCompatActivity {
     private ShapeableImageView photoProfile;
@@ -237,11 +240,25 @@ public class EditAccountActivity extends AppCompatActivity {
             updateAccountCall.enqueue(new Callback<AccountAPI>() {
                 @Override
                 public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
-                    if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                        Toast.makeText(EditAccountActivity.this, "Edit berhasil", Toast.LENGTH_SHORT).show();
-                        if (response.body().getMessage().equals("Update email")) {
-                            sessionManager.updateEmail(email);
-                        }
+                    if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
+                        MotionToast.Companion.createColorToast(EditAccountActivity.this,
+                                "Edit Akun Berhasil",
+                                "Data Akun Sudah Diedit",
+                                MotionToastStyle.SUCCESS,
+                                MotionToast.GRAVITY_TOP,
+                                MotionToast.LONG_DURATION,
+                                ResourcesCompat.getFont(EditAccountActivity.this,R.font.montserrat_semibold));
+                        sessionManager.updateEmail(email);
+                        new File(getCacheDir(), "cropped_image.jpg").delete();
+                        finish();
+                    } else if (response.body() != null && response.body().getCode() == 201) {
+                        MotionToast.Companion.createColorToast(EditAccountActivity.this,
+                                "Edit Akun Berhasil",
+                                "Data Akun Sudah Diedit",
+                                MotionToastStyle.SUCCESS,
+                                MotionToast.GRAVITY_TOP,
+                                MotionToast.LONG_DURATION,
+                                ResourcesCompat.getFont(EditAccountActivity.this,R.font.montserrat_semibold));
                         new File(getCacheDir(), "cropped_image.jpg").delete();
                         finish();
                     } else {

@@ -180,7 +180,15 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
         sessionManager.getPreferences().unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
     }
 
+    @SuppressLint("SetTextI18n")
     private void setCarSelected() {
+        String savedNopol = sessionManager.getUserDetail().get("nopol");
+        if (savedNopol == null || savedNopol.isEmpty()) {
+            merkTextView.setText("Pilih");
+            nopolTextView.setText("Mobil");
+            return;
+        }
+
         car.setAction("detail");
         car.setNopol(sessionManager.getUserDetail().get("nopol"));
         Call<CarAPI> readDetailCall = apiInterface.carResponse(car);

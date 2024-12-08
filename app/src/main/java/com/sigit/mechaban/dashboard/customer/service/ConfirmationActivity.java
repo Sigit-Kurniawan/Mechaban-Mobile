@@ -103,6 +103,7 @@ public class ConfirmationActivity extends AppCompatActivity {
         booking.setId_booking(intent.getStringExtra("id_booking"));
         Call<BookingAPI> readBooking = apiInterface.bookingResponse(booking);
         readBooking.enqueue(new Callback<BookingAPI>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(@NonNull Call<BookingAPI> call, @NonNull Response<BookingAPI> response) {
                 if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
@@ -125,7 +126,8 @@ public class ConfirmationActivity extends AppCompatActivity {
                     nopolText.setText(bookingData.getNopol());
                     merkText.setText(bookingData.getMerk());
                     typeText.setText(bookingData.getType());
-                    transmitionText.setText(bookingData.getTransmition());
+                    String transmition = bookingData.getTransmition();
+                    transmitionText.setText(transmition.substring(0, 1).toUpperCase() + transmition.substring(1));
                     yearText.setText(bookingData.getYear());
 
                     List<ServiceData> serviceData = bookingData.getServiceData();

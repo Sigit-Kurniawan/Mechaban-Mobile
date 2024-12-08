@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,7 @@ public class HomeMontirFragment extends Fragment {
     private ActivityOnbookingAdapter activityOnbookingAdapter;
     private final List<ActivityOnbookingAdapter.ActivityOnbookingItem> activityItems = new ArrayList<>();
     private TextView titleText;
+    private Button bookingButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +63,9 @@ public class HomeMontirFragment extends Fragment {
         activityOnbookingAdapter = new ActivityOnbookingAdapter(requireActivity(), activityItems);
         recyclerView.setAdapter(activityOnbookingAdapter);
 
-        view.findViewById(R.id.service_button).setOnClickListener(v -> startActivity(new Intent(requireActivity(), ServiceMontirActivity.class)));
+        bookingButton = view.findViewById(R.id.service_button);
+
+        bookingButton.setOnClickListener(v -> startActivity(new Intent(requireActivity(), ServiceMontirActivity.class)));
 
         return view;
     }
@@ -98,10 +102,16 @@ public class HomeMontirFragment extends Fragment {
                                 bookingData.getLongitude()));
                     }
                     activityOnbookingAdapter.notifyDataSetChanged();
+                    if (activityItems.isEmpty()) {
+                        bookingButton.setVisibility(View.VISIBLE);
+                    } else {
+                        bookingButton.setVisibility(View.GONE);
+                    }
                 } else if (response.body() != null && response.body().getCode() == 404){
                     titleText.setVisibility(View.GONE);
                     emptyView.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
+                    bookingButton.setVisibility(View.VISIBLE);
                 } else {
                     Toast.makeText(requireActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }

@@ -57,7 +57,7 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
                 .inflate(R.layout.recyclerview_activity_onbooking, parent, false));
     }
 
-    @SuppressLint("QueryPermissionsNeeded")
+    @SuppressLint({"QueryPermissionsNeeded", "SetTextI18n"})
     @Override
     public void onBindViewHolder(@NonNull ActivityOnbookingViewHolder holder, int position) {
         ActivityOnbookingItem activityOnbookingItem = activityOnbookingItems.get(position);
@@ -65,10 +65,14 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
         holder.getNopolTextView().setText(activityOnbookingItem.getNopol());
         holder.getMerkTextView().setText(activityOnbookingItem.getMerk());
         holder.getTypeTextView().setText(activityOnbookingItem.getType());
-        holder.getStatusTextView().setText(activityOnbookingItem.getStatus());
+        String status = activityOnbookingItem.getStatus();
+        holder.getStatusTextView().setText(status.substring(0, 1).toUpperCase() + status.substring(1));
         if (activityOnbookingItem.getStatus().equals("selesai") || activityOnbookingItem.getStatus().equals("batal")) {
             holder.getLocationButton().setVisibility(View.GONE);
             holder.getDoneButton().setVisibility(View.GONE);
+        } else {
+            holder.getLocationButton().setVisibility(View.VISIBLE);
+            holder.getDoneButton().setVisibility(View.VISIBLE);
         }
         holder.getDoneButton().setOnClickListener(v -> showBottomSheetDialog(activityOnbookingItems.get(position), position));
         holder.getDetailButton().setOnClickListener(v -> {
@@ -141,7 +145,8 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
     }
 
     public static class ActivityOnbookingItem {
-        private final String id, date, nopol, merk, type, status;
+        private final String id, date, nopol, merk, type;
+        private String status;
         private final double latitude, longitude;
 
         public ActivityOnbookingItem(String id, String date, String nopol, String merk, String type, String status, double latitude, double longitude) {
@@ -177,6 +182,10 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
 
         public String getStatus() {
             return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
         }
 
         public double getLatitude() {
@@ -234,9 +243,11 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
                         if (activityOnbookingItem.getStatus().equals("diterima")) {
                             title = "Booking Telah Dijemput";
                             message = "Selamat Mengerjakan";
+                            activityOnbookingItems.get(position).setStatus("Dikerjakan");
                         } else if (activityOnbookingItem.getStatus().equals("dikerjakan")) {
                             title = "Booking Telah Selesai";
                             message = "Selamat Telah Dikerjakan";
+                            activityOnbookingItems.get(position).setStatus("Selesai");
                         }
                         MotionToast.Companion.createColorToast(activity,
                                 title,
@@ -245,7 +256,7 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
                                 MotionToast.GRAVITY_TOP,
                                 MotionToast.LONG_DURATION,
                                 ResourcesCompat.getFont(context, R.font.montserrat_semibold));
-                        notifyItemRangeChanged(position, activityOnbookingItems.size());
+                        notifyItemChanged(position);
                         bottomSheetDialog.dismiss();
                     } else {
                         Toast.makeText(context, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();

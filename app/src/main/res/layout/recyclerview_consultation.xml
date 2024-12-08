@@ -29,7 +29,7 @@
 
         <LinearLayout
             android:id="@+id/detail_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/profile_icon"
             android:layout_marginStart="8dp"
@@ -40,8 +40,6 @@
                 android:id="@+id/tv_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:ellipsize="end"
                 android:fontFamily="@font/montserrat_semibold"
                 android:textAppearance="?attr/textAppearanceHeadline6"/>
 
@@ -49,8 +47,6 @@
                 android:id="@+id/tv_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:ellipsize="end"
                 android:fontFamily="@font/montserrat_medium"
                 android:textAppearance="?attr/textAppearanceCaption"/>
 
@@ -70,8 +66,6 @@
                     android:id="@+id/tv_no_hp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:ellipsize="end"
                     android:fontFamily="@font/montserrat_medium"
                     android:textAppearance="?attr/textAppearanceCaption"/>
 

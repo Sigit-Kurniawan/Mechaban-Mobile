@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,13 +52,15 @@ import www.sanju.motiontoast.MotionToastStyle;
 public class ConfirmationMontirActivity extends AppCompatActivity {
     private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
     private final Booking booking = new Booking();
-    private TextView idText, dateText, nameText, addressText, nopolText, merkText, typeText, transmitionText, yearText, priceText, leaderText, titleAnggota;
+    private TextView idText, dateText, nameText, addressText, nopolText, merkText, typeText, transmitionText, yearText, priceText, leaderText, titleAnggota, reviewText;
     private final NumberFormat formatter = NumberFormat.getInstance(new Locale("id", "ID"));
     private RecyclerView serviceList, anggotaMontirList;
     private ConfirmServiceAdapter confirmServiceAdapter;
     private final List<MontirConfirmationAdapter.MontirConfirmationItem> montirConfirmationItems = new ArrayList<>();
     private String id, status;
     private Button processButton, doneButton, locationButton;
+    private RatingBar ratingBar;
+    private LinearLayout ratingLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,10 +98,15 @@ public class ConfirmationMontirActivity extends AppCompatActivity {
         anggotaMontirList = findViewById(R.id.montir_list);
         anggotaMontirList.setLayoutManager(new LinearLayoutManager(this));
 
+        ratingLayout = findViewById(R.id.review);
+        ratingBar = findViewById(R.id.rating);
+        reviewText = findViewById(R.id.comment_text);
+
         booking.setAction("read");
         booking.setId_booking(intent.getStringExtra("id_booking"));
         Call<BookingAPI> takeBooking = apiInterface.bookingResponse(booking);
         takeBooking.enqueue(new Callback<BookingAPI>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(@NonNull Call<BookingAPI> call, @NonNull Response<BookingAPI> response) {
                 if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
@@ -132,7 +141,8 @@ public class ConfirmationMontirActivity extends AppCompatActivity {
                     nopolText.setText(bookingData.getNopol());
                     merkText.setText(bookingData.getMerk());
                     typeText.setText(bookingData.getType());
-                    transmitionText.setText(bookingData.getTransmition());
+                    String transmition = bookingData.getTransmition();
+                    transmitionText.setText(transmition.substring(0, 1).toUpperCase() + transmition.substring(1));
                     yearText.setText(bookingData.getYear());
 
                     List<ServiceData> serviceData = bookingData.getServiceData();
@@ -151,6 +161,13 @@ public class ConfirmationMontirActivity extends AppCompatActivity {
                     }
                     MontirConfirmationAdapter montirConfirmationAdapter = new MontirConfirmationAdapter(montirConfirmationItems);
                     anggotaMontirList.setAdapter(montirConfirmationAdapter);
+
+                    if (bookingData.getRating() == null) {
+                        ratingLayout.setVisibility(View.GONE);
+                    } else if (bookingData.getRating() != null) {
+                        ratingBar.setRating(Integer.parseInt(bookingData.getRating()));
+                        reviewText.setText(bookingData.getTeks_review());
+                    }
 
                     locationButton.setOnClickListener(v -> {
                         String mapsUrl = "https://www.google.com/maps/dir/?api=1&destination="

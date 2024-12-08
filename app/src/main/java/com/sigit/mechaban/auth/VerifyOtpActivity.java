@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.sigit.mechaban.R;
@@ -28,6 +29,8 @@ import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import www.sanju.motiontoast.MotionToast;
+import www.sanju.motiontoast.MotionToastStyle;
 
 public class VerifyOtpActivity extends AppCompatActivity {
     private final Account account = new Account();
@@ -87,12 +90,23 @@ public class VerifyOtpActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
                         if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                            Toast.makeText(VerifyOtpActivity.this, "Ganti password berhasil", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), ChangePasswordActivity.class);
                             intent.putExtra("email", email);
                             startActivity(intent);
                             finish();
                             loadingDialog.dismissDialog();
+                        } else if (response.body() != null && response.body().getCode() == 400) {
+                            loadingDialog.dismissDialog();
+                            MotionToast.Companion.createColorToast(VerifyOtpActivity.this,
+                                    "Kode otp salah",
+                                    "Periksa kembali kodenya",
+                                    MotionToastStyle.ERROR,
+                                    MotionToast.GRAVITY_TOP,
+                                    MotionToast.LONG_DURATION,
+                                    ResourcesCompat.getFont(VerifyOtpActivity.this,R.font.montserrat_semibold));
+                        } else {
+                            loadingDialog.dismissDialog();
+                            Toast.makeText(VerifyOtpActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -113,9 +127,27 @@ public class VerifyOtpActivity extends AppCompatActivity {
                 verifyCall.enqueue(new Callback<AccountAPI>() {
                     @Override
                     public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
-                        if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                            Toast.makeText(VerifyOtpActivity.this, "Register berhasil", Toast.LENGTH_SHORT).show();
+                        if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
+                            MotionToast.Companion.createColorToast(VerifyOtpActivity.this,
+                                    "Registrasi berhasil",
+                                    "Silakan login dengan akun tersebut",
+                                    MotionToastStyle.ERROR,
+                                    MotionToast.GRAVITY_TOP,
+                                    MotionToast.LONG_DURATION,
+                                    ResourcesCompat.getFont(VerifyOtpActivity.this,R.font.montserrat_semibold));
                             finish();
+                        } else if (response.body() != null && response.body().getCode() == 400) {
+                            loadingDialog.dismissDialog();
+                            MotionToast.Companion.createColorToast(VerifyOtpActivity.this,
+                                    "Kode otp salah",
+                                    "Periksa kembali kodenya",
+                                    MotionToastStyle.ERROR,
+                                    MotionToast.GRAVITY_TOP,
+                                    MotionToast.LONG_DURATION,
+                                    ResourcesCompat.getFont(VerifyOtpActivity.this,R.font.montserrat_semibold));
+                        } else {
+                            loadingDialog.dismissDialog();
+                            Toast.makeText(VerifyOtpActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
 

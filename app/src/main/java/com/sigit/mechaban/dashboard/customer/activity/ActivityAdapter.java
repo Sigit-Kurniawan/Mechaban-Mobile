@@ -59,20 +59,22 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
                 .inflate(R.layout.recyclerview_activity_item, parent, false));
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ActivityViewHolder holder, int position) {
         ActivityItem activityItem = activityItemList.get(position);
         holder.getDateTextView().setText(activityItem.getDate());
         holder.getMerkTextView().setText(activityItem.getMerk());
         holder.getTypeTextView().setText(activityItem.getType());
-        holder.getStatusTextView().setText(activityItem.getStatus());
+        String status = activityItem.getStatus();
+        holder.getStatusTextView().setText(status.substring(0, 1).toUpperCase() + status.substring(1));
         holder.getTotalTextView().setText(formatter.format(activityItem.getTotal()));
         if (!activityItem.getStatus().equals("pending")) {
             holder.getCancelButton().setVisibility(View.GONE);
         } else {
             holder.getCancelButton().setVisibility(View.VISIBLE);
         }
-        holder.getCancelButton().setOnClickListener(v -> showBottomSheetDialog(activityItemList.get(position)));
+        holder.getCancelButton().setOnClickListener(v -> showBottomSheetDialog(activityItemList.get(position), position));
         holder.getDetailButton().setOnClickListener(v -> {
             Intent intent = new Intent(context, ConfirmationActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -131,7 +133,8 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
     }
 
     public static class ActivityItem {
-        private final String id, date, merk, type, status;
+        private final String id, date, merk, type;
+        private String status;
         private final double total;
 
         public ActivityItem(String id, String date, String merk, String type, String status, double total) {
@@ -163,6 +166,10 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
             return status;
         }
 
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
         public double getTotal() {
             return total;
         }
@@ -175,7 +182,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
     }
 
     @SuppressLint("SetTextI18n")
-    private void showBottomSheetDialog(ActivityItem activityItem) {
+    private void showBottomSheetDialog(ActivityItem activityItem, int position) {
         AppCompatActivity activity = (AppCompatActivity) context;
 
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(activity);
@@ -210,6 +217,8 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
                                 MotionToast.GRAVITY_TOP,
                                 MotionToast.LONG_DURATION,
                                 ResourcesCompat.getFont(context, R.font.montserrat_semibold));
+                        activityItem.setStatus("batal");
+                        notifyItemChanged(position);
                         bottomSheetDialog.dismiss();
                     } else {
                         Toast.makeText(context, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
