@@ -97,6 +97,7 @@ public class HomeMontirFragment extends Fragment {
                                 bookingData.getNopol(),
                                 bookingData.getMerk(),
                                 bookingData.getType(),
+                                bookingData.getRole(),
                                 bookingData.getStatus(),
                                 bookingData.getLatitude(),
                                 bookingData.getLongitude()));
@@ -114,6 +115,7 @@ public class HomeMontirFragment extends Fragment {
                     bookingButton.setVisibility(View.VISIBLE);
                 } else {
                     Toast.makeText(requireActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.d("HomeMontir", response.body().getMessage());
                 }
             }
 

@@ -3,10 +3,12 @@ package com.sigit.mechaban.dashboard.customer.fragment;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,13 +18,13 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
 import com.sigit.mechaban.BuildConfig;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
@@ -51,6 +53,7 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
     private RecyclerView carList;
     private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
     private BottomSheetDialog bottomSheetDialog;
+    private final List<BottomSheetDialog> activeDialogs = new ArrayList<>();
     private final SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener = (sharedPreferences, key) -> {
         if (Objects.requireNonNull(key).equals("nopol")) {
             setCarSelected();
@@ -122,7 +125,8 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
                 startActivity(new Intent(getActivity(), ServiceActivity.class));
             } else {
                 bottomSheetDialog = new BottomSheetDialog(requireActivity());
-                @SuppressLint("InflateParams") View view1 = getLayoutInflater().inflate(R.layout.bottom_sheet_modal, null, false);
+                @SuppressLint("InflateParams") View view1 = getLayoutInflater().inflate(R.layout.bottom_sheet_modal_two_button, null, false);
+                activeDialogs.add(bottomSheetDialog);
                 ImageView imageView = view1.findViewById(R.id.photo);
                 imageView.setImageResource(R.drawable.choose);
 
@@ -132,9 +136,22 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
                 TextView desc = view1.findViewById(R.id.description);
                 desc.setText("Kalau tidak ada mobil yang dipilih, kami servis apa?");
 
-                Button close = view1.findViewById(R.id.button);
+                MaterialButton confirmButton = view1.findViewById(R.id.positive_button);
+                confirmButton.setText("Buka List Mobil");
+                confirmButton.setOnClickListener(v1 -> openCarList());
+                confirmButton.setTextColor(ContextCompat.getColorStateList(requireActivity(), R.color.md_theme_background));
+
+                MaterialButton close = view1.findViewById(R.id.negative_button);
                 close.setText("Tutup");
-                close.setOnClickListener(v1 -> bottomSheetDialog.dismiss());
+                close.setOnClickListener(v1 -> {
+                    activeDialogs.clear();
+                    bottomSheetDialog.dismiss();
+                });
+                close.setBackgroundColor(Color.TRANSPARENT);
+                close.setStrokeColor(ContextCompat.getColorStateList(requireActivity(), R.color.md_theme_error));
+                close.setStrokeWidth(4);
+                close.setRippleColor(ContextCompat.getColorStateList(requireActivity(), R.color.md_theme_errorContainer));
+                close.setTextColor(ContextCompat.getColorStateList(requireActivity(), R.color.md_theme_error));
 
                 bottomSheetDialog.setContentView(view1);
                 bottomSheetDialog.show();
@@ -225,6 +242,8 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
         merkTextView.setText(merk);
         String[] parts = nopol.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
         nopolTextView.setText(String.join(" ", parts));
+        activeDialogs.get(0).dismiss();
+        activeDialogs.clear();
         bottomSheetDialog.dismiss();
     }
 

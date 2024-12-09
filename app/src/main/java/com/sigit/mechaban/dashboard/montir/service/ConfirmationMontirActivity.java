@@ -36,6 +36,7 @@ import com.sigit.mechaban.api.model.service.ServiceData;
 import com.sigit.mechaban.dashboard.customer.service.ConfirmServiceAdapter;
 import com.sigit.mechaban.dashboard.montir.listmontir.MontirConfirmationAdapter;
 import com.sigit.mechaban.object.Booking;
+import com.sigit.mechaban.sessionmanager.SessionManager;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -104,6 +105,7 @@ public class ConfirmationMontirActivity extends AppCompatActivity {
 
         booking.setAction("read");
         booking.setId_booking(intent.getStringExtra("id_booking"));
+        booking.setEmail(new SessionManager(this).getUserDetail().get("email"));
         Call<BookingAPI> takeBooking = apiInterface.bookingResponse(booking);
         takeBooking.enqueue(new Callback<BookingAPI>() {
             @SuppressLint("SetTextI18n")
@@ -114,13 +116,21 @@ public class ConfirmationMontirActivity extends AppCompatActivity {
                     id = bookingData.getId_booking();
                     status = bookingData.getStatus();
 
-                    if (status.equals("dikerjakan")) {
-                        processButton.setVisibility(View.GONE);
-                        doneButton.setVisibility(View.VISIBLE);
-                    } else if (status.equals("selesai")) {
+                    if (bookingData.getRole().equals("ketua")) {
+                        if (status.equals("dikerjakan")) {
+                            processButton.setVisibility(View.GONE);
+                            doneButton.setVisibility(View.VISIBLE);
+                        } else if (status.equals("selesai")) {
+                            processButton.setVisibility(View.GONE);
+                            doneButton.setVisibility(View.GONE);
+                            locationButton.setVisibility(View.GONE);
+                        }
+                    } else if (bookingData.getRole().equals("anggota")) {
                         processButton.setVisibility(View.GONE);
                         doneButton.setVisibility(View.GONE);
-                        locationButton.setVisibility(View.GONE);
+                        if (status.equals("selesai")) {
+                            locationButton.setVisibility(View.GONE);
+                        }
                     }
 
                     idText.setText(id);

@@ -86,7 +86,16 @@ public class BookingMontirFragment extends Fragment {
                     recyclerView.setVisibility(View.VISIBLE);
                     activityOnbookingItems.clear();
                     for (BookingData bookingData : response.body().getBookingDataList()) {
-                        activityOnbookingItems.add(new ActivityOnbookingAdapter.ActivityOnbookingItem(bookingData.getId_booking(), bookingData.getTgl_booking(), bookingData.getNopol(), bookingData.getMerk(), bookingData.getType(), bookingData.getStatus(), bookingData.getLatitude(), bookingData.getLongitude()));
+                        activityOnbookingItems.add(new ActivityOnbookingAdapter.ActivityOnbookingItem(
+                                bookingData.getId_booking(),
+                                bookingData.getTgl_booking(),
+                                bookingData.getNopol(),
+                                bookingData.getMerk(),
+                                bookingData.getType(),
+                                bookingData.getRole(),
+                                bookingData.getStatus(),
+                                bookingData.getLatitude(),
+                                bookingData.getLongitude()));
                     }
                     activityOnbookingAdapter.notifyDataSetChanged();
                 } else if (response.body() != null && response.body().getCode() == 404) {

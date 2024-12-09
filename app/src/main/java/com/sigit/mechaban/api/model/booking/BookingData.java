@@ -64,7 +64,10 @@ public class BookingData {
     @SerializedName("teks_review")
     private final String teks_review;
 
-    public BookingData(String id_booking, String tgl_booking, double latitude, double longitude, String name, String email, String noHp, String nopol, String merk, String type, String transmition, String year, String status, String ketuaMontir, double total_biaya, List<ServiceData> serviceData, List<MontirData> montirData, String rating, String teksReview) {
+    @SerializedName("role")
+    private final String role;
+
+    public BookingData(String id_booking, String tgl_booking, double latitude, double longitude, String name, String email, String noHp, String nopol, String merk, String type, String transmition, String year, String status, String ketuaMontir, double total_biaya, List<ServiceData> serviceData, List<MontirData> montirData, String rating, String teksReview, String role) {
         this.id_booking = id_booking;
         this.tgl_booking = tgl_booking;
         this.latitude = latitude;
@@ -83,7 +86,8 @@ public class BookingData {
         this.serviceData = serviceData;
         this.montirData = montirData;
         this.rating = rating;
-        teks_review = teksReview;
+        this.teks_review = teksReview;
+        this.role = role;
     }
 
     public String getId_booking() {
@@ -160,5 +164,9 @@ public class BookingData {
 
     public String getTeks_review() {
         return teks_review;
+    }
+
+    public String getRole() {
+        return role;
     }
 }

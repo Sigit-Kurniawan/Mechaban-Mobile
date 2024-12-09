@@ -26,6 +26,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     private int selectedPosition;
     private final SessionManager sessionManager;
     private OnCarSelectedListener listener;
+    private final boolean showEditButton;
 
     public CarAdapter(Context context, List<CarItem> carItems, int selectedPosition, OnCarSelectedListener listener) {
         this.context = context;
@@ -33,6 +34,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
         this.sessionManager = new SessionManager(context);
         this.selectedPosition = selectedPosition;
         this.listener = listener;
+        this.showEditButton = false;
     }
 
     public CarAdapter(Context context, List<CarItem> carItems, int selectedPosition) {
@@ -40,6 +42,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
         this.carItems = carItems;
         this.sessionManager = new SessionManager(context);
         this.selectedPosition = selectedPosition;
+        this.showEditButton = true;
     }
 
     public interface OnCarSelectedListener {
@@ -69,6 +72,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
         holder.getItem().setEnabled(isEnabled);
         holder.getRadioButton().setEnabled(isEnabled);
         holder.getEditButton().setEnabled(isEnabled);
+        holder.getEditButton().setVisibility(showEditButton ? View.VISIBLE : View.GONE);
 
         if (isEnabled) {
             View.OnClickListener selectionListener = v -> {

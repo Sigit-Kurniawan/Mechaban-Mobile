@@ -36,6 +36,7 @@ import com.sigit.mechaban.api.model.montir.MontirData;
 import com.sigit.mechaban.api.model.service.ServiceData;
 import com.sigit.mechaban.dashboard.montir.listmontir.MontirConfirmationAdapter;
 import com.sigit.mechaban.object.Booking;
+import com.sigit.mechaban.sessionmanager.SessionManager;
 
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
@@ -54,7 +55,7 @@ import www.sanju.motiontoast.MotionToastStyle;
 
 public class ConfirmationActivity extends AppCompatActivity {
     private final Booking booking = new Booking();
-    private TextView idBookingText, dateText, nameText, addressText, nopolText, merkText, typeText, transmitionText, yearText, priceText, leaderText, titleAnggota, reviewText;
+    private TextView titleText, idBookingText, dateText, nameText, addressText, nopolText, merkText, typeText, transmitionText, yearText, priceText, leaderText, titleAnggota, reviewText;
     private RecyclerView serviceConfirmList, anggotaMontirList;
     private final NumberFormat formatter = NumberFormat.getInstance(new Locale("id", "ID"));
     private ConfirmServiceAdapter confirmServiceAdapter;
@@ -64,6 +65,7 @@ public class ConfirmationActivity extends AppCompatActivity {
     private LinearLayout rincianMontir, ratingLayout;
     private BookingData bookingData;
     private RatingBar ratingBar;
+    private ImageView logo;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -72,6 +74,9 @@ public class ConfirmationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_confirmation);
 
         Intent intent = getIntent();
+
+        logo = findViewById(R.id.icon);
+        titleText = findViewById(R.id.title);
 
         idBookingText = findViewById(R.id.id_text);
         dateText = findViewById(R.id.date_text);
@@ -99,8 +104,10 @@ public class ConfirmationActivity extends AppCompatActivity {
         cancelButton = findViewById(R.id.cancel_button);
         ratingButton = findViewById(R.id.rating_button);
 
+        SessionManager sessionManager = new SessionManager(this);
         booking.setAction("read");
         booking.setId_booking(intent.getStringExtra("id_booking"));
+        booking.setEmail(sessionManager.getUserDetail().get("email"));
         Call<BookingAPI> readBooking = apiInterface.bookingResponse(booking);
         readBooking.enqueue(new Callback<BookingAPI>() {
             @SuppressLint("SetTextI18n")
@@ -108,6 +115,30 @@ public class ConfirmationActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<BookingAPI> call, @NonNull Response<BookingAPI> response) {
                 if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
                     bookingData = response.body().getBookingData();
+
+                    switch (bookingData.getStatus()) {
+                        case "pending":
+                            logo.setImageResource(R.drawable.baseline_access_time_filled_24);
+                            titleText.setText("Akan Carikan Montir Terbaik Untukmu, Sabar ya!");
+                            break;
+                        case "diterima":
+                            logo.setImageResource(R.drawable.baseline_location_on_24);
+                            titleText.setText(R.string.montir_segera_menuju_ke_lokasimu);
+                            break;
+                        case "dikerjakan":
+                            logo.setImageResource(R.drawable.baseline_construction_24);
+                            titleText.setText("Montir Kami Sedang Perbaiki Mobilmu, Sabar ya!");
+                            break;
+                        case "selesai":
+                            logo.setImageResource(R.drawable.baseline_check_24);
+                            titleText.setText("Terima Kasih Telah Memakai Jasa Kami");
+                            break;
+                        case "batal":
+                            logo.setImageResource(R.drawable.baseline_close_24);
+                            titleText.setText("Kami Akan Perbaiki ke Depannya");
+                            break;
+                    }
+
                     idBookingText.setText(bookingData.getId_booking());
                     dateText.setText(bookingData.getTgl_booking());
                     nameText.setText(bookingData.getName());

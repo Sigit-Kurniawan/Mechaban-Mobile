@@ -50,6 +50,7 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDragHandleView;
 import com.google.android.material.button.MaterialButton;
 import com.shuhart.stepview.StepView;
 import com.sigit.mechaban.R;
@@ -61,6 +62,7 @@ import com.sigit.mechaban.api.model.car.CarAPI;
 import com.sigit.mechaban.api.model.service.ServiceAPI;
 import com.sigit.mechaban.api.model.service.ServiceData;
 import com.sigit.mechaban.components.DetailBottomSheet;
+import com.sigit.mechaban.components.LoadingDialog;
 import com.sigit.mechaban.components.ModalBottomSheetTwoButton;
 import com.sigit.mechaban.object.Account;
 import com.sigit.mechaban.object.Booking;
@@ -114,6 +116,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     private String addressDecode;
     private RequestQueue requestQueue;
     private final GeoPoint centerPoint = new GeoPoint(-8.159934162579518, 113.72307806355391);
+    private final LoadingDialog loadingDialog = new LoadingDialog(this);
     // Variabel konfirmasi
     private TextView nameTextView, emailTextView, noHPTextView, addressConfirmationTextView, merkTextView, nopolTextView, typeTextView, transmitionTextView, yearTextView, confirmPriceTextView;
     private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
@@ -477,14 +480,13 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         if (requestCode == REQUEST_CHECK_SETTINGS) {
             if (resultCode == RESULT_OK) {
                 getDeviceLocation();
-                for (BottomSheetDialog dialog : activeDialogs) {
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                }
                 activeDialogs.clear();
             } else if (resultCode == RESULT_CANCELED) {
-                showBottomSheetDialog();
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+                if (activeDialogs.isEmpty()) {
+                    activeDialogs.add(bottomSheetDialog);
+                    showBottomSheetDialog(bottomSheetDialog);
+                }
             }
         }
     }
@@ -572,6 +574,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     }
 
     private void validateAndAddMarker(GeoPoint destination) {
+        loadingDialog.startLoadingDialog();
         String osrmUrl = "https://router.project-osrm.org/route/v1/driving/"
                 + centerPoint.getLongitude() + "," + centerPoint.getLatitude() + ";"
                 + destination.getLongitude() + "," + destination.getLatitude()
@@ -594,13 +597,16 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
                                         MotionToast.LONG_DURATION,
                                         ResourcesCompat.getFont(this,R.font.montserrat_semibold));
                             } else {
+                                loadingDialog.dismissDialog();
                                 onNextClicked();
                             }
                         }
                     } catch (JSONException e) {
+                        loadingDialog.dismissDialog();
                         Log.e("Error OSRM", e.toString(), e);
                         Toast.makeText(this, "Gagal memproses data OSRM", Toast.LENGTH_SHORT).show();
                     }
+                    loadingDialog.dismissDialog();
                 },
                 error -> Toast.makeText(this, "Gagal menghubungi OSRM: " + error.getMessage(), Toast.LENGTH_SHORT).show()
         );
@@ -609,11 +615,9 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
     }
 
     @SuppressLint("SetTextI18n")
-    private void showBottomSheetDialog() {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+    private void showBottomSheetDialog(BottomSheetDialog bottomSheetDialog) {
         @SuppressLint("InflateParams") View dialogView = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_modal_two_button, null);
         bottomSheetDialog.setContentView(dialogView);
-        activeDialogs.add(bottomSheetDialog);
         bottomSheetDialog.setOnShowListener(dialog -> {
             BottomSheetDialog d = (BottomSheetDialog) dialog;
             FrameLayout bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
@@ -624,11 +628,14 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
             }
         });
 
+        BottomSheetDragHandleView dragHandleView = dialogView.findViewById(R.id.drag_handle);
         ImageView imageView = dialogView.findViewById(R.id.photo);
         TextView title = dialogView.findViewById(R.id.title);
         TextView description = dialogView.findViewById(R.id.description);
         MaterialButton confirmButton = dialogView.findViewById(R.id.positive_button);
         MaterialButton cancelButton = dialogView.findViewById(R.id.negative_button);
+
+        dragHandleView.setVisibility(View.GONE);
 
         imageView.setImageResource(R.drawable.cancel);
 

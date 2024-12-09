@@ -67,12 +67,19 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
         holder.getTypeTextView().setText(activityOnbookingItem.getType());
         String status = activityOnbookingItem.getStatus();
         holder.getStatusTextView().setText(status.substring(0, 1).toUpperCase() + status.substring(1));
-        if (activityOnbookingItem.getStatus().equals("selesai") || activityOnbookingItem.getStatus().equals("batal")) {
-            holder.getLocationButton().setVisibility(View.GONE);
+        if (activityOnbookingItem.getRole().equals("ketua")) {
+            if (status.equals("selesai") || status.equals("batal")) {
+                holder.getLocationButton().setVisibility(View.GONE);
+                holder.getDoneButton().setVisibility(View.GONE);
+            } else {
+                holder.getLocationButton().setVisibility(View.VISIBLE);
+                holder.getDoneButton().setVisibility(View.VISIBLE);
+            }
+        } else if (activityOnbookingItem.getRole().equals("anggota")) {
             holder.getDoneButton().setVisibility(View.GONE);
-        } else {
-            holder.getLocationButton().setVisibility(View.VISIBLE);
-            holder.getDoneButton().setVisibility(View.VISIBLE);
+            if (status.equals("selesai") || status.equals("batal")) {
+                holder.getLocationButton().setVisibility(View.GONE);
+            }
         }
         holder.getDoneButton().setOnClickListener(v -> showBottomSheetDialog(activityOnbookingItems.get(position), position));
         holder.getDetailButton().setOnClickListener(v -> {
@@ -145,16 +152,17 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
     }
 
     public static class ActivityOnbookingItem {
-        private final String id, date, nopol, merk, type;
+        private final String id, date, nopol, merk, type, role;
         private String status;
         private final double latitude, longitude;
 
-        public ActivityOnbookingItem(String id, String date, String nopol, String merk, String type, String status, double latitude, double longitude) {
+        public ActivityOnbookingItem(String id, String date, String nopol, String merk, String type, String role, String status, double latitude, double longitude) {
             this.id = id;
             this.date = date;
             this.nopol = nopol;
             this.merk = merk;
             this.type = type;
+            this.role = role;
             this.status = status;
             this.latitude = latitude;
             this.longitude = longitude;
@@ -178,6 +186,10 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
 
         public String getType() {
             return type;
+        }
+
+        public String getRole() {
+            return role;
         }
 
         public String getStatus() {
