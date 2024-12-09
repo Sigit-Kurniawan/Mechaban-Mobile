@@ -239,7 +239,7 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
                     emptyText.setVisibility(View.GONE);
                     for (MontirData montirData : response.body().getMontirDataList()) {
                         if (!Objects.requireNonNull(sessionManager.getUserDetail().get("email")).equals(montirData.getEmail())) {
-                            montirItems.add(new MontirAdapter.MontirItem(montirData.getEmail(), montirData.getName()));
+                            montirItems.add(new MontirAdapter.MontirItem(montirData.getEmail(), montirData.getName(), montirData.getPhoto()));
                         }
                     }
                     montirAdapter = new MontirAdapter(ServiceMontirActivity.this, montirItems, selectedMontir -> ServiceMontirActivity.this.selectedMontir = selectedMontir);

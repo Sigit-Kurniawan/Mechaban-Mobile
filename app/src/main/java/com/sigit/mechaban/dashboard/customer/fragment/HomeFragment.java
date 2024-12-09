@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -47,13 +48,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedListener {
-    private TextView merkTextView, nopolTextView, statusTextView;
+    private TextView merkTextView, nopolTextView, statusTextView, emptyCarTextView;
     private final Car car = new Car();
     private SessionManager sessionManager;
     private RecyclerView carList;
     private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
     private BottomSheetDialog bottomSheetDialog;
     private final List<BottomSheetDialog> activeDialogs = new ArrayList<>();
+    private int statusBengkel;
     private final SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener = (sharedPreferences, key) -> {
         if (Objects.requireNonNull(key).equals("nopol")) {
             setCarSelected();
@@ -76,7 +78,8 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
             @Override
             public void onResponse(@NonNull Call<StatusAPI> call, @NonNull Response<StatusAPI> response) {
                 if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
-                    switch (response.body().getData()) {
+                    statusBengkel = response.body().getData();
+                    switch (statusBengkel) {
                         case 0:
                             statusTextView.setText("Tutup");
                             break;
@@ -121,37 +124,58 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
         carButton.setOnClickListener(v -> openCarList());
 
         view.findViewById(R.id.service_button).setOnClickListener(v -> {
-            if (sessionManager.getPreferences().contains("nopol")) {
-                startActivity(new Intent(getActivity(), ServiceActivity.class));
+            if (statusBengkel == 1) {
+                if (sessionManager.getPreferences().contains("nopol")) {
+                    startActivity(new Intent(getActivity(), ServiceActivity.class));
+                } else {
+                    bottomSheetDialog = new BottomSheetDialog(requireActivity());
+                    @SuppressLint("InflateParams") View view1 = getLayoutInflater().inflate(R.layout.bottom_sheet_modal_two_button, null, false);
+                    activeDialogs.add(bottomSheetDialog);
+                    ImageView imageView = view1.findViewById(R.id.photo);
+                    imageView.setImageResource(R.drawable.choose);
+
+                    TextView title = view1.findViewById(R.id.title);
+                    title.setText("Pilih Dulu Mobilnya");
+
+                    TextView desc = view1.findViewById(R.id.description);
+                    desc.setText("Kalau tidak ada mobil yang dipilih, kami servis apa?");
+
+                    MaterialButton confirmButton = view1.findViewById(R.id.positive_button);
+                    confirmButton.setText("Buka List Mobil");
+                    confirmButton.setOnClickListener(v1 -> openCarList());
+                    confirmButton.setTextColor(ContextCompat.getColorStateList(requireActivity(), R.color.md_theme_background));
+
+                    MaterialButton close = view1.findViewById(R.id.negative_button);
+                    close.setText("Tutup");
+                    close.setOnClickListener(v1 -> {
+                        activeDialogs.clear();
+                        bottomSheetDialog.dismiss();
+                    });
+                    close.setBackgroundColor(Color.TRANSPARENT);
+                    close.setStrokeColor(ContextCompat.getColorStateList(requireActivity(), R.color.md_theme_error));
+                    close.setStrokeWidth(4);
+                    close.setRippleColor(ContextCompat.getColorStateList(requireActivity(), R.color.md_theme_errorContainer));
+                    close.setTextColor(ContextCompat.getColorStateList(requireActivity(), R.color.md_theme_error));
+
+                    bottomSheetDialog.setContentView(view1);
+                    bottomSheetDialog.show();
+                }
             } else {
                 bottomSheetDialog = new BottomSheetDialog(requireActivity());
-                @SuppressLint("InflateParams") View view1 = getLayoutInflater().inflate(R.layout.bottom_sheet_modal_two_button, null, false);
+                @SuppressLint("InflateParams") View view1 = getLayoutInflater().inflate(R.layout.bottom_sheet_modal, null, false);
                 activeDialogs.add(bottomSheetDialog);
                 ImageView imageView = view1.findViewById(R.id.photo);
-                imageView.setImageResource(R.drawable.choose);
+                imageView.setImageResource(R.drawable.close);
 
                 TextView title = view1.findViewById(R.id.title);
-                title.setText("Pilih Dulu Mobilnya");
+                title.setText("Bengkel Sudah Tutup");
 
                 TextView desc = view1.findViewById(R.id.description);
-                desc.setText("Kalau tidak ada mobil yang dipilih, kami servis apa?");
+                desc.setText("Datang esok hari");
 
-                MaterialButton confirmButton = view1.findViewById(R.id.positive_button);
-                confirmButton.setText("Buka List Mobil");
-                confirmButton.setOnClickListener(v1 -> openCarList());
-                confirmButton.setTextColor(ContextCompat.getColorStateList(requireActivity(), R.color.md_theme_background));
-
-                MaterialButton close = view1.findViewById(R.id.negative_button);
-                close.setText("Tutup");
-                close.setOnClickListener(v1 -> {
-                    activeDialogs.clear();
-                    bottomSheetDialog.dismiss();
-                });
-                close.setBackgroundColor(Color.TRANSPARENT);
-                close.setStrokeColor(ContextCompat.getColorStateList(requireActivity(), R.color.md_theme_error));
-                close.setStrokeWidth(4);
-                close.setRippleColor(ContextCompat.getColorStateList(requireActivity(), R.color.md_theme_errorContainer));
-                close.setTextColor(ContextCompat.getColorStateList(requireActivity(), R.color.md_theme_error));
+                Button button = view1.findViewById(R.id.button);
+                button.setText("Tutup");
+                button.setOnClickListener(v1 -> bottomSheetDialog.dismiss());
 
                 bottomSheetDialog.setContentView(view1);
                 bottomSheetDialog.show();
@@ -230,6 +254,7 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
         bottomSheetDialog = new BottomSheetDialog(requireActivity());
         @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottom_sheet_car_list, null, false);
         carList = view.findViewById(R.id.car_recycler);
+        emptyCarTextView = view.findViewById(R.id.empty_car);
 
         loadCarList();
 
@@ -242,8 +267,11 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
         merkTextView.setText(merk);
         String[] parts = nopol.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
         nopolTextView.setText(String.join(" ", parts));
-        activeDialogs.get(0).dismiss();
-        activeDialogs.clear();
+        for (BottomSheetDialog dialog : activeDialogs) {
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+        }
         bottomSheetDialog.dismiss();
     }
 
@@ -274,6 +302,8 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
 
                         carList.setLayoutManager(new LinearLayoutManager(getContext()));
                         carList.setAdapter(new CarAdapter(requireActivity().getApplicationContext(), carItemList, savedPosition, HomeFragment.this));
+                    } else {
+                        emptyCarTextView.setVisibility(View.VISIBLE);
                     }
                 }
             }

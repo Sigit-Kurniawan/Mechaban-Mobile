@@ -328,8 +328,23 @@ public class EditAccountActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == UCrop.REQUEST_CROP) {
-            uri = UCrop.getOutput(data);
-            photoProfile.setImageBitmap(BitmapFactory.decodeFile(new File(getCacheDir(), "cropped_image.jpg").getAbsolutePath()));
+            if (resultCode == RESULT_OK) {
+                uri = UCrop.getOutput(data);
+                if (uri != null) {
+                    String croppedImagePath = new File(getCacheDir(), "cropped_image.jpg").getAbsolutePath();
+                    photoProfile.setImageBitmap(BitmapFactory.decodeFile(croppedImagePath));
+                } else {
+                    Toast.makeText(this, "Gagal mendapatkan gambar hasil crop.", Toast.LENGTH_SHORT).show();
+                }
+            } else if (resultCode == UCrop.RESULT_ERROR) {
+                Throwable cropError = UCrop.getError(data);
+                if (cropError != null) {
+                    Log.e("UCrop", cropError.toString(), cropError);
+                    Toast.makeText(this, "Crop gagal: " + cropError.getMessage(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Terjadi kesalahan saat crop.", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 

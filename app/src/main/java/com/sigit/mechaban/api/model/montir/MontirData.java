@@ -13,12 +13,12 @@ public class MontirData {
     private final String no_hp;
 
     @SerializedName("photo")
-    private final int photo;
+    private final String photo;
 
     @SerializedName("nama_anggota")
     private final String namaAnggota;
 
-    public MontirData(String name, String email, String noHp, int photo, String namaAnggota) {
+    public MontirData(String name, String email, String noHp, String photo, String namaAnggota) {
         this.name = name;
         this.email = email;
         this.no_hp = noHp;
@@ -38,7 +38,7 @@ public class MontirData {
         return no_hp;
     }
 
-    public int getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 

@@ -13,7 +13,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.sigit.mechaban.BuildConfig;
 import com.sigit.mechaban.R;
 
 import java.util.ArrayList;
@@ -48,6 +51,10 @@ public class MontirAdapter extends RecyclerView.Adapter<MontirAdapter.MontirView
     @Override
     public void onBindViewHolder(@NonNull MontirViewHolder holder, int position) {
         MontirItem montirItem = montirItems.get(position);
+        Glide.with(context)
+                .load("http://" + BuildConfig.ip + "/api/src/" + montirItem.getPhoto())
+                .placeholder(R.drawable.baseline_account_circle_24)
+                .into(holder.getPhotoProfile());
         holder.getNameText().setText(montirItem.getName());
 
         if (selectedMontirs.contains(montirItem.getEmail())) {
@@ -67,18 +74,24 @@ public class MontirAdapter extends RecyclerView.Adapter<MontirAdapter.MontirView
 
     public static class MontirViewHolder extends RecyclerView.ViewHolder {
         private final ConstraintLayout itemLayout;
+        private final ShapeableImageView photoProfile;
         private final TextView nameText;
         private final MaterialButton addMontirButton;
 
         public MontirViewHolder(@NonNull View itemView) {
             super(itemView);
             itemLayout = itemView.findViewById(R.id.item);
+            photoProfile = itemView.findViewById(R.id.profile_icon);
             nameText = itemView.findViewById(R.id.text1);
             addMontirButton = itemView.findViewById(R.id.add_button);
         }
 
         public ConstraintLayout getItemLayout() {
             return itemLayout;
+        }
+
+        public ShapeableImageView getPhotoProfile() {
+            return photoProfile;
         }
 
         public TextView getNameText() {
@@ -91,11 +104,12 @@ public class MontirAdapter extends RecyclerView.Adapter<MontirAdapter.MontirView
     }
 
     public static class MontirItem {
-        private final String email, name;
+        private final String email, name, photo;
 
-        public MontirItem(String email, String name) {
+        public MontirItem(String email, String name, String photo) {
             this.email = email;
             this.name = name;
+            this.photo = photo;
         }
 
         public String getEmail() {
@@ -104,6 +118,10 @@ public class MontirAdapter extends RecyclerView.Adapter<MontirAdapter.MontirView
 
         public String getName() {
             return name;
+        }
+
+        public String getPhoto() {
+            return photo;
         }
     }
 
