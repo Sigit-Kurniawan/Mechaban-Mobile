@@ -154,7 +154,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="104dp"
                 android:layout_below="@+id/no_hp"
-                android:hint="@string/password"
+                android:hint="@string/password_baru"
                 android:paddingBottom="8dp"
                 app:helperTextEnabled="true"
                 app:helperText="Password minimal 8 karakter, termasuk huruf kapital, huruf kecil, angka, dan simbol (@$!%*?&amp;)"

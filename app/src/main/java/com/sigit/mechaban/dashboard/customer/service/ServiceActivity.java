@@ -272,7 +272,7 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         readAccount.enqueue(new Callback<AccountAPI>() {
             @Override
             public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isStatus()) {
+                if (response.isSuccessful() && response.body() != null && response.body().getCode() == 200) {
                     nameTextView.setText(response.body().getAccountData().getName());
                     emailTextView.setText(response.body().getAccountData().getEmail());
                     noHPTextView.setText(response.body().getAccountData().getNoHp());
@@ -480,6 +480,11 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
         if (requestCode == REQUEST_CHECK_SETTINGS) {
             if (resultCode == RESULT_OK) {
                 getDeviceLocation();
+                for (BottomSheetDialog dialog : activeDialogs) {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                }
                 activeDialogs.clear();
             } else if (resultCode == RESULT_CANCELED) {
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);

@@ -281,6 +281,43 @@
 
                             </RelativeLayout>
                         </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="8dp"
+                            android:background="@color/md_theme_background"
+                            android:visibility="invisible"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/button1"
+                                style="?attr/materialButtonOutlinedStyle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="8dp"
+                                android:text="@string/batal"
+                                android:textColor="@color/md_theme_primary"
+                                android:fontFamily="@font/montserrat_semibold"
+                                app:strokeColor="@color/md_theme_primary"
+                                app:rippleColor="@color/md_theme_primaryContainer"
+                                app:strokeWidth="2dp" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/button2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="8dp"
+                                android:text="@string/ambil"
+                                android:fontFamily="@font/montserrat_semibold" />
+
+                        </LinearLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </ScrollView>
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,19 +11,15 @@ public class AccountAPI {
     @SerializedName("message")
     private final String message;
 
-    @SerializedName("status")
-    private final boolean status;
-
     @SerializedName("code")
     private final int code;
 
     @SerializedName("list")
     private final List<AccountData> accountDataList;
 
-    public AccountAPI(AccountData accountData, String message, boolean status, int code, List<AccountData> accountDataList) {
+    public AccountAPI(AccountData accountData, String message, int code, List<AccountData> accountDataList) {
         this.AccountData = accountData;
         this.message = message;
-        this.status = status;
         this.code = code;
         this.accountDataList = accountDataList;
     }
@@ -34,10 +30,6 @@ public class AccountAPI {
 
     public String getMessage() {
         return message;
-    }
-
-    public boolean isStatus() {
-        return status;
     }
 
     public int getCode() {

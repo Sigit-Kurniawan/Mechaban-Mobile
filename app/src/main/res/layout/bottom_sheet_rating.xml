@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
@@ -32,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="16dp"
-        android:hint="Ketik di sini semuanya...">
+        app:hintEnabled="false">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/review_field"
@@ -41,7 +42,8 @@
             android:fontFamily="@font/montserrat_medium"
             android:inputType="textMultiLine"
             android:minLines="5"
-            android:gravity="top|start" />
+            android:gravity="top|start"
+            android:hint="Ketik di sini semuanya..." />
 
     </com.google.android.material.textfield.TextInputLayout>
 

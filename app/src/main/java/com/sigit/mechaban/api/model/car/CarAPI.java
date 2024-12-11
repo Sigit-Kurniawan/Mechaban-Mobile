@@ -17,19 +17,11 @@ public class CarAPI {
     @SerializedName("message")
     private final String message;
 
-    @SerializedName("status")
-    private final boolean status;
-
-    @SerializedName("exist")
-    private final boolean exist;
-
-    public CarAPI(int code, CarData carData, List<CarData> listCarData, String message, boolean status, boolean exist) {
+    public CarAPI(int code, CarData carData, List<CarData> listCarData, String message) {
         this.code = code;
         this.carData = carData;
         this.listCarData = listCarData;
         this.message = message;
-        this.status = status;
-        this.exist = exist;
     }
 
     public int getCode() {
@@ -46,13 +38,5 @@ public class CarAPI {
 
     public String getMessage() {
         return message;
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public boolean isExist() {
-        return exist;
     }
 }

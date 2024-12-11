@@ -66,9 +66,9 @@ public class VerifyOtpActivity extends AppCompatActivity {
         setUpNextButtonNavigation(code2, code3);
         setUpNextButtonNavigation(code3, code4);
 
+        Intent intent = getIntent();
         findViewById(R.id.send_otp_btn).setOnClickListener(v -> {
             loadingDialog.startLoadingDialog();
-            Intent intent = getIntent();
             boolean isForgetPassword = intent.getBooleanExtra("isForgetPassword", false);
             String name = intent.getStringExtra("name");
             String email = intent.getStringExtra("email");
@@ -89,7 +89,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
                 forgetCall.enqueue(new Callback<AccountAPI>() {
                     @Override
                     public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
-                        if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
+                        if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
                             Intent intent = new Intent(getApplicationContext(), ChangePasswordActivity.class);
                             intent.putExtra("email", email);
                             startActivity(intent);
@@ -106,6 +106,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
                                     ResourcesCompat.getFont(VerifyOtpActivity.this,R.font.montserrat_semibold));
                         } else {
                             loadingDialog.dismissDialog();
+                            Log.d("otp register", response.body().getMessage());
                             Toast.makeText(VerifyOtpActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -131,7 +132,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
                             MotionToast.Companion.createColorToast(VerifyOtpActivity.this,
                                     "Registrasi berhasil",
                                     "Silakan login dengan akun tersebut",
-                                    MotionToastStyle.ERROR,
+                                    MotionToastStyle.SUCCESS,
                                     MotionToast.GRAVITY_TOP,
                                     MotionToast.LONG_DURATION,
                                     ResourcesCompat.getFont(VerifyOtpActivity.this,R.font.montserrat_semibold));
@@ -157,6 +158,35 @@ public class VerifyOtpActivity extends AppCompatActivity {
                     }
                 });
             }
+        });
+
+        findViewById(R.id.resend).setOnClickListener(v -> {
+            loadingDialog.startLoadingDialog();
+            account.setAction("resend_code_otp");
+            account.setEmail(intent.getStringExtra("email"));
+            Call<AccountAPI> resendOtp = apiInterface.accountResponse(account);
+            resendOtp.enqueue(new Callback<AccountAPI>() {
+                @Override
+                public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
+                    if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
+                        loadingDialog.dismissDialog();
+                        MotionToast.Companion.createColorToast(VerifyOtpActivity.this,
+                                "Kode otp telah dikirim ulang",
+                                "Periksa kembali kodenya",
+                                MotionToastStyle.SUCCESS,
+                                MotionToast.GRAVITY_TOP,
+                                MotionToast.LONG_DURATION,
+                                ResourcesCompat.getFont(VerifyOtpActivity.this,R.font.montserrat_semibold));
+                    } else {
+                        Toast.makeText(VerifyOtpActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
+                    Log.e("VerifyOtpActivity", t.toString(), t);
+                }
+            });
         });
     }
 

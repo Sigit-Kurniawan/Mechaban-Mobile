@@ -272,6 +272,7 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
                 dialog.dismiss();
             }
         }
+        activeDialogs.clear();
         bottomSheetDialog.dismiss();
     }
 
@@ -282,8 +283,8 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
         readCarCall.enqueue(new Callback<CarAPI>() {
             @Override
             public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
-                if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
-                    if (response.body().isExist()) {
+                if (response.body() != null && response.isSuccessful()) {
+                    if (response.body().getCode() == 201) {
                         List<CarAdapter.CarItem> carItemList = new ArrayList<>();
                         for (CarData carData : response.body().getListCarData()) {
                             carItemList.add(new CarAdapter.CarItem(carData.getNopol(), carData.getMerk(), carData.getType(), carData.getYear(), carData.getStatus()));
@@ -302,7 +303,7 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
 
                         carList.setLayoutManager(new LinearLayoutManager(getContext()));
                         carList.setAdapter(new CarAdapter(requireActivity().getApplicationContext(), carItemList, savedPosition, HomeFragment.this));
-                    } else {
+                    } else if (response.body().getCode() == 200) {
                         emptyCarTextView.setVisibility(View.VISIBLE);
                     }
                 }

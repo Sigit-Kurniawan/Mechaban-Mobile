@@ -428,6 +428,16 @@
             app:rippleColor="@color/md_theme_errorContainer"/>
 
         <Button
+            android:id="@+id/contact_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="@string/hubungi_montir"
+            android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+        <Button
             android:id="@+id/rating_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

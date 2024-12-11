@@ -177,7 +177,7 @@ public class CarActivity extends AppCompatActivity {
                 createCarCall.enqueue(new Callback<CarAPI>() {
                     @Override
                     public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
-                        if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
+                        if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
                             MotionToast.Companion.createColorToast(CarActivity.this,
                                     "Mobil Berhasil Diubah",
                                     "Dapat Diperiksa di Dalam Garasi",
@@ -206,7 +206,7 @@ public class CarActivity extends AppCompatActivity {
                 deleteCarCall.enqueue(new Callback<CarAPI>() {
                     @Override
                     public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
-                        if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
+                        if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
                             MotionToast.Companion.createColorToast(CarActivity.this,
                                     "Mobil Berhasil Dihapus",
                                     "Dapat Diperiksa di Dalam Garasi",
@@ -250,7 +250,7 @@ public class CarActivity extends AppCompatActivity {
                 createCarCall.enqueue(new Callback<CarAPI>() {
                     @Override
                     public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
-                        if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
+                        if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
                             MotionToast.Companion.createColorToast(CarActivity.this,
                                     "Mobil Berhasil Ditambahkan",
                                     "Dapat Diperiksa di Dalam Garasi",

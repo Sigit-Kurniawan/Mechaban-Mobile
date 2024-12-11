@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +35,7 @@ import com.sigit.mechaban.api.model.booking.BookingAPI;
 import com.sigit.mechaban.api.model.booking.BookingData;
 import com.sigit.mechaban.api.model.montir.MontirData;
 import com.sigit.mechaban.api.model.service.ServiceData;
+import com.sigit.mechaban.components.ModalBottomSheet;
 import com.sigit.mechaban.dashboard.montir.listmontir.MontirConfirmationAdapter;
 import com.sigit.mechaban.object.Booking;
 import com.sigit.mechaban.sessionmanager.SessionManager;
@@ -53,7 +55,7 @@ import retrofit2.Response;
 import www.sanju.motiontoast.MotionToast;
 import www.sanju.motiontoast.MotionToastStyle;
 
-public class ConfirmationActivity extends AppCompatActivity {
+public class ConfirmationActivity extends AppCompatActivity implements ModalBottomSheet.ModalBottomSheetListener {
     private final Booking booking = new Booking();
     private TextView titleText, idBookingText, dateText, nameText, addressText, nopolText, merkText, typeText, transmitionText, yearText, priceText, leaderText, titleAnggota, reviewText;
     private RecyclerView serviceConfirmList, anggotaMontirList;
@@ -61,7 +63,7 @@ public class ConfirmationActivity extends AppCompatActivity {
     private ConfirmServiceAdapter confirmServiceAdapter;
     private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
     private final List<MontirConfirmationAdapter.MontirConfirmationItem> montirConfirmationItems = new ArrayList<>();
-    private Button cancelButton, ratingButton;
+    private Button cancelButton, ratingButton, contactButton;
     private LinearLayout rincianMontir, ratingLayout;
     private BookingData bookingData;
     private RatingBar ratingBar;
@@ -97,6 +99,8 @@ public class ConfirmationActivity extends AppCompatActivity {
         anggotaMontirList = findViewById(R.id.montir_list);
         anggotaMontirList.setLayoutManager(new LinearLayoutManager(this));
 
+        contactButton = findViewById(R.id.contact_button);
+
         ratingLayout = findViewById(R.id.review);
         ratingBar = findViewById(R.id.rating);
         reviewText = findViewById(R.id.comment_text);
@@ -119,7 +123,7 @@ public class ConfirmationActivity extends AppCompatActivity {
                     switch (bookingData.getStatus()) {
                         case "pending":
                             logo.setImageResource(R.drawable.baseline_access_time_filled_24);
-                            titleText.setText("Akan Carikan Montir Terbaik Untukmu, Sabar ya!");
+                            titleText.setText("Kami Carikan Montir Terbaik Untukmu, Sabar ya!");
                             break;
                         case "diterima":
                             logo.setImageResource(R.drawable.baseline_location_on_24);
@@ -189,6 +193,10 @@ public class ConfirmationActivity extends AppCompatActivity {
                         reviewText.setText(bookingData.getTeks_review());
                     }
 
+                    if (!(bookingData.getStatus().equals("diterima") || bookingData.getStatus().equals("dikerjakan"))) {
+                        contactButton.setVisibility(View.GONE);
+                    }
+
                     if (!bookingData.getStatus().equals("pending")) {
                         cancelButton.setVisibility(View.GONE);
                     }
@@ -210,6 +218,8 @@ public class ConfirmationActivity extends AppCompatActivity {
         findViewById(R.id.close_button).setOnClickListener(v -> finish());
 
         findViewById(R.id.rating_button).setOnClickListener(v -> showRatingBottom(bookingData));
+
+        contactButton.setOnClickListener(v -> showOptionContact(bookingData));
     }
 
     @SuppressLint("SetTextI18n")
@@ -248,6 +258,14 @@ public class ConfirmationActivity extends AppCompatActivity {
                                 ResourcesCompat.getFont(ConfirmationActivity.this, R.font.montserrat_semibold));
                         bottomSheetDialog.dismiss();
                         finish();
+                    } else if (response.body() != null && response.body().getCode() == 400) {
+                        new ModalBottomSheet(
+                                R.drawable.done,
+                                "Booking Sudah Diterima",
+                                "Mohon Ditunggu Montir Kami Segera Datang",
+                                "Tutup",
+                                ConfirmationActivity.this)
+                                .show(getSupportFragmentManager(), "ModalBottomSheet");
                     } else {
                         Toast.makeText(ConfirmationActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -271,7 +289,6 @@ public class ConfirmationActivity extends AppCompatActivity {
 
         bottomSheetDialog.show();
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void showRatingBottom(BookingData bookingData) {
@@ -316,5 +333,42 @@ public class ConfirmationActivity extends AppCompatActivity {
         });
 
         bottomSheetDialog.show();
+    }
+
+    private void showOptionContact(BookingData bookingData) {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        @SuppressLint("InflateParams") View dialogView = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_contact, null);
+        bottomSheetDialog.setContentView(dialogView);
+
+        LinearLayout emailButton = dialogView.findViewById(R.id.email_button);
+        emailButton.setOnClickListener(v -> {
+            String subject = "Menghubungi Montir tentang Booking Mechaban";
+            String message = "";
+
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{bookingData.getEmail_ketua_montir()});
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            intent.putExtra(Intent.EXTRA_TEXT, message);
+            startActivity(intent);
+        });
+
+        LinearLayout waButton = dialogView.findViewById(R.id.whatsapp_button);
+        waButton.setOnClickListener(v -> {
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://wa.me/62" + bookingData.getNo_hp_ketua()));
+                startActivity(intent);
+            } catch (Exception e) {
+                Log.e("ContactUs", e.toString(), e);
+            }
+        });
+
+        bottomSheetDialog.show();
+    }
+
+    @Override
+    public void buttonBottomSheet() {
+        finish();
     }
 }

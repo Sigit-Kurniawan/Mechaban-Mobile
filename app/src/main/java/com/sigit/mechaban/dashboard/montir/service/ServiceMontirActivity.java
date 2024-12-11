@@ -33,6 +33,7 @@ import com.google.android.gms.location.Priority;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -44,6 +45,7 @@ import com.sigit.mechaban.api.model.booking.BookingData;
 import com.sigit.mechaban.api.model.montir.MontirAPI;
 import com.sigit.mechaban.api.model.montir.MontirData;
 import com.sigit.mechaban.api.model.service.ServiceData;
+import com.sigit.mechaban.components.ModalBottomSheet;
 import com.sigit.mechaban.components.ModalBottomSheetTwoButton;
 import com.sigit.mechaban.dashboard.customer.service.DetailServiceAdapter;
 import com.sigit.mechaban.dashboard.customer.service.ServiceAdapter;
@@ -66,7 +68,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ServiceMontirActivity extends AppCompatActivity implements ModalBottomSheetTwoButton.ModalBottomSheetListener{
+public class ServiceMontirActivity extends AppCompatActivity implements ModalBottomSheet.ModalBottomSheetListener, ModalBottomSheetTwoButton.ModalBottomSheetListener{
     private MapView mapView;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1, REQUEST_CHECK_SETTINGS = 1001;
     private final GeoPoint centerPoint = new GeoPoint(-8.159934162579518, 113.72307806355391);
@@ -289,6 +291,14 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
                         intent.putExtra("latest", true);
                         startActivity(intent);
                         finish();
+                    } else if (response.body() != null && response.body().getCode() == 400) {
+                        new ModalBottomSheet(
+                                R.drawable.empty,
+                                "Sayang Booking-nya Dibatalin",
+                                "Mungkin Pengguna Sedang Ngambek. Sabar ya",
+                                "Tutup",
+                                ServiceMontirActivity.this)
+                                .show(getSupportFragmentManager(), "ModalBottomSheet");
                     } else {
                         Toast.makeText(ServiceMontirActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -393,5 +403,10 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
         DetailServiceAdapter detailServiceAdapter = new DetailServiceAdapter(serviceItems);
         view.setAdapter(detailServiceAdapter);
         priceText.setText(formatter.format(item.getPrice()));
+    }
+
+    @Override
+    public void buttonBottomSheet() {
+        finish();
     }
 }

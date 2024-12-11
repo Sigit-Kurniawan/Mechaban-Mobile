@@ -87,7 +87,7 @@ public class AccountFragment extends Fragment {
         accountCall.enqueue(new Callback<AccountAPI>() {
             @Override
             public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
-                if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
+                if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
                     String photo = response.body().getAccountData().getPhoto();
                     if (photo != null && !photo.isEmpty()) {
                         Glide.with(requireActivity())

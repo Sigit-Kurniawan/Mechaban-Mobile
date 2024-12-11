@@ -93,4 +93,7 @@
     <string name="tentang_kami">Tentang Kami</string>
     <string name="hubungi_kami">Hubungi Kami</string>
     <string name="anda_menyukai_booking_ini">Anda menyukai booking ini?</string>
+    <string name="kode_belum_dikirim">Kode belum dikirim?</string>
+    <string name="kirim_ulang">Kirim ulang</string>
+    <string name="password_baru">Password Baru</string>
 </resources>

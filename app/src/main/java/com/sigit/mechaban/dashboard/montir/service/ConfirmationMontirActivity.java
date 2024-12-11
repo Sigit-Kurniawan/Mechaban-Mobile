@@ -53,15 +53,16 @@ import www.sanju.motiontoast.MotionToastStyle;
 public class ConfirmationMontirActivity extends AppCompatActivity {
     private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
     private final Booking booking = new Booking();
-    private TextView idText, dateText, nameText, addressText, nopolText, merkText, typeText, transmitionText, yearText, priceText, leaderText, titleAnggota, reviewText;
+    private TextView idText, dateText, nameText, addressText, nopolText, merkText, typeText, transmitionText, yearText, priceText, leaderText, titleAnggota, reviewText, titleText;
     private final NumberFormat formatter = NumberFormat.getInstance(new Locale("id", "ID"));
     private RecyclerView serviceList, anggotaMontirList;
     private ConfirmServiceAdapter confirmServiceAdapter;
     private final List<MontirConfirmationAdapter.MontirConfirmationItem> montirConfirmationItems = new ArrayList<>();
     private String id, status;
-    private Button processButton, doneButton, locationButton;
+    private Button processButton, doneButton, locationButton, contactButton;
     private RatingBar ratingBar;
     private LinearLayout ratingLayout;
+    private ImageView logo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,9 @@ public class ConfirmationMontirActivity extends AppCompatActivity {
         if (intent.getBooleanExtra("latest", false)) {
             processButton.setVisibility(View.GONE);
         }
+
+        logo = findViewById(R.id.icon);
+        titleText = findViewById(R.id.title);
 
         idText = findViewById(R.id.id_text);
         dateText = findViewById(R.id.date_text);
@@ -103,6 +107,8 @@ public class ConfirmationMontirActivity extends AppCompatActivity {
         ratingBar = findViewById(R.id.rating);
         reviewText = findViewById(R.id.comment_text);
 
+        contactButton = findViewById(R.id.contact_button);
+
         booking.setAction("read");
         booking.setId_booking(intent.getStringExtra("id_booking"));
         booking.setEmail(new SessionManager(this).getUserDetail().get("email"));
@@ -116,6 +122,21 @@ public class ConfirmationMontirActivity extends AppCompatActivity {
                     id = bookingData.getId_booking();
                     status = bookingData.getStatus();
 
+                    switch (status) {
+                        case "diterima":
+                            logo.setImageResource(R.drawable.baseline_location_on_24);
+                            titleText.setText("Pelanggan Sedang Menunggumu di Sana");
+                            break;
+                        case "dikerjakan":
+                            logo.setImageResource(R.drawable.baseline_construction_24);
+                            titleText.setText("Segera Diperbaiki Pelanggan Sedang Menunggumu");
+                            break;
+                        case "selesai":
+                            logo.setImageResource(R.drawable.baseline_check_24);
+                            titleText.setText("Terima Kasih Telah Memperbaiki Mobil Pelanggan");
+                            break;
+                    }
+
                     if (bookingData.getRole().equals("ketua")) {
                         if (status.equals("dikerjakan")) {
                             processButton.setVisibility(View.GONE);
@@ -124,10 +145,12 @@ public class ConfirmationMontirActivity extends AppCompatActivity {
                             processButton.setVisibility(View.GONE);
                             doneButton.setVisibility(View.GONE);
                             locationButton.setVisibility(View.GONE);
+                            contactButton.setVisibility(View.GONE);
                         }
                     } else if (bookingData.getRole().equals("anggota")) {
                         processButton.setVisibility(View.GONE);
                         doneButton.setVisibility(View.GONE);
+                        contactButton.setVisibility(View.GONE);
                         if (status.equals("selesai")) {
                             locationButton.setVisibility(View.GONE);
                         }
@@ -186,6 +209,8 @@ public class ConfirmationMontirActivity extends AppCompatActivity {
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mapsUrl));
                         startActivity(browserIntent);
                     });
+
+                    contactButton.setOnClickListener(v -> showOptionContact(bookingData));
                 } else {
                     Toast.makeText(ConfirmationMontirActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
@@ -280,6 +305,38 @@ public class ConfirmationMontirActivity extends AppCompatActivity {
         cancelButton.setStrokeColor(ContextCompat.getColorStateList(this, R.color.md_theme_primary));
         cancelButton.setRippleColor(ContextCompat.getColorStateList(this, R.color.md_theme_primaryContainer));
         cancelButton.setTextColor(ContextCompat.getColorStateList(this, R.color.md_theme_primary));
+
+        bottomSheetDialog.show();
+    }
+
+    private void showOptionContact(BookingData bookingData) {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        @SuppressLint("InflateParams") View dialogView = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_contact, null);
+        bottomSheetDialog.setContentView(dialogView);
+
+        LinearLayout emailButton = dialogView.findViewById(R.id.email_button);
+        emailButton.setOnClickListener(v -> {
+            String subject = "Menghubungi Pelanggan tentang Booking Mechaban";
+            String message = "";
+
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{bookingData.getEmail()});
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            intent.putExtra(Intent.EXTRA_TEXT, message);
+            startActivity(intent);
+        });
+
+        LinearLayout waButton = dialogView.findViewById(R.id.whatsapp_button);
+        waButton.setOnClickListener(v -> {
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://wa.me/62" + bookingData.getNo_hp()));
+                startActivity(intent);
+            } catch (Exception e) {
+                Log.e("ContactUs", e.toString(), e);
+            }
+        });
 
         bottomSheetDialog.show();
     }

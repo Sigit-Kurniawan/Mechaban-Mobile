@@ -20,6 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.bumptech.glide.Glide;
@@ -187,11 +188,10 @@ public class EditAccountActivity extends AppCompatActivity {
         readAccountCall.enqueue(new Callback<AccountAPI>() {
             @Override
             public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
-                if (response.body() != null && response.isSuccessful()) {
+                if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
                     emailEditText.setText(response.body().getAccountData().getEmail());
                     nameEditText.setText(response.body().getAccountData().getName());
                     noHPEditText.setText(response.body().getAccountData().getNoHp());
-                    passwordEditText.setText(response.body().getAccountData().getPassword());
                     String photoBase64 = response.body().getAccountData().getPhoto();
                     if (photoBase64 != null && !photoBase64.isEmpty()) {
                         Glide.with(EditAccountActivity.this)
@@ -201,6 +201,11 @@ public class EditAccountActivity extends AppCompatActivity {
                                 .skipMemoryCache(true)
                                 .into(photoProfile);
                     }
+
+                    nameLayout.setStartIconTintList(ContextCompat.getColorStateList(EditAccountActivity.this, R.color.md_theme_onSurfaceVariant));
+                    emailLayout.setStartIconTintList(ContextCompat.getColorStateList(EditAccountActivity.this, R.color.md_theme_onSurfaceVariant));
+                    noHPLayout.setStartIconTintList(ContextCompat.getColorStateList(EditAccountActivity.this, R.color.md_theme_onSurfaceVariant));
+                    passwordLayout.setStartIconTintList(ContextCompat.getColorStateList(EditAccountActivity.this, R.color.md_theme_onSurfaceVariant));
                 }
             }
 
@@ -281,7 +286,7 @@ public class EditAccountActivity extends AppCompatActivity {
             deleteAccountCall.enqueue(new Callback<AccountAPI>() {
                 @Override
                 public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
-                    if (response.body() != null && response.isSuccessful() && response.body().isStatus()) {
+                    if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
                         sessionManager.logoutSession();
                         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                         finish();
@@ -359,8 +364,7 @@ public class EditAccountActivity extends AppCompatActivity {
         name = Objects.requireNonNull(nameEditText.getText()).toString().trim();
         email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
         noHP = Objects.requireNonNull(noHPEditText.getText()).toString().trim();
-        password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
-        if (!name.isEmpty() && !email.isEmpty() && !noHP.isEmpty() && !password.isEmpty()) {
+        if (!name.isEmpty() && !email.isEmpty() && !noHP.isEmpty()) {
             saveButton.setEnabled(isValidateName && isValidateEmail && isValidateNoHP && isValidatePassword);
         }
     }

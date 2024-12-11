@@ -46,8 +46,14 @@ public class BookingData {
     @SerializedName("status")
     private final String status;
 
+    @SerializedName("email_ketua_montir")
+    private final String email_ketua_montir;
+
     @SerializedName("ketua_montir")
     private final String ketua_montir;
+
+    @SerializedName("no_hp_ketua")
+    private final String no_hp_ketua;
 
     @SerializedName("total_biaya")
     private final double total_biaya;
@@ -67,7 +73,7 @@ public class BookingData {
     @SerializedName("role")
     private final String role;
 
-    public BookingData(String id_booking, String tgl_booking, double latitude, double longitude, String name, String email, String noHp, String nopol, String merk, String type, String transmition, String year, String status, String ketuaMontir, double total_biaya, List<ServiceData> serviceData, List<MontirData> montirData, String rating, String teksReview, String role) {
+    public BookingData(String id_booking, String tgl_booking, double latitude, double longitude, String name, String email, String noHp, String nopol, String merk, String type, String transmition, String year, String status, String emailKetuaMontir, String ketuaMontir, String noHpKetua, double total_biaya, List<ServiceData> serviceData, List<MontirData> montirData, String rating, String teksReview, String role) {
         this.id_booking = id_booking;
         this.tgl_booking = tgl_booking;
         this.latitude = latitude;
@@ -81,7 +87,9 @@ public class BookingData {
         this.transmition = transmition;
         this.year = year;
         this.status = status;
+        this.email_ketua_montir = emailKetuaMontir;
         this.ketua_montir = ketuaMontir;
+        this.no_hp_ketua = noHpKetua;
         this.total_biaya = total_biaya;
         this.serviceData = serviceData;
         this.montirData = montirData;
@@ -142,8 +150,16 @@ public class BookingData {
         return status;
     }
 
+    public String getEmail_ketua_montir() {
+        return email_ketua_montir;
+    }
+
     public String getKetua_montir() {
         return ketua_montir;
+    }
+
+    public String getNo_hp_ketua() {
+        return no_hp_ketua;
     }
 
     public double getTotal_biaya() {

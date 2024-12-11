@@ -43,10 +43,16 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
     private List<ActivityOnbookingItem> activityOnbookingItems;
     private final Booking booking = new Booking();
     private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
+    private final OnBookingStatusChangedListener callback;
 
-    public ActivityOnbookingAdapter(Context context, List<ActivityOnbookingItem> activityOnbookingItems) {
+    public ActivityOnbookingAdapter(Context context, List<ActivityOnbookingItem> activityOnbookingItems, OnBookingStatusChangedListener callback) {
         this.context = context;
         this.activityOnbookingItems = activityOnbookingItems;
+        this.callback = callback;
+    }
+
+    public interface OnBookingStatusChangedListener {
+        void onBookingStatusChanged(ActivityOnbookingItem updatedItem, int position);
     }
 
     @NonNull
@@ -77,7 +83,7 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
             }
         } else if (activityOnbookingItem.getRole().equals("anggota")) {
             holder.getDoneButton().setVisibility(View.GONE);
-            if (status.equals("selesai") || status.equals("batal")) {
+            if (status.equals("selesai")) {
                 holder.getLocationButton().setVisibility(View.GONE);
             }
         }
@@ -255,11 +261,11 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
                         if (activityOnbookingItem.getStatus().equals("diterima")) {
                             title = "Booking Telah Dijemput";
                             message = "Selamat Mengerjakan";
-                            activityOnbookingItems.get(position).setStatus("Dikerjakan");
+                            activityOnbookingItem.setStatus("dikerjakan");
                         } else if (activityOnbookingItem.getStatus().equals("dikerjakan")) {
                             title = "Booking Telah Selesai";
                             message = "Selamat Telah Dikerjakan";
-                            activityOnbookingItems.get(position).setStatus("Selesai");
+                            activityOnbookingItem.setStatus("selesai");
                         }
                         MotionToast.Companion.createColorToast(activity,
                                 title,
@@ -269,6 +275,7 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
                                 MotionToast.LONG_DURATION,
                                 ResourcesCompat.getFont(context, R.font.montserrat_semibold));
                         notifyItemChanged(position);
+                        callback.onBookingStatusChanged(activityOnbookingItem, position);
                         bottomSheetDialog.dismiss();
                     } else {
                         Toast.makeText(context, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
@@ -299,6 +306,13 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
     @SuppressLint("NotifyDataSetChanged")
     public void setFilteredList(List<ActivityOnbookingItem> filteredList) {
         this.activityOnbookingItems = filteredList;
+        notifyDataSetChanged();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setFilteredListLive(List<ActivityOnbookingItem> filteredList) {
+        this.activityOnbookingItems.clear();
+        this.activityOnbookingItems.addAll(filteredList);
         notifyDataSetChanged();
     }
 }

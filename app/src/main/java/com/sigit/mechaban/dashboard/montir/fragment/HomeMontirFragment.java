@@ -1,49 +1,35 @@
 package com.sigit.mechaban.dashboard.montir.fragment;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sigit.mechaban.R;
-import com.sigit.mechaban.api.ApiClient;
-import com.sigit.mechaban.api.ApiInterface;
-import com.sigit.mechaban.api.model.booking.BookingAPI;
-import com.sigit.mechaban.api.model.booking.BookingData;
 import com.sigit.mechaban.dashboard.montir.booking.ActivityOnbookingAdapter;
+import com.sigit.mechaban.dashboard.montir.booking.SharedBookingViewModel;
 import com.sigit.mechaban.dashboard.montir.service.ServiceMontirActivity;
-import com.sigit.mechaban.object.Booking;
-import com.sigit.mechaban.sessionmanager.SessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class HomeMontirFragment extends Fragment {
-    private final Booking booking = new Booking();
-    private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
     private LinearLayout emptyView;
     private RecyclerView recyclerView;
     private ActivityOnbookingAdapter activityOnbookingAdapter;
-    private final List<ActivityOnbookingAdapter.ActivityOnbookingItem> activityItems = new ArrayList<>();
     private TextView titleText;
     private Button bookingButton;
+    private SharedBookingViewModel viewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,8 +46,6 @@ public class HomeMontirFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        activityOnbookingAdapter = new ActivityOnbookingAdapter(requireActivity(), activityItems);
-        recyclerView.setAdapter(activityOnbookingAdapter);
 
         bookingButton = view.findViewById(R.id.service_button);
 
@@ -73,55 +57,37 @@ public class HomeMontirFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        setOnBooking();
+        setBooking();
     }
 
-    private void setOnBooking() {
-        SessionManager sessionManager = new SessionManager(requireActivity());
-        booking.setAction("onbooking");
-        booking.setEmail(sessionManager.getUserDetail().get("email"));
-        Call<BookingAPI> readOnBooking = apiInterface.bookingResponse(booking);
-        readOnBooking.enqueue(new Callback<BookingAPI>() {
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onResponse(@NonNull Call<BookingAPI> call, @NonNull Response<BookingAPI> response) {
-                if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
-                    titleText.setVisibility(View.VISIBLE);
-                    emptyView.setVisibility(View.GONE);
-                    recyclerView.setVisibility(View.VISIBLE);
-                    activityItems.clear();
-                    for (BookingData bookingData : response.body().getBookingDataList()) {
-                        activityItems.add(new ActivityOnbookingAdapter.ActivityOnbookingItem(
-                                bookingData.getId_booking(),
-                                bookingData.getTgl_booking(),
-                                bookingData.getNopol(),
-                                bookingData.getMerk(),
-                                bookingData.getType(),
-                                bookingData.getRole(),
-                                bookingData.getStatus(),
-                                bookingData.getLatitude(),
-                                bookingData.getLongitude()));
-                    }
-                    activityOnbookingAdapter.notifyDataSetChanged();
-                    if (activityItems.isEmpty()) {
-                        bookingButton.setVisibility(View.VISIBLE);
-                    } else {
-                        bookingButton.setVisibility(View.GONE);
-                    }
-                } else if (response.body() != null && response.body().getCode() == 404){
-                    titleText.setVisibility(View.GONE);
-                    emptyView.setVisibility(View.VISIBLE);
-                    recyclerView.setVisibility(View.GONE);
-                    bookingButton.setVisibility(View.VISIBLE);
-                } else {
-                    Toast.makeText(requireActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                    Log.d("HomeMontir", response.body().getMessage());
+    private void setBooking() {
+        viewModel = new ViewModelProvider(requireActivity()).get(SharedBookingViewModel.class);
+        activityOnbookingAdapter = new ActivityOnbookingAdapter(requireContext(), new ArrayList<>(), (updatedItem, position) -> {
+            List<ActivityOnbookingAdapter.ActivityOnbookingItem> currentList = new ArrayList<>(viewModel.getBookings().getValue());
+            currentList.set(position, updatedItem);
+            viewModel.updateBookingList(currentList);
+        });
+
+        recyclerView.setAdapter(activityOnbookingAdapter);
+        viewModel.getBookings().observe(getViewLifecycleOwner(), bookingList -> {
+            List<ActivityOnbookingAdapter.ActivityOnbookingItem> filteredList = new ArrayList<>();
+            for (ActivityOnbookingAdapter.ActivityOnbookingItem item : bookingList) {
+                if (item.getStatus().equals("diterima") || item.getStatus().equals("dikerjakan")) {
+                    filteredList.add(item);
                 }
             }
+            activityOnbookingAdapter.setFilteredList(filteredList);
 
-            @Override
-            public void onFailure(@NonNull Call<BookingAPI> call, @NonNull Throwable t) {
-                Log.e("HomeMontirFragment", t.toString(), t);
+            if (filteredList.isEmpty()) {
+                titleText.setVisibility(View.GONE);
+                emptyView.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+                bookingButton.setVisibility(View.VISIBLE);
+            } else {
+                titleText.setVisibility(View.VISIBLE);
+                emptyView.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+                bookingButton.setVisibility(View.GONE);
             }
         });
     }
