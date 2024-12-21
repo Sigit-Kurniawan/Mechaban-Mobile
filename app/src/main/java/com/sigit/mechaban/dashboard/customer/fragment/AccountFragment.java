@@ -68,7 +68,7 @@ public class AccountFragment extends Fragment {
             }
         });
 
-        view.findViewById(R.id.info_button).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://" + BuildConfig.ip + "/Mechaban-Web"))));
+        view.findViewById(R.id.info_button).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://" + BuildConfig.ip))));
 
         view.findViewById(R.id.logout_button).setOnClickListener(v -> {
             sessionManager.logoutSession();

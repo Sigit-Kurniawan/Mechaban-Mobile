@@ -2,16 +2,20 @@ package com.sigit.mechaban.dashboard.customer.garage;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,9 +23,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
@@ -30,6 +36,7 @@ import com.sigit.mechaban.api.model.car.CarAPI;
 import com.sigit.mechaban.object.Car;
 import com.sigit.mechaban.sessionmanager.SessionManager;
 
+import java.lang.reflect.Field;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -199,35 +206,65 @@ public class CarActivity extends AppCompatActivity {
             });
 
             deleteButton.setOnClickListener(v -> {
-                car.setAction("delete");
-                car.setNopol(intent.getStringExtra("nopol"));
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+                @SuppressLint("InflateParams") View dialogView = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_modal_two_button, null);
+                bottomSheetDialog.setContentView(dialogView);
 
-                Call<CarAPI> deleteCarCall = apiInterface.carResponse(car);
-                deleteCarCall.enqueue(new Callback<CarAPI>() {
-                    @Override
-                    public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
-                        if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
-                            MotionToast.Companion.createColorToast(CarActivity.this,
-                                    "Mobil Berhasil Dihapus",
-                                    "Dapat Diperiksa di Dalam Garasi",
-                                    MotionToastStyle.SUCCESS,
-                                    MotionToast.GRAVITY_TOP,
-                                    MotionToast.LONG_DURATION,
-                                    ResourcesCompat.getFont(CarActivity.this, R.font.montserrat_semibold));
-                            if (Objects.requireNonNull(intent.getStringExtra("nopol")).equals(sessionManager.getUserDetail().get("nopol"))) {
-                                sessionManager.deleteCar();
+                ImageView imageView = dialogView.findViewById(R.id.photo);
+                TextView titleBottomSheet = dialogView.findViewById(R.id.title);
+                TextView description = dialogView.findViewById(R.id.description);
+                MaterialButton confirmButton = dialogView.findViewById(R.id.positive_button);
+                Button cancelButton = dialogView.findViewById(R.id.negative_button);
+
+                imageView.setImageResource(R.drawable.delete);
+
+                titleBottomSheet.setText("Hapus Mobil?");
+
+                description.setText("Ini akan menghapus mobilmu untuk selamanya");
+
+                confirmButton.setText("Hapus");
+                confirmButton.setOnClickListener(v1 -> {
+                    car.setAction("delete");
+                    car.setNopol(intent.getStringExtra("nopol"));
+
+                    Call<CarAPI> deleteCarCall = apiInterface.carResponse(car);
+                    deleteCarCall.enqueue(new Callback<CarAPI>() {
+                        @Override
+                        public void onResponse(@NonNull Call<CarAPI> call, @NonNull Response<CarAPI> response) {
+                            if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
+                                MotionToast.Companion.createColorToast(CarActivity.this,
+                                        "Mobil Berhasil Dihapus",
+                                        "Dapat Diperiksa di Dalam Garasi",
+                                        MotionToastStyle.SUCCESS,
+                                        MotionToast.GRAVITY_TOP,
+                                        MotionToast.LONG_DURATION,
+                                        ResourcesCompat.getFont(CarActivity.this, R.font.montserrat_semibold));
+                                if (Objects.requireNonNull(intent.getStringExtra("nopol")).equals(sessionManager.getUserDetail().get("nopol"))) {
+                                    sessionManager.deleteCar();
+                                }
+                                finish();
+                            } else {
+                                Toast.makeText(CarActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                             }
-                            finish();
-                        } else {
-                            Toast.makeText(CarActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                         }
-                    }
 
-                    @Override
-                    public void onFailure(@NonNull Call<CarAPI> call, @NonNull Throwable t) {
-                        Log.e("AddCarActivity", t.toString(), t);
-                    }
+                        @Override
+                        public void onFailure(@NonNull Call<CarAPI> call, @NonNull Throwable t) {
+                            Log.e("AddCarActivity", t.toString(), t);
+                        }
+                    });
                 });
+                confirmButton.setBackgroundColor(Color.TRANSPARENT);
+                confirmButton.setStrokeColor(ContextCompat.getColorStateList(this, R.color.md_theme_error));
+                confirmButton.setStrokeWidth(4);
+                confirmButton.setRippleColor(ContextCompat.getColorStateList(this, R.color.md_theme_errorContainer));
+                confirmButton.setTextColor(ContextCompat.getColorStateList(this, R.color.md_theme_error));
+
+                cancelButton.setText("Gak jadi deh");
+                cancelButton.setOnClickListener(v1 -> bottomSheetDialog.dismiss());
+                cancelButton.setTextColor(ContextCompat.getColorStateList(this, R.color.md_theme_background));
+
+                bottomSheetDialog.show();
             });
         } else {
             saveButton.setOnClickListener(v -> {
@@ -379,6 +416,18 @@ public class CarActivity extends AppCompatActivity {
             yearPicker.setValue(currentYear);
         }
         yearPicker.setWrapSelectorWheel(false);
+
+        try {
+            @SuppressLint("DiscouragedPrivateApi") Field inputTextField = NumberPicker.class.getDeclaredField("mInputText");
+            inputTextField.setAccessible(true);
+            EditText inputText = (EditText) inputTextField.get(yearPicker);
+            Objects.requireNonNull(inputText).setFocusable(false);
+            inputText.setCursorVisible(false);
+            inputText.setFocusableInTouchMode(false);
+            inputText.setInputType(InputType.TYPE_NULL);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            Log.e("NumberPicker", e.toString(), e);
+        }
 
         Button btnConfirm = bottomSheetView.findViewById(R.id.btn_confirm);
         btnConfirm.setOnClickListener(v -> {

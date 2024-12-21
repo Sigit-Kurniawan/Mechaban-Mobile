@@ -47,17 +47,32 @@ public class DashboardMontirActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard_montir);
 
-        homeMontirFragment = new HomeMontirFragment();
-        bookingMontirFragment = new BookingMontirFragment();
-        accountMontirFragment = new AccountFragment();
+        homeMontirFragment = getSupportFragmentManager().findFragmentByTag("Home");
+        if (homeMontirFragment == null) {
+            homeMontirFragment = new HomeMontirFragment();
+        }
 
-        activeFragment = homeMontirFragment;
+        bookingMontirFragment = getSupportFragmentManager().findFragmentByTag("Booking");
+        if (bookingMontirFragment == null) {
+            bookingMontirFragment = new BookingMontirFragment();
+        }
 
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.frame_layout, accountMontirFragment, "Account").hide(accountMontirFragment)
-                .add(R.id.frame_layout, bookingMontirFragment, "Booking").hide(bookingMontirFragment)
-                .add(R.id.frame_layout, homeMontirFragment, "Home")
-                .commit();
+        accountMontirFragment = getSupportFragmentManager().findFragmentByTag("Account");
+        if (accountMontirFragment == null) {
+            accountMontirFragment = new AccountFragment();
+        }
+
+        if (savedInstanceState == null) {
+            activeFragment = homeMontirFragment;
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.frame_layout, accountMontirFragment, "Account").hide(accountMontirFragment)
+                    .add(R.id.frame_layout, bookingMontirFragment, "Booking").hide(bookingMontirFragment)
+                    .add(R.id.frame_layout, homeMontirFragment, "Home")
+                    .commit();
+        } else {
+            String activeTag = savedInstanceState.getString("ACTIVE_FRAGMENT_TAG");
+            activeFragment = getSupportFragmentManager().findFragmentByTag(activeTag);
+        }
 
         setSupportActionBar(findViewById(R.id.action_bar));
         Objects.requireNonNull(getSupportActionBar()).setTitle("");
@@ -82,6 +97,14 @@ public class DashboardMontirActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (activeFragment != null) {
+            outState.putString("ACTIVE_FRAGMENT_TAG", activeFragment.getTag());
+        }
     }
 
     @Override

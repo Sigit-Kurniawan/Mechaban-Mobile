@@ -48,7 +48,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         List<ViewPagerAdapter.ScreenItem> screenItemList = new ArrayList<>();
         screenItemList.add(new ViewPagerAdapter.ScreenItem("Selamat Datang di Mechaban", "Siap melayani mobil Anda di dalam satu genggamanmu.", R.drawable.onboarding1));
-        screenItemList.add(new ViewPagerAdapter.ScreenItem("Servis Cepat dan Berkualitas", "Membuat mobilmu seperti baru kembali.", R.drawable.onboarding2));
+        screenItemList.add(new ViewPagerAdapter.ScreenItem("Servis Cepat dan Berkualitas", "Membuat mobilmu seperti baru\nkembali.", R.drawable.onboarding2));
         screenItemList.add(new ViewPagerAdapter.ScreenItem("Mampu Melayani di Manapun Anda Berada", "Siap mengantarkan montir andalan ke lokasi.", R.drawable.onboarding3));
         screenItemList.add(new ViewPagerAdapter.ScreenItem("Konsultasi Gratis dengan Montir Ahli", "Hubungi dan rasakan manfaatnya tanpa biaya tambahan.", R.drawable.onboarding4));
 

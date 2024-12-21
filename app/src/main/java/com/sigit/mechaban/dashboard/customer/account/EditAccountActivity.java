@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -11,8 +12,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -25,6 +30,8 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -60,6 +67,7 @@ public class EditAccountActivity extends AppCompatActivity {
     private final Account account = new Account();
     private Uri uri;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -278,25 +286,55 @@ public class EditAccountActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.delete_button).setOnClickListener(v -> {
-            account.setAction("delete");
-            account.setEmail(sessionManager.getUserDetail().get("email"));
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+            @SuppressLint("InflateParams") View dialogView = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_modal_two_button, null);
+            bottomSheetDialog.setContentView(dialogView);
 
-            Call<AccountAPI> deleteAccountCall = apiInterface.accountResponse(account);
-            deleteAccountCall.enqueue(new Callback<AccountAPI>() {
-                @Override
-                public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
-                    if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
-                        sessionManager.logoutSession();
-                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                        finish();
+            ImageView imageView = dialogView.findViewById(R.id.photo);
+            TextView titleBottomSheet = dialogView.findViewById(R.id.title);
+            TextView description = dialogView.findViewById(R.id.description);
+            MaterialButton confirmButton = dialogView.findViewById(R.id.positive_button);
+            Button cancelButton = dialogView.findViewById(R.id.negative_button);
+
+            imageView.setImageResource(R.drawable.delete);
+
+            titleBottomSheet.setText("Hapus Akun?");
+
+            description.setText("Ini akan menghapus akunmu untuk selamanya");
+
+            confirmButton.setText("Hapus");
+            confirmButton.setOnClickListener(v1 -> {
+                account.setAction("delete");
+                account.setEmail(sessionManager.getUserDetail().get("email"));
+
+                Call<AccountAPI> deleteAccountCall = apiInterface.accountResponse(account);
+                deleteAccountCall.enqueue(new Callback<AccountAPI>() {
+                    @Override
+                    public void onResponse(@NonNull Call<AccountAPI> call, @NonNull Response<AccountAPI> response) {
+                        if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
+                            sessionManager.logoutSession();
+                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                            finish();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
-                    Log.e("EditAccountActivity", t.toString(), t);
-                }
+                    @Override
+                    public void onFailure(@NonNull Call<AccountAPI> call, @NonNull Throwable t) {
+                        Log.e("EditAccountActivity", t.toString(), t);
+                    }
+                });
             });
+            confirmButton.setBackgroundColor(Color.TRANSPARENT);
+            confirmButton.setStrokeColor(ContextCompat.getColorStateList(this, R.color.md_theme_error));
+            confirmButton.setStrokeWidth(4);
+            confirmButton.setRippleColor(ContextCompat.getColorStateList(this, R.color.md_theme_errorContainer));
+            confirmButton.setTextColor(ContextCompat.getColorStateList(this, R.color.md_theme_error));
+
+            cancelButton.setText("Gak jadi deh");
+            cancelButton.setOnClickListener(v1 -> bottomSheetDialog.dismiss());
+            cancelButton.setTextColor(ContextCompat.getColorStateList(this, R.color.md_theme_background));
+
+            bottomSheetDialog.show();
         });
     }
 

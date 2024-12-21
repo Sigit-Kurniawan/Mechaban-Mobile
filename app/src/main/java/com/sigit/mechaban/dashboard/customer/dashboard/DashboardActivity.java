@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -31,22 +32,42 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        homeFragment = new HomeFragment();
-        garageFragment = new GarageFragment();
-        activityFragment = new ActivityFragment();
-        accountFragment = new AccountFragment();
+        homeFragment = getSupportFragmentManager().findFragmentByTag("Home");
+        if (homeFragment == null) {
+            homeFragment = new HomeFragment();
+        }
+
+        garageFragment = getSupportFragmentManager().findFragmentByTag("Garage");
+        if (garageFragment == null) {
+            garageFragment = new GarageFragment();
+        }
+
+        activityFragment = getSupportFragmentManager().findFragmentByTag("Activity");
+        if (activityFragment == null) {
+            activityFragment = new ActivityFragment();
+        }
+
+        accountFragment = getSupportFragmentManager().findFragmentByTag("Account");
+        if (accountFragment == null) {
+            accountFragment = new AccountFragment();
+        }
+
         floatingActionButton = findViewById(R.id.fab_button);
         floatingActionButton.setOnClickListener(v -> startActivity(new Intent(this, CarActivity.class)));
         floatingActionButton.hide();
 
-        activeFragment = homeFragment;
-
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.frame_layout, accountFragment, "Account").hide(accountFragment)
-                .add(R.id.frame_layout, activityFragment, "Activity").hide(activityFragment)
-                .add(R.id.frame_layout, garageFragment, "Garage").hide(garageFragment)
-                .add(R.id.frame_layout, homeFragment, "Home")
-                .commit();
+        if (savedInstanceState == null) {
+            activeFragment = homeFragment;
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.frame_layout, homeFragment, "Home")
+                    .add(R.id.frame_layout, garageFragment, "Garage").hide(garageFragment)
+                    .add(R.id.frame_layout, activityFragment, "Activity").hide(activityFragment)
+                    .add(R.id.frame_layout, accountFragment, "Account").hide(accountFragment)
+                    .commit();
+        } else {
+            String activeTag = savedInstanceState.getString("ACTIVE_FRAGMENT_TAG");
+            activeFragment = getSupportFragmentManager().findFragmentByTag(activeTag);
+        }
 
         setSupportActionBar(findViewById(R.id.action_bar));
         Objects.requireNonNull(getSupportActionBar()).setTitle("");
@@ -76,6 +97,14 @@ public class DashboardActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (activeFragment != null) {
+            outState.putString("ACTIVE_FRAGMENT_TAG", activeFragment.getTag());
+        }
     }
 
     private void switchFragment(Fragment fragment) {
