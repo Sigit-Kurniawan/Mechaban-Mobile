@@ -6,7 +6,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    private static final String baseUrl = "http://" + BuildConfig.ip + "/api/";
+    private static final String baseUrl = "https://" + BuildConfig.ip + "/Api/api/";
+    private static final String photoUrl = "https://" + BuildConfig.ip + "/uploads/customers/";
     private static Retrofit retrofit;
 
     public static Retrofit getRetrofit() {
@@ -17,5 +18,9 @@ public class ApiClient {
                     .build();
         }
         return retrofit;
+    }
+
+    public static String getPhotoUrl() {
+        return photoUrl;
     }
 }

@@ -72,7 +72,6 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
         holder.getMerkTextView().setText(activityOnbookingItem.getMerk());
         holder.getTypeTextView().setText(activityOnbookingItem.getType());
         String status = activityOnbookingItem.getStatus();
-        holder.getStatusTextView().setText(status.substring(0, 1).toUpperCase() + status.substring(1));
         if (activityOnbookingItem.getRole().equals("ketua")) {
             if (status.equals("selesai") || status.equals("batal")) {
                 holder.getLocationButton().setVisibility(View.GONE);
@@ -86,6 +85,11 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
             if (status.equals("selesai")) {
                 holder.getLocationButton().setVisibility(View.GONE);
             }
+        }
+        if (status.equals("diterima")) {
+            holder.getStatusTextView().setText("Proses Penjemputan");
+        } else {
+            holder.getStatusTextView().setText(status.substring(0, 1).toUpperCase() + status.substring(1));
         }
         holder.getDoneButton().setOnClickListener(v -> showBottomSheetDialog(activityOnbookingItems.get(position), position));
         holder.getDetailButton().setOnClickListener(v -> {
@@ -233,9 +237,9 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
 
         String titleBottom = "", descBottom = "", buttonBottom = "";
         if (activityOnbookingItem.getStatus().equals("diterima")) {
-            titleBottom = "Booking Sudah Diterima?";
-            descBottom = "Booking yang sudah diterima tidak bisa dikembalikan.";
-            buttonBottom = "Terima";
+            titleBottom = "Booking Sudah Dijemput?";
+            descBottom = "Booking yang sudah dijemput tidak bisa dikembalikan.";
+            buttonBottom = "Jemput";
         } else if (activityOnbookingItem.getStatus().equals("dikerjakan")) {
             titleBottom = "Booking Sudah Selesai?";
             descBottom = "Booking yang sudah selesai tidak bisa dikembalikan.";
@@ -306,13 +310,6 @@ public class ActivityOnbookingAdapter extends RecyclerView.Adapter<ActivityOnboo
     @SuppressLint("NotifyDataSetChanged")
     public void setFilteredList(List<ActivityOnbookingItem> filteredList) {
         this.activityOnbookingItems = filteredList;
-        notifyDataSetChanged();
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    public void setFilteredListLive(List<ActivityOnbookingItem> filteredList) {
-        this.activityOnbookingItems.clear();
-        this.activityOnbookingItems.addAll(filteredList);
         notifyDataSetChanged();
     }
 }

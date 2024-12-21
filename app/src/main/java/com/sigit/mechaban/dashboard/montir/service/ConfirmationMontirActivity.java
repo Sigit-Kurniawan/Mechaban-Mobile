@@ -19,11 +19,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.sigit.mechaban.R;
@@ -61,13 +63,19 @@ public class ConfirmationMontirActivity extends AppCompatActivity {
     private String id, status;
     private Button processButton, doneButton, locationButton, contactButton;
     private RatingBar ratingBar;
-    private LinearLayout ratingLayout;
+    private LinearLayout ratingLayout, buttonLayout;
     private ImageView logo;
+    private ShimmerFrameLayout shimmerFrameLayout;
+    private ConstraintLayout detailConfirmation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirmation_montir);
+
+        shimmerFrameLayout = findViewById(R.id.shimmerLayout);
+        detailConfirmation = findViewById(R.id.detail_confirmation);
+        buttonLayout = findViewById(R.id.button_layout);
 
         processButton = findViewById(R.id.process_button);
         doneButton = findViewById(R.id.done_button);
@@ -211,6 +219,11 @@ public class ConfirmationMontirActivity extends AppCompatActivity {
                     });
 
                     contactButton.setOnClickListener(v -> showOptionContact(bookingData));
+
+                    shimmerFrameLayout.stopShimmer();
+                    shimmerFrameLayout.setVisibility(View.GONE);
+                    detailConfirmation.setVisibility(View.VISIBLE);
+                    buttonLayout.setVisibility(View.VISIBLE);
                 } else {
                     Toast.makeText(ConfirmationMontirActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                 }

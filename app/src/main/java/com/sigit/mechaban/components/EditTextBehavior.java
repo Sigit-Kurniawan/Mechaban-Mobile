@@ -104,6 +104,36 @@ public class EditTextBehavior {
         }
     }
 
+    public static boolean validatePasswordEdit(Context context, EditText editText, TextInputLayout textInputLayout) {
+        String password = editText.getText().toString().trim();
+        if (password.isEmpty()) {
+            textInputLayout.setError(null);
+            textInputLayout.setStartIconTintList(ContextCompat.getColorStateList(context, R.color.md_theme_primary));
+            textInputLayout.setEndIconTintList(ContextCompat.getColorStateList(context, R.color.md_theme_primary));
+            return true;
+        } else if (!(password.length() >= 8)) {
+            unvalidPassword(textInputLayout, context);
+            return false;
+        } else if (!password.matches("(.*[A-Z].*)")) {
+            unvalidPassword(textInputLayout, context);
+            return false;
+        } else if (!password.matches("(.*[a-z].*)")) {
+            unvalidPassword(textInputLayout, context);
+            return false;
+        } else if (!password.matches(".*[0-9].*")) {
+            unvalidPassword(textInputLayout, context);
+            return false;
+        } else if (!password.matches(".*[@$!%*?&].*")) {
+            unvalidPassword(textInputLayout, context);
+            return false;
+        } else {
+            textInputLayout.setError(null);
+            textInputLayout.setStartIconTintList(ContextCompat.getColorStateList(context, R.color.md_theme_primary));
+            textInputLayout.setEndIconTintList(ContextCompat.getColorStateList(context, R.color.md_theme_primary));
+            return true;
+        }
+    }
+
     public static boolean validateConfirmPassword(Context context, EditText passwordEditText, EditText editText, TextInputLayout textInputLayout) {
         String password = passwordEditText.getText().toString().trim();
         String confirmPassword = editText.getText().toString().trim();

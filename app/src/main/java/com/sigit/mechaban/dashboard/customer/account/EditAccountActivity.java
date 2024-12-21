@@ -28,7 +28,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.sigit.mechaban.BuildConfig;
 import com.sigit.mechaban.R;
 import com.sigit.mechaban.api.ApiClient;
 import com.sigit.mechaban.api.ApiInterface;
@@ -167,7 +166,7 @@ public class EditAccountActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                isValidatePassword = EditTextBehavior.validatePasswordRegister(getApplicationContext(), passwordEditText, passwordLayout);
+                isValidatePassword = EditTextBehavior.validatePasswordEdit(getApplicationContext(), passwordEditText, passwordLayout);
                 updateEditButtonState();
             }
         });
@@ -195,7 +194,7 @@ public class EditAccountActivity extends AppCompatActivity {
                     String photoBase64 = response.body().getAccountData().getPhoto();
                     if (photoBase64 != null && !photoBase64.isEmpty()) {
                         Glide.with(EditAccountActivity.this)
-                                .load("http://" + BuildConfig.ip + "/api/src/" + photoBase64)
+                                .load(ApiClient.getPhotoUrl() + photoBase64)
                                 .placeholder(R.drawable.baseline_account_circle_24)
                                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                                 .skipMemoryCache(true)

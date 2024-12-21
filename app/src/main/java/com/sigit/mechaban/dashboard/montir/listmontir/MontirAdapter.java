@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.sigit.mechaban.BuildConfig;
 import com.sigit.mechaban.R;
+import com.sigit.mechaban.api.ApiClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class MontirAdapter extends RecyclerView.Adapter<MontirAdapter.MontirView
     public void onBindViewHolder(@NonNull MontirViewHolder holder, int position) {
         MontirItem montirItem = montirItems.get(position);
         Glide.with(context)
-                .load("http://" + BuildConfig.ip + "/api/src/" + montirItem.getPhoto())
+                .load(ApiClient.getPhotoUrl() + montirItem.getPhoto())
                 .placeholder(R.drawable.baseline_account_circle_24)
                 .into(holder.getPhotoProfile());
         holder.getNameText().setText(montirItem.getName());

@@ -68,7 +68,7 @@ public class AccountFragment extends Fragment {
             }
         });
 
-        view.findViewById(R.id.info_button).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + BuildConfig.ip + "/Mechaban-Web"))));
+        view.findViewById(R.id.info_button).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://" + BuildConfig.ip + "/Mechaban-Web"))));
 
         view.findViewById(R.id.logout_button).setOnClickListener(v -> {
             sessionManager.logoutSession();
@@ -91,7 +91,7 @@ public class AccountFragment extends Fragment {
                     String photo = response.body().getAccountData().getPhoto();
                     if (photo != null && !photo.isEmpty()) {
                         Glide.with(requireActivity())
-                                .load("http://" + BuildConfig.ip + "/api/src/" + photo)
+                                .load(ApiClient.getPhotoUrl() + photo)
                                 .placeholder(R.drawable.baseline_account_circle_24)
                                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                                 .skipMemoryCache(true)

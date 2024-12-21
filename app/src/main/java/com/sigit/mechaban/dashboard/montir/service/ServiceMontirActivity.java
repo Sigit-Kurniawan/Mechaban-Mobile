@@ -33,7 +33,6 @@ import com.google.android.gms.location.Priority;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -238,14 +237,20 @@ public class ServiceMontirActivity extends AppCompatActivity implements ModalBot
             @Override
             public void onResponse(@NonNull Call<MontirAPI> call, @NonNull Response<MontirAPI> response) {
                 if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
-                    emptyText.setVisibility(View.GONE);
-                    for (MontirData montirData : response.body().getMontirDataList()) {
-                        if (!Objects.requireNonNull(sessionManager.getUserDetail().get("email")).equals(montirData.getEmail())) {
-                            montirItems.add(new MontirAdapter.MontirItem(montirData.getEmail(), montirData.getName(), montirData.getPhoto()));
+                    if (response.body().getMontirDataList().size() == 1) {
+                        search.setVisibility(View.GONE);
+                        emptyText.setVisibility(View.VISIBLE);
+                        montirLayout.setVisibility(View.GONE);
+                    } else {
+                        emptyText.setVisibility(View.GONE);
+                        for (MontirData montirData : response.body().getMontirDataList()) {
+                            if (!Objects.requireNonNull(sessionManager.getUserDetail().get("email")).equals(montirData.getEmail())) {
+                                montirItems.add(new MontirAdapter.MontirItem(montirData.getEmail(), montirData.getName(), montirData.getPhoto()));
+                            }
                         }
+                        montirAdapter = new MontirAdapter(ServiceMontirActivity.this, montirItems, selectedMontir -> ServiceMontirActivity.this.selectedMontir = selectedMontir);
+                        montirList.setAdapter(montirAdapter);
                     }
-                    montirAdapter = new MontirAdapter(ServiceMontirActivity.this, montirItems, selectedMontir -> ServiceMontirActivity.this.selectedMontir = selectedMontir);
-                    montirList.setAdapter(montirAdapter);
                 } else if (response.body() != null && response.body().getCode() == 404) {
                     search.setVisibility(View.GONE);
                     emptyText.setVisibility(View.VISIBLE);

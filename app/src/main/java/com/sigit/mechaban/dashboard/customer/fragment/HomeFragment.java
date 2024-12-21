@@ -73,30 +73,6 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         statusTextView = view.findViewById(R.id.status_text);
-        Call<StatusAPI> statusAPICall = apiInterface.statusResponse();
-        statusAPICall.enqueue(new Callback<StatusAPI>() {
-            @Override
-            public void onResponse(@NonNull Call<StatusAPI> call, @NonNull Response<StatusAPI> response) {
-                if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
-                    statusBengkel = response.body().getData();
-                    switch (statusBengkel) {
-                        case 0:
-                            statusTextView.setText("Tutup");
-                            break;
-                        case 1:
-                            statusTextView.setText("Buka");
-                            break;
-                    }
-                } else {
-                    Toast.makeText(requireActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<StatusAPI> call, @NonNull Throwable t) {
-                Log.e("Status", t.toString(), t);
-            }
-        });
 
         LinearLayout carButton = view.findViewById(R.id.car_button);
 
@@ -129,7 +105,7 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
                     startActivity(new Intent(getActivity(), ServiceActivity.class));
                 } else {
                     bottomSheetDialog = new BottomSheetDialog(requireActivity());
-                    @SuppressLint("InflateParams") View view1 = getLayoutInflater().inflate(R.layout.bottom_sheet_modal_two_button, null, false);
+                    @SuppressLint("InflateParams") View view1 = getLayoutInflater().inflate(R.layout.bottom_sheet_modal, null, false);
                     activeDialogs.add(bottomSheetDialog);
                     ImageView imageView = view1.findViewById(R.id.photo);
                     imageView.setImageResource(R.drawable.choose);
@@ -140,22 +116,9 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
                     TextView desc = view1.findViewById(R.id.description);
                     desc.setText("Kalau tidak ada mobil yang dipilih, kami servis apa?");
 
-                    MaterialButton confirmButton = view1.findViewById(R.id.positive_button);
+                    MaterialButton confirmButton = view1.findViewById(R.id.button);
                     confirmButton.setText("Buka List Mobil");
                     confirmButton.setOnClickListener(v1 -> openCarList());
-                    confirmButton.setTextColor(ContextCompat.getColorStateList(requireActivity(), R.color.md_theme_background));
-
-                    MaterialButton close = view1.findViewById(R.id.negative_button);
-                    close.setText("Tutup");
-                    close.setOnClickListener(v1 -> {
-                        activeDialogs.clear();
-                        bottomSheetDialog.dismiss();
-                    });
-                    close.setBackgroundColor(Color.TRANSPARENT);
-                    close.setStrokeColor(ContextCompat.getColorStateList(requireActivity(), R.color.md_theme_error));
-                    close.setStrokeWidth(4);
-                    close.setRippleColor(ContextCompat.getColorStateList(requireActivity(), R.color.md_theme_errorContainer));
-                    close.setTextColor(ContextCompat.getColorStateList(requireActivity(), R.color.md_theme_error));
 
                     bottomSheetDialog.setContentView(view1);
                     bottomSheetDialog.show();
@@ -212,6 +175,32 @@ public class HomeFragment extends Fragment implements CarAdapter.OnCarSelectedLi
         super.onResume();
         setCarSelected();
         sessionManager.getPreferences().registerOnSharedPreferenceChangeListener(preferenceChangeListener);
+
+        Call<StatusAPI> statusAPICall = apiInterface.statusResponse();
+        statusAPICall.enqueue(new Callback<StatusAPI>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onResponse(@NonNull Call<StatusAPI> call, @NonNull Response<StatusAPI> response) {
+                if (response.body() != null && response.isSuccessful() && response.body().getCode() == 200) {
+                    statusBengkel = response.body().getData();
+                    switch (statusBengkel) {
+                        case 0:
+                            statusTextView.setText("Tutup");
+                            break;
+                        case 1:
+                            statusTextView.setText("Buka");
+                            break;
+                    }
+                } else {
+                    Toast.makeText(requireActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<StatusAPI> call, @NonNull Throwable t) {
+                Log.e("Status", t.toString(), t);
+            }
+        });
     }
 
     @Override

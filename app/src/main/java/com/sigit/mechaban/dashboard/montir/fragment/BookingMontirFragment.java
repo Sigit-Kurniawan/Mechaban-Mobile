@@ -69,6 +69,16 @@ public class BookingMontirFragment extends Fragment {
             List<ActivityOnbookingAdapter.ActivityOnbookingItem> filteredList = new ArrayList<>(bookingList);
             activityOnbookingAdapter.setFilteredList(filteredList);
 
+            activityOnbookingItems.clear();
+            activityOnbookingItems.addAll(bookingList);
+
+            if (activeChipIndex == -1) {
+                activityOnbookingAdapter.setFilteredList(new ArrayList<>(activityOnbookingItems));
+            } else {
+                ChipItem activeChip = chipItems.get(activeChipIndex);
+                applyFilter(activeChip.getStatus());
+            }
+
             if (filteredList.isEmpty()) {
                 emptyView.setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.GONE);
@@ -80,11 +90,9 @@ public class BookingMontirFragment extends Fragment {
     }
 
     private void setupChips() {
-        chipItems.add(new BookingMontirFragment.ChipItem("Menunggu Konfirmasi", "pending"));
         chipItems.add(new BookingMontirFragment.ChipItem("Booking Sedang Dijemput", "diterima"));
         chipItems.add(new BookingMontirFragment.ChipItem("Booking Dikerjakan", "dikerjakan"));
         chipItems.add(new BookingMontirFragment.ChipItem("Booking Selesai", "selesai"));
-        chipItems.add(new BookingMontirFragment.ChipItem("Booking Batal", "batal"));
 
         chipGroup.removeAllViews();
         for (int i = 0; i < chipItems.size(); i++) {

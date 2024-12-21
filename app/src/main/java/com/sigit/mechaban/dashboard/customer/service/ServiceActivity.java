@@ -613,7 +613,10 @@ public class ServiceActivity extends AppCompatActivity implements ServiceAdapter
                     }
                     loadingDialog.dismissDialog();
                 },
-                error -> Toast.makeText(this, "Gagal menghubungi OSRM: " + error.getMessage(), Toast.LENGTH_SHORT).show()
+                error -> {
+                    loadingDialog.dismissDialog();
+                    Toast.makeText(this, "Gagal menghubungi OSRM: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
         );
 
         requestQueue.add(jsonObjectRequest);

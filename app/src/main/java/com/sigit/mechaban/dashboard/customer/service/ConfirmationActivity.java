@@ -15,17 +15,20 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.sigit.mechaban.R;
@@ -64,16 +67,21 @@ public class ConfirmationActivity extends AppCompatActivity implements ModalBott
     private final ApiInterface apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
     private final List<MontirConfirmationAdapter.MontirConfirmationItem> montirConfirmationItems = new ArrayList<>();
     private Button cancelButton, ratingButton, contactButton;
-    private LinearLayout rincianMontir, ratingLayout;
+    private LinearLayout rincianMontir, ratingLayout, buttonLayout;
     private BookingData bookingData;
     private RatingBar ratingBar;
     private ImageView logo;
+    private ShimmerFrameLayout shimmerFrameLayout;
+    private ConstraintLayout constraintLayout;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirmation);
+        shimmerFrameLayout = findViewById(R.id.shimmerLayout);
+        constraintLayout = findViewById(R.id.detail_layout);
+        buttonLayout = findViewById(R.id.button_layout);
 
         Intent intent = getIntent();
 
@@ -204,6 +212,11 @@ public class ConfirmationActivity extends AppCompatActivity implements ModalBott
                     if (!bookingData.getStatus().equals("selesai")) {
                         ratingButton.setVisibility(View.GONE);
                     }
+
+                    shimmerFrameLayout.stopShimmer();
+                    shimmerFrameLayout.setVisibility(View.GONE);
+                    constraintLayout.setVisibility(View.VISIBLE);
+                    buttonLayout.setVisibility(View.VISIBLE);
                 }
             }
 

@@ -16,6 +16,7 @@ motiontoast = "1.4"
 osmdroidAndroid = "6.1.11"
 playServicesLocation = "21.0.1"
 retrofit = "2.6.1"
+shimmer = "0.5.0"
 stepviewVersion = "1.5.1"
 googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.0.0"
@@ -44,6 +45,7 @@ motiontoast = { module = "com.github.Spikeysanju:MotionToast", version.ref = "mo
 osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroid" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
 shuhart-stepview = { module = "com.github.shuhart:stepview", version.ref = "stepviewVersion" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }

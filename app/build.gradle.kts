@@ -75,4 +75,5 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.motiontoast)
     implementation(libs.volley)
+    implementation(libs.shimmer)
 }
